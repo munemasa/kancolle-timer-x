@@ -23,14 +23,27 @@ console.log( 'load kancolle timer x background script.' );
 
 let KanColle = {};
 
+
+function GetShipName( request, sender, sendResponse ){
+    let result = request.ids.map( ( id ) =>{
+        try{
+            if( id == 0 ) return '';
+            return KanColle._api_mst_ship[KanColle._api_ship[id].api_ship_id].api_name;
+        }catch( e ){
+            return "[Unknown]";
+        }
+    } );
+    sendResponse( result );
+}
+
 function GetMissionName( request, sender, sendResponse ){
     let missions = request.missions;
     let result = missions.map( ( id ) =>{
-        if( id == 0 ) return "";
+        if( id == 0 ) return '';
         for( let v of KanColle.api_mst_mission ){
             if( v.api_id == id ) return v.api_name;
         }
-        return 'Unknown';
+        return '[Unknown]';
     } );
     sendResponse( result );
 }
@@ -39,6 +52,9 @@ function HandleMessage( request, sender, sendResponse ){
     switch( request.cmd ){
     case 'get-mission-name':
         GetMissionName( request, sender, sendResponse );
+        break;
+    case 'get-ship-name':
+        GetShipName( request, sender, sendResponse );
         break;
     }
 }
@@ -55,23 +71,55 @@ function SetLocalStorage( k, v ){
     } );
 }
 
+
+function UpdateMasterData( data ){
+    for( let k in data.api_data ){
+        KanColle[k] = data.api_data[k];
+    }
+
+    let shipdata = {};
+    for( let ship of KanColle.api_mst_ship ){
+        shipdata[ship.api_id] = ship;
+    }
+    KanColle._api_mst_ship = shipdata;
+
+    SetLocalStorage( 'mst_data', data.api_data );
+}
+
 function UpdateMissionTimer( data ){
     KanColle.deck = data;
     SetLocalStorage( 'deck', data );
 }
 
+function UpdateRepairTimer( data ){
+    KanColle.ndock = data;
+    SetLocalStorage( 'ndock', data );
+}
+
+function UpdateShip( api_ship ){
+    let shipdata = {};
+    for( let ship of api_ship ){
+        shipdata[ship.api_id] = ship;
+    }
+    KanColle._api_ship = shipdata;
+}
+
+
 let callback = {
     "api_start2": function( data ){
-        for( let k in data.api_data ){
-            KanColle[k] = data.api_data[k];
-        }
-        SetLocalStorage( 'mst_data', data.api_data );
+        UpdateMasterData( data );
     },
     "api_port/port": function( data ){
         UpdateMissionTimer( data.api_data.api_deck_port );
+        UpdateRepairTimer( data.api_data.api_ndock );
+        UpdateShip( data.api_data.api_ship );
     },
     "api_get_member/deck": function( data ){
         UpdateMissionTimer( data.api_data );
+    },
+
+    "api_get_member/ndock": function( data ){
+        UpdateRepairTimer( data.api_data );
     }
 };
 
@@ -89,6 +137,7 @@ function Process( details, data ){
 
 
 function KanColleCapture( details ){
+    /* Firefoxの仕様で upload streams with headers をサポートしていないため艦これの requestBody を読めない */
     let filter = browser.webRequest.filterResponseData( details.requestId );
     let decoder = new TextDecoder( "utf-8" );
 

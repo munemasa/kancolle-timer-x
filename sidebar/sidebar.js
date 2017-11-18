@@ -36,6 +36,15 @@ async function GetMissionName( mission_ids ){
 }
 
 
+async function GetShipName( ship_ids ){
+    let result = await browser.runtime.sendMessage( {
+        cmd: 'get-ship-name',
+        ids: ship_ids
+    } );
+    return result;
+}
+
+
 let KanColleTimerSidebar = {
     deck: null,
 
@@ -63,7 +72,7 @@ let KanColleTimerSidebar = {
 
             let now = (new Date()).getTime() / 1000;
             t /= 1000;
-            remain[i].innerHTML = t > 0 ? GetTimeString( t - now ) : '---';
+            remain[i].innerHTML = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
             if( t > 0 ){
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
@@ -72,9 +81,77 @@ let KanColleTimerSidebar = {
         }
 
         let name = await GetMissionName( missions );
+        if( !name ) return;
         for( let i = 0; i < 4; i++ ){
             if( name[i] ){
                 missionname[i].innerHTML = name[i];
+            }
+        }
+    },
+
+    setRepairTimer: async function( ndock ){
+        if( !ndock ) return;
+        this.ndock = ndock;
+
+        let shipname = $( '.repair-ship-name' );
+        let datetime = $( '.repair-finish-time' );
+        let remain = $( '.repair-remain' );
+
+        let ship_ids = [];
+        for( let i = 0; i < 4; i++ ){
+            ship_ids.push( ndock[i].api_ship_id );
+
+            let t = ndock[i].api_complete_time;
+            datetime[i].innerHTML = t > 0 ? GetDateString( t ) : '---';
+
+            let now = (new Date()).getTime() / 1000;
+            t /= 1000;
+            remain[i].innerHTML = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
+        }
+
+        let name = await GetShipName( ship_ids );
+        if( !name ) return;
+
+        for( let i = 0; i < 4; i++ ){
+            shipname[i].innerHTML = `${name[i] ? name[i] : 'No.' + (i + 1)}`;
+        }
+    },
+
+    updateMissionTimer: function(){
+        if( !this.deck ) return;
+        let remain = $( '.mission-remain' );
+        for( let i = 0; i < 4; i++ ){
+            let t = parseInt( this.deck[i].api_mission[2] );
+            let now = (new Date()).getTime() / 1000;
+            t /= 1000;
+            if( t > 0 ){
+                remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
+                if( t - now <= 60 ){
+                    $( remain[i] ).addClass( 'last-1min' );
+                }
+            }else{
+                remain[i].innerHTML = '(---)';
+                $( remain[i] ).removeClass( 'last-1min' );
+            }
+        }
+    },
+
+    updateRepairTimer: function(){
+        if( !this.ndock ) return;
+        let remain = $( '.repair-remain' );
+
+        for( let i = 0; i < 4; i++ ){
+            let t = this.ndock[i].api_complete_time;
+            let now = (new Date()).getTime() / 1000;
+            t /= 1000;
+            if( t > 0 ){
+                remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
+                if( t - now <= 60 ){
+                    $( remain[i] ).addClass( 'last-1min' );
+                }
+            }else{
+                remain[i].innerHTML = '(---)';
+                $( remain[i] ).removeClass( 'last-1min' );
             }
         }
     },
@@ -83,22 +160,8 @@ let KanColleTimerSidebar = {
      * 1秒ごとにカウントダウンする
      */
     updateTimers: function(){
-        if( !this.deck ) return;
-        let remain = $( '.mission-remain' );
-        for( let i = 0; i < 4; i++ ){
-            let t = parseInt( this.deck[i].api_mission[2] );
-            let now = (new Date()).getTime() / 1000;
-            t /= 1000;
-            if( t > 0 ){
-                remain[i].innerHTML = t > now ? GetTimeString( t - now ) : '00:00:00';
-                if( t - now <= 60 ){
-                    $( remain[i] ).addClass( 'last-1min' );
-                }
-            }else{
-                remain[i].innerHTML = '---';
-                $( remain[i] ).removeClass( 'last-1min' );
-            }
-        }
+        this.updateMissionTimer();
+        this.updateRepairTimer();
     },
 
     init: async function(){
@@ -110,11 +173,18 @@ let KanColleTimerSidebar = {
         if( result ){
             KanColleTimerSidebar.setMissionTimer( result.deck );
         }
+        result = await browser.storage.local.get( 'ndock' );
+        if( result ){
+            KanColleTimerSidebar.setRepairTimer( result.ndock );
+        }
 
         browser.storage.onChanged.addListener( ( changes, area ) =>{
             console.log( changes );
             if( changes.deck ){
                 KanColleTimerSidebar.setMissionTimer( changes.deck.newValue );
+            }
+            if( changes.ndock ){
+                KanColleTimerSidebar.setRepairTimer( changes.ndock.newValue );
             }
         } );
     }
