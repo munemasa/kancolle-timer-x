@@ -1,0 +1,4 @@
+syntax: glob
+
+.idea/workspace.xml
+web-ext-artifacts/*

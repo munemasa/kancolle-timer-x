@@ -1,0 +1,74 @@
+{
+  "manifest_version": 2,
+  "name": "KanColle Timer X",
+  "version": "0.1",
+  "applications": {
+    "gecko": {
+      "id": "kancolletimerx@miku39.jp",
+      "strict_min_version": "57.0"
+    }
+  },
+  "description": "艦これタイマーX",
+  "homepage_url": "http://com.nicovideo.jp/community/co105163",
+  "icons": {
+    "48": "icons/icon-16.png"
+  },
+  "permissions": [
+    "*://*.nicovideo.jp/*",
+    "https://api.twitter.com/*",
+    "contextMenus",
+    "notifications",
+    "storage",
+    "tabs",
+    "activeTab",
+    "clipboardWrite",
+    "downloads"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://live.nicovideo.jp/watch/*",
+        "*://live2.nicovideo.jp/watch/*"
+      ],
+      "js": [
+        "content_scripts/nicolivehelperx.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "*://www.nicovideo.jp/watch/*"
+      ],
+      "js": [
+        "content_scripts/nicolivehelperx_videoplayer.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "16": "icons/icon-16.png"
+    },
+    "default_title": "艦これタイマーX"
+  },
+  "sidebar_action": {
+    "default_title": "艦これタイマーX",
+    "default_panel": "sidebar/sidebar.html",
+    "default_icon": {
+      "16": "icons/icon-16.png"
+    }
+  },
+  "commands": {
+    "execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K"
+      }
+    }
+  },
+  "background": {
+    "scripts": [
+      "libs/utils.js",
+      "bg/background.js"
+    ]
+  }
+}

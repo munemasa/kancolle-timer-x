@@ -1,0 +1,372 @@
+html, body {
+    /*font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;*/
+    font-family: helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+/*--- bootstrapのカスタマイズ --------------------------------------------------*/
+html {
+    font-size: 14px;
+}
+
+body {
+    line-height: 1.2;
+}
+
+.nav-tabs .nav-item.show .nav-link {
+    border-color: #bbb #bbb #fff !important;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+fieldset {
+    border-radius: 0.2rem;
+    margin-top: 0.5rem;
+}
+
+.navbar {
+    padding: 0.5rem 0.75rem;
+}
+
+.nav-tabs {
+    font-size: 9pt;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+    text-shadow: 1px 1px 2px grey;
+}
+
+.badge {
+    font-size: 8pt;
+}
+
+.custom-select-sm {
+    font-size: 90%;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    border-radius: 0.2rem;
+
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    -moz-appearance: none;
+
+    padding-right: 1.35rem;
+    background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23333' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    background-size: 8px 10px;
+}
+
+.table td {
+    padding: 0.4rem;
+}
+
+.dropdown-item {
+    font-size: 14px;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block
+}
+
+.dropdown-submenu > a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover > a:after {
+    border-left-color: #ccc
+}
+
+.dropdown-submenu.pull-left {
+    float: none
+}
+
+.dropdown-submenu.pull-left > .dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.my-alert {
+    margin-bottom: 0px;
+    padding: 0.4rem 0.4rem;
+
+    -moz-transition: height 0.25s, opacity 0.25s;
+}
+
+/* jquery contextmenu */
+
+.context-menu-list .context-menu-list {
+    max-height: 240px;
+    overflow: scroll;
+}
+
+/*------------------------------------------------------------------------*/
+
+.header {
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*width: 100%;*/
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.bg-header-toolbar {
+    background-color: #f0f0f0;
+}
+
+.bg-progressbar-default {
+    background-color: #6bd0ee !important;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /*width: 100%;*/
+    background-color: #f5f5f5;
+    font-size: 9pt;
+
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.progress_2 {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: hidden;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-align: center;
+    border-radius: 0.25rem;
+
+    background-color: #eceeef;
+    border: 1px inset #aaa;
+}
+
+/* ドロップダウンリストとテキストボックスが複合したコンボボックス */
+.combobox {
+    position: relative;
+    /*width: 200px;*/
+}
+
+.combobox select {
+    width: 100%;
+    font-size: 9pt;
+    padding: 0.375rem 1.70rem 0.375rem 0.75rem;
+}
+
+.combobox > * {
+    box-sizing: border-box;
+    height: 1.7rem;
+}
+
+.combobox input {
+    position: absolute;
+    width: calc(100% - 20px);
+    border: 1px solid rgba(0, 0, 0, 0);
+    font-size: 9pt;
+}
+
+.combobox input:focus {
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+#statusbar-titletext {
+    padding: 2px 0px 0px 2px;
+    z-index: 2;
+    text-shadow: 1px 1px 2px white;
+}
+
+#statusbar-video-remain {
+    padding: 2px 0px 0px 2px;
+}
+
+#comment-table {
+    line-height: 1.2em;
+    font-size: 9pt;
+}
+
+/* コメントの枠線 */
+#comment-table tr {
+    border-bottom: 1px solid #cccccc;
+    vertical-align: top;
+}
+
+#comment-table td {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.video-list {
+    font-size: 9pt;
+
+    /*margin-left: 8px;*/
+    /*margin-right: 8px;*/
+
+    /*min-width: 90%;*/
+}
+
+.video-list hr {
+    padding: 0;
+    margin: 0;
+    border-width: 1px 0px 0px 0px;
+    border-style: dashed;
+}
+
+.video-list .nico-tags {
+    font-size: 120%;
+}
+
+.no_live_play:before {
+    font-family: 'Glyphicons Halflings';
+    content: "\e090[生放送不可]";
+    color: red;
+    font-weight: bold;
+}
+
+tr.self_request {
+    border: 2px solid green !important;
+}
+
+td .self_request:before {
+    font-family: 'Glyphicons Halflings';
+    content: "\e125[自貼り]";
+    color: green;
+    font-weight: bold;
+}
+
+td .self_request {
+    font-weight: bold;
+    color: green;
+}
+
+.nico-description {
+    display: block;
+}
+
+.nico-thumbnail {
+    width: 65px;
+    height: 50px;
+    -moz-transition: width 0.25s, height 0.25s;
+}
+
+.nico-thumbnail:hover {
+    /*
+        width: 130px;
+        height: 100px;
+    */
+}
+
+.nico-bitrate {
+    font-size: 9pt;
+    padding-left: 2px;
+    padding-right: 2px;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #000;
+    color: #fff;
+    opacity: 0.7;
+}
+
+#history-box-text {
+    font-size: 9pt;
+}
+
+.nico_yourpost {
+    font-weight: bold;
+}
+
+tr.color1 {
+    background-color: #f2eef8;
+}
+
+tr.color2 {
+    background-color: #eef0ff;
+}
+
+tr.color3 {
+    background-color: #eef8ff;
+}
+
+tr.color4 {
+    background-color: #eeffff;
+}
+
+tr.color5 {
+    background-color: #eefff8;
+}
+
+/* 緑(自貼りカラー) */
+tr.color6 {
+    background-color: #eeffee;
+}
+
+tr.color7 {
+    background-color: #f8ffee;
+}
+
+tr.color8 {
+    background-color: #ffffee;
+}
+
+tr.white {
+    background-color: white;
+}
+
+/* 主用の色 */
+tr.color_caster {
+    background-color: #ffeeee;
+}
+
+/* 再生済み */
+tr.table_played {
+    background-color: #cccccc;
+}
+
+.black {
+    color: black;
+}
+
+iframe {
+    -moz-transition: height 0.25s, opacity 0.25s;
+}
