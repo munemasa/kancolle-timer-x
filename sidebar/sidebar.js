@@ -73,7 +73,9 @@ let KanColleTimerSidebar = {
 
         let name = await GetMissionName( missions );
         for( let i = 0; i < 4; i++ ){
-            missionname[i].innerHTML = name[i];
+            if( name[i] ){
+                missionname[i].innerHTML = name[i];
+            }
         }
     },
 
