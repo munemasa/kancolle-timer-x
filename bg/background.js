@@ -21,3 +21,100 @@
  */
 console.log( 'load kancolle timer x background script.' );
 
+let KanColle = {};
+
+function GetMissionName( request, sender, sendResponse ){
+    let missions = request.missions;
+    let result = missions.map( ( id ) =>{
+        if( id == 0 ) return "";
+        for( let v of KanColle.api_mst_mission ){
+            if( v.api_id == id ) return v.api_name;
+        }
+        return 'Unknown';
+    } );
+    sendResponse( result );
+}
+
+function HandleMessage( request, sender, sendResponse ){
+    switch( request.cmd ){
+    case 'get-mission-name':
+        GetMissionName( request, sender, sendResponse );
+        break;
+    }
+}
+
+browser.runtime.onMessage.addListener( HandleMessage );
+
+
+function SetLocalStorage( k, v ){
+    let obj = {};
+    obj[k] = v;
+    browser.storage.local.set( obj ).then( ( result ) =>{
+    }, ( error ) =>{
+        console.log( error );
+    } );
+}
+
+function UpdateMissionTimer( data ){
+    KanColle.deck = data;
+    SetLocalStorage( 'deck', data );
+}
+
+let callback = {
+    "api_start2": function( data ){
+        for( let k in data.api_data ){
+            KanColle[k] = data.api_data[k];
+        }
+        SetLocalStorage( 'mst_data', data.api_data );
+    },
+    "api_port/port": function( data ){
+        UpdateMissionTimer( data.api_data.api_deck_port );
+    },
+    "api_get_member/deck": function( data ){
+        UpdateMissionTimer( data.api_data );
+    }
+};
+
+function Process( details, data ){
+    console.log( `URL: ${details.url.substring( 1 )} ${details.requestId}` );
+    console.log( data );
+
+    let url = details.url;
+    let k = url.match( /kcsapi\/(.*)/ );
+
+    if( typeof callback[k[1]] === "function" ){
+        callback[k[1]]( data );
+    }
+}
+
+
+function KanColleCapture( details ){
+    let filter = browser.webRequest.filterResponseData( details.requestId );
+    let decoder = new TextDecoder( "utf-8" );
+
+    filter._kancolle = '';
+    filter.ondata = ( event ) =>{
+        filter.write( event.data );
+        filter._kancolle += decoder.decode( event.data, {stream: true} );
+    };
+    filter.onstop = ( event ) =>{
+        filter.disconnect();
+
+        let text = filter._kancolle.substring( filter._kancolle.indexOf( 'svdata=' ) + 7 );
+        try{
+            let data = JSON.parse( text );
+            Process( details, data );
+        }catch( e ){
+            console.log( `JSON.parse failed. ${e}` );
+        }
+    };
+
+    return {};
+}
+
+
+browser.webRequest.onBeforeRequest.addListener(
+    KanColleCapture,
+    {urls: ["*://*/kcsapi/*"], types: ["object_subrequest"]},
+    ["blocking", "requestBody"]
+);

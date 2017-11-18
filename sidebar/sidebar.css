@@ -1,0 +1,17 @@
+.mission-name {
+    margin-left: 0.5em;
+}
+
+.mission-fleet-name {
+    margin-right: 0.5em;
+}
+
+.mission-finish-time {
+    margin-right: 0.5em;
+    white-space: nowrap;
+}
+
+.last-1min {
+    color: red;
+    font-weight: bold;
+}

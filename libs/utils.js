@@ -135,16 +135,21 @@ function GetFormattedDateString( format, ms ){
     return d.toLocaleFormat( format );
 }
 
-// min:sec の文字列を返す.
+// hour:min:sec の文字列を返す.
 function GetTimeString( sec ){
-    let str = "";
-    if( sec < 0 ) str = "-";
     sec = Math.abs( sec );
-    str += parseInt( sec / 60 ) + ":";
-    str += (sec % 60) < 10 ? "0" + parseInt( sec % 60 ) : parseInt( sec % 60 );
+
+    let hour = parseInt( sec / 60 / 60 );
+    let min = parseInt( sec / 60 ) - hour * 60;
+    let s = parseInt( sec % 60 );
+
+    let str = hour < 10 ? "0" + hour : hour;
+    str += ":";
+    str += min < 10 ? "0" + min : min;
+    str += ":";
+    str += s < 10 ? "0" + s : s;
     return str;
 }
-
 
 /**
  * 配列をシャッフルする.

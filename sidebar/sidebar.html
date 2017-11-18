@@ -2,28 +2,95 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>NicoLive Helper X</title>
-<!--
-  <link rel="stylesheet" href="../libs/external/bootstrap/bootstrap.css">
+  <title>艦これタイマーX</title>
   <script src="../libs/external/jquery-3.2.1.min.js"></script>
-  <script src="../libs/external/tether.min.js"></script>
-  <script src="../libs/external/bootstrap/bootstrap.js"></script>
+  <link rel="stylesheet" href="sidebar.css">
+  <!--
+    <link rel="stylesheet" href="../libs/external/bootstrap/bootstrap.css">
+    <script src="../libs/external/tether.min.js"></script>
+    <script src="../libs/external/bootstrap/bootstrap.js"></script>
 
-  <script src="../main/main.js"></script>
--->
+  -->
+  <script src="../libs/utils.js"></script>
+  <script src="sidebar.js"></script>
 </head>
 <body>
-NicoLive Helper X
-<select>
-  <option value="request">リクエスト</option>
-  <option value="stock">ストック</option>
-</select>
 
-<hr>
+<fieldset>
+  <legend>遠征</legend>
+  <div style="display:none;">
+    <div><span>■第1艦隊</span><span class="mission-name"></span></div>
+    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+            class="mission-remain">---</span></div>
+  </div>
+  <div>
+    <div><span>■第2艦隊</span><span class="mission-name"></span></div>
+    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+            class="mission-remain">---</span></div>
+  </div>
+  <div>
+    <div><span>■第3艦隊</span><span class="mission-name"></span></div>
+    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+            class="mission-remain">---</span></div>
+  </div>
+  <div>
+    <div><span>■第4艦隊</span><span class="mission-name"></span></div>
+    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+            class="mission-remain">---</span></div>
+  </div>
+</fieldset>
 
-<button id="test-button-set" type="button" class="btn btn-primary">browser.storage.local.set()</button>
+<fieldset>
+  <legend>入渠ドック</legend>
+  <table id="repair-timer">
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+  </table>
+</fieldset>
 
-<button id="test-button-get" type="button" class="btn btn-primary">browser.storage.local.get()</button>
+<fieldset>
+  <legend>建造ドック</legend>
+  <table id="build-timer">
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+    <tr>
+      <td>艦名</td>
+      <td>終了時刻</td>
+      <td>残り時間</td>
+    </tr>
+  </table>
+</fieldset>
 
 
 </body>
