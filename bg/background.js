@@ -139,7 +139,7 @@ function UpdateShip( api_ship ){
 }
 
 
-let callback = {
+let ksapicall = {
     "api_start2": function( data ){
         UpdateMasterData( data );
     },
@@ -165,21 +165,21 @@ let callback = {
     }
 };
 
-function Process( details, data ){
+function ProcessData( details, data ){
     console.log( `URL: ${details.url.substring( 1 )} ${details.requestId}` );
     console.log( data );
 
     let url = details.url;
     let k = url.match( /kcsapi\/(.*)/ );
 
-    if( typeof callback[k[1]] === "function" ){
-        callback[k[1]]( data );
+    if( typeof ksapicall[k[1]] === "function" ){
+        ksapicall[k[1]]( data );
     }
 }
 
 
 function KanColleHttpCapture( details ){
-    /* Firefoxの仕様で upload streams with headers をサポートしていないため艦これのPOSTリクエストの requestBody を読めない */
+    /* requestBodyにアクセスすると upload streams with headers are unsupported とのことで艦これのPOSTリクエストの送信内容を読めない */
     let filter = browser.webRequest.filterResponseData( details.requestId );
     let decoder = new TextDecoder( "utf-8" );
 
@@ -194,7 +194,7 @@ function KanColleHttpCapture( details ){
         let text = filter._kancolle.substring( filter._kancolle.indexOf( 'svdata=' ) + 7 );
         try{
             let data = JSON.parse( text );
-            Process( details, data );
+            ProcessData( details, data );
         }catch( e ){
             console.log( `JSON.parse failed. ${e}` );
         }
