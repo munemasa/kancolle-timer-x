@@ -20,12 +20,33 @@
  THE SOFTWARE.
  */
 
+const MP3_MISSION_FINISHED = "http://miku39.jp/sounds/kancolle/missionfinished.mp3";
+const MP3_MISSION_FINISH_SOON = "http://miku39.jp/sounds/kancolle/missionfinishedsoon.mp3";
+const MP3_REPAIR_FINISHED = "http://miku39.jp/sounds/kancolle/repairfinished.mp3";
+const MP3_REPAIR_FINISH_SOON = "http://miku39.jp/sounds/kancolle/repairfinishedsoon.mp3";
+const MP3_BUILD_FINISHED = "http://miku39.jp/sounds/kancolle/constructionfinished.mp3";
+const MP3_BUILD_FINISH_SOON = "http://miku39.jp/sounds/kancolle/constructionfinishedsoon.mp3";
+
+
+/**
+ * 音声を再生する.
+ * @param id 再生するaudio要素のID
+ * @param t 遠征などの終了時刻
+ */
+function PlayAudio( id, t ){
+    let audio = document.getElementById( id );
+    let time = parseInt( audio.getAttribute( 'kc-play-time' ) || 0 );
+    if( t > time ){
+        audio.play();
+        audio.setAttribute( 'kc-play-time', t );
+    }
+}
+
 
 /**
  * 指定の遠征の名前を返す
  * @param mission_ids{Array}
  * @returns {Promise.<*>}
- * @constructor
  */
 async function GetMissionName( mission_ids ){
     let result = await browser.runtime.sendMessage( {
@@ -55,7 +76,6 @@ async function GetShipNameFromId( ship_ids ){
 
 
 let KanColleTimerSidebar = {
-    deck: null,
 
     /**
      * 遠征タイマーをセットする
@@ -159,14 +179,20 @@ let KanColleTimerSidebar = {
         let remain = $( '.mission-remain' );
         for( let i = 0; i < 4; i++ ){
             let t = parseInt( this.deck[i].api_mission[2] );
-            let now = (new Date()).getTime() / 1000;
-            t /= 1000;
+            let now = parseInt( (new Date()).getTime() / 1000 );
+            t = parseInt( t / 1000 );
             if( t > 0 ){
+                // 遠征に出ている
                 remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
+                    PlayAudio( 'snd-mission-finish-soon', t );
+                }
+                if( t <= now ){
+                    PlayAudio( 'snd-mission-finished', t );
                 }
             }else{
+                // 遠征に出ていない
                 remain[i].innerHTML = '(---)';
                 $( remain[i] ).removeClass( 'last-1min' );
             }
@@ -179,12 +205,16 @@ let KanColleTimerSidebar = {
 
         for( let i = 0; i < 4; i++ ){
             let t = this.ndock[i].api_complete_time;
-            let now = (new Date()).getTime() / 1000;
-            t /= 1000;
+            let now = parseInt( (new Date()).getTime() / 1000 );
+            t = parseInt( t / 1000 );
             if( t > 0 ){
                 remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
+                    PlayAudio( 'snd-repair-finish-soon', t );
+                }
+                if( t <= now ){
+                    PlayAudio( 'snd-repair-finished', t );
                 }
             }else{
                 remain[i].innerHTML = '(---)';
@@ -199,12 +229,16 @@ let KanColleTimerSidebar = {
 
         for( let i = 0; i < 4; i++ ){
             let t = this.kdock[i].api_complete_time;
-            let now = (new Date()).getTime() / 1000;
-            t /= 1000;
+            let now = parseInt( (new Date()).getTime() / 1000 );
+            t = parseInt( t / 1000 );
             if( t > 0 ){
                 remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
+                    PlayAudio( 'snd-build-finish-soon', t );
+                }
+                if( t <= now ){
+                    PlayAudio( 'snd-build-finished', t );
                 }
             }else{
                 remain[i].innerHTML = '(---)';
