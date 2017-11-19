@@ -24,6 +24,12 @@ console.log( 'load kancolle timer x background script.' );
 let KanColle = {};
 
 
+/**
+ * 獲得順に割り当てられる保有艦のIDから艦名を取得する.
+ * @param request
+ * @param sender
+ * @param sendResponse
+ */
 function GetShipName( request, sender, sendResponse ){
     let result = request.ids.map( ( id ) =>{
         try{
@@ -35,6 +41,25 @@ function GetShipName( request, sender, sendResponse ){
     } );
     sendResponse( result );
 }
+
+/**
+ * 艦船自身のIDから艦名を取得する.
+ * @param request
+ * @param sender
+ * @param sendResponse
+ */
+function GetShipNameFromId( request, sender, sendResponse ){
+    let result = request.ids.map( ( id ) =>{
+        try{
+            if( id == 0 ) return '';
+            return KanColle._api_mst_ship[id].api_name;
+        }catch( e ){
+            return "[Unknown]";
+        }
+    } );
+    sendResponse( result );
+}
+
 
 function GetMissionName( request, sender, sendResponse ){
     let missions = request.missions;
@@ -55,6 +80,10 @@ function HandleMessage( request, sender, sendResponse ){
         break;
     case 'get-ship-name':
         GetShipName( request, sender, sendResponse );
+        break;
+
+    case 'get-ship-name-from-id':
+        GetShipNameFromId( request, sender, sendResponse );
         break;
     }
 }
@@ -96,6 +125,11 @@ function UpdateRepairTimer( data ){
     SetLocalStorage( 'ndock', data );
 }
 
+function UpdateBuildTimer( data ){
+    KanColle.kdock = data;
+    SetLocalStorage( 'kdock', data );
+}
+
 function UpdateShip( api_ship ){
     let shipdata = {};
     for( let ship of api_ship ){
@@ -117,9 +151,17 @@ let callback = {
     "api_get_member/deck": function( data ){
         UpdateMissionTimer( data.api_data );
     },
-
     "api_get_member/ndock": function( data ){
         UpdateRepairTimer( data.api_data );
+    },
+    "api_get_member/kdock": function( data ){
+        UpdateBuildTimer( data.api_data );
+    },
+    "api_get_member/require_info": function( data ){
+        UpdateBuildTimer( data.api_data.api_kdock );
+    },
+    "api_req_kousyou/getship": function( data ){
+        UpdateBuildTimer( data.api_data.api_kdock );
     }
 };
 
@@ -136,8 +178,8 @@ function Process( details, data ){
 }
 
 
-function KanColleCapture( details ){
-    /* Firefoxの仕様で upload streams with headers をサポートしていないため艦これの requestBody を読めない */
+function KanColleHttpCapture( details ){
+    /* Firefoxの仕様で upload streams with headers をサポートしていないため艦これのPOSTリクエストの requestBody を読めない */
     let filter = browser.webRequest.filterResponseData( details.requestId );
     let decoder = new TextDecoder( "utf-8" );
 
@@ -163,7 +205,7 @@ function KanColleCapture( details ){
 
 
 browser.webRequest.onBeforeRequest.addListener(
-    KanColleCapture,
+    KanColleHttpCapture,
     {urls: ["*://*/kcsapi/*"], types: ["object_subrequest"]},
     ["blocking", "requestBody"]
 );

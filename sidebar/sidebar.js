@@ -45,6 +45,15 @@ async function GetShipName( ship_ids ){
 }
 
 
+async function GetShipNameFromId( ship_ids ){
+    let result = await browser.runtime.sendMessage( {
+        cmd: 'get-ship-name-from-id',
+        ids: ship_ids
+    } );
+    return result;
+}
+
+
 let KanColleTimerSidebar = {
     deck: null,
 
@@ -117,6 +126,34 @@ let KanColleTimerSidebar = {
         }
     },
 
+    setBuildTimer: async function( kdock ){
+        if( !kdock ) return;
+        this.kdock = kdock;
+
+        let shipname = $( '.build-ship-name' );
+        let datetime = $( '.build-finish-time' );
+        let remain = $( '.build-remain' );
+
+        let ship_ids = [];
+        for( let i = 0; i < 4; i++ ){
+            ship_ids.push( kdock[i].api_created_ship_id );
+
+            let t = kdock[i].api_complete_time;
+            datetime[i].innerHTML = t > 0 ? GetDateString( t ) : '---';
+
+            let now = (new Date()).getTime() / 1000;
+            t /= 1000;
+            remain[i].innerHTML = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
+        }
+
+        let name = await GetShipNameFromId( ship_ids );
+        if( !name ) return;
+
+        for( let i = 0; i < 4; i++ ){
+            shipname[i].innerHTML = `${name[i] ? name[i] : 'No.' + (i + 1)}`;
+        }
+    },
+
     updateMissionTimer: function(){
         if( !this.deck ) return;
         let remain = $( '.mission-remain' );
@@ -156,12 +193,33 @@ let KanColleTimerSidebar = {
         }
     },
 
+    updateBuildTimer: function(){
+        if( !this.ndock ) return;
+        let remain = $( '.build-remain' );
+
+        for( let i = 0; i < 4; i++ ){
+            let t = this.kdock[i].api_complete_time;
+            let now = (new Date()).getTime() / 1000;
+            t /= 1000;
+            if( t > 0 ){
+                remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
+                if( t - now <= 60 ){
+                    $( remain[i] ).addClass( 'last-1min' );
+                }
+            }else{
+                remain[i].innerHTML = '(---)';
+                $( remain[i] ).removeClass( 'last-1min' );
+            }
+        }
+    },
+
     /**
      * 1秒ごとにカウントダウンする
      */
     updateTimers: function(){
         this.updateMissionTimer();
         this.updateRepairTimer();
+        this.updateBuildTimer();
     },
 
     init: async function(){
@@ -177,6 +235,10 @@ let KanColleTimerSidebar = {
         if( result ){
             KanColleTimerSidebar.setRepairTimer( result.ndock );
         }
+        result = await browser.storage.local.get( 'kdock' );
+        if( result ){
+            KanColleTimerSidebar.setBuildTimer( result.kdock );
+        }
 
         browser.storage.onChanged.addListener( ( changes, area ) =>{
             console.log( changes );
@@ -185,6 +247,9 @@ let KanColleTimerSidebar = {
             }
             if( changes.ndock ){
                 KanColleTimerSidebar.setRepairTimer( changes.ndock.newValue );
+            }
+            if( changes.kdock ){
+                KanColleTimerSidebar.setBuildTimer( changes.kdock.newValue );
             }
         } );
     }
