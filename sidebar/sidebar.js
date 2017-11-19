@@ -194,7 +194,7 @@ let KanColleTimerSidebar = {
     },
 
     updateBuildTimer: function(){
-        if( !this.ndock ) return;
+        if( !this.kdock ) return;
         let remain = $( '.build-remain' );
 
         for( let i = 0; i < 4; i++ ){
