@@ -60,6 +60,23 @@ function GetShipNameFromId( request, sender, sendResponse ){
     sendResponse( result );
 }
 
+/**
+ * 艦艇のスペックを取得する.
+ * @param request
+ * @param sender
+ * @param sendResponse
+ */
+function GetShipSpecs( request, sender, sendResponse ){
+    let result = request.ids.map( ( id ) =>{
+        try{
+            return KanColle._api_ship[id];
+        }catch( e ){
+            return null;
+        }
+    } );
+    sendResponse( result );
+}
+
 
 function GetMissionName( request, sender, sendResponse ){
     let missions = request.missions;
@@ -81,9 +98,11 @@ function HandleMessage( request, sender, sendResponse ){
     case 'get-ship-name':
         GetShipName( request, sender, sendResponse );
         break;
-
     case 'get-ship-name-from-id':
         GetShipNameFromId( request, sender, sendResponse );
+        break;
+    case 'get-ship-specs':
+        GetShipSpecs( request, sender, sendResponse );
         break;
     }
 }
@@ -106,6 +125,12 @@ function UpdateMasterData( data ){
         KanColle[k] = data.api_data[k];
     }
 
+    let stype = {};
+    for( let t of KanColle.api_mst_stype ){
+        stype[t.api_id] = t;
+    }
+    KanColle._api_mst_stype = stype;
+
     let shipdata = {};
     for( let ship of KanColle.api_mst_ship ){
         shipdata[ship.api_id] = ship;
@@ -115,24 +140,37 @@ function UpdateMasterData( data ){
     SetLocalStorage( 'mst_data', data.api_data );
 }
 
+function UpdateDeck( data ){
+    let deck = data.api_data.api_deck_data;
+    for( let i in KanColle.deck ){
+        if( KanColle.deck[i].api_id == deck.api_id ){
+            KanColle.deck[i] = deck;
+        }
+    }
+    SetLocalStorage( 'deck', KanColle.deck );
+}
+
 function UpdateMissionTimer( data ){
     KanColle.deck = data;
-    SetLocalStorage( 'deck', data );
+    SetLocalStorage( 'deck', KanColle.deck );
 }
 
 function UpdateRepairTimer( data ){
     KanColle.ndock = data;
-    SetLocalStorage( 'ndock', data );
+    SetLocalStorage( 'ndock', KanColle.ndock );
 }
 
 function UpdateBuildTimer( data ){
     KanColle.kdock = data;
-    SetLocalStorage( 'kdock', data );
+    SetLocalStorage( 'kdock', KanColle.kdock );
 }
 
 function UpdateShip( api_ship ){
     let shipdata = {};
     for( let ship of api_ship ){
+        ship._name = KanColle._api_mst_ship[ship.api_ship_id].api_name;
+        ship._stype = KanColle._api_mst_ship[ship.api_ship_id].api_stype;
+        ship._stype_name = KanColle._api_mst_stype[ship._stype].api_name;
         shipdata[ship.api_id] = ship;
     }
     KanColle._api_ship = shipdata;
@@ -162,6 +200,17 @@ let ksapicall = {
     },
     "api_req_kousyou/getship": function( data ){
         UpdateBuildTimer( data.api_data.api_kdock );
+    },
+    "api_get_member/ship_deck": function( data ){
+        // 戦闘後に更新される艦艇のデータ
+        let ships = data.api_data.api_ship_data;
+        for( let s of ships ){
+            s._name = KanColle._api_mst_ship[s.api_ship_id].api_name;
+            s._stype = KanColle._api_mst_ship[s.api_ship_id].api_stype;
+            s._stype_name = KanColle._api_mst_stype[s._stype].api_name;
+            KanColle._api_ship[s.api_id] = s;
+        }
+        UpdateDeck( data );
     }
 };
 

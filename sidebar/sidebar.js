@@ -56,7 +56,6 @@ async function GetMissionName( mission_ids ){
     return result;
 }
 
-
 async function GetShipName( ship_ids ){
     let result = await browser.runtime.sendMessage( {
         cmd: 'get-ship-name',
@@ -65,10 +64,17 @@ async function GetShipName( ship_ids ){
     return result;
 }
 
-
 async function GetShipNameFromId( ship_ids ){
     let result = await browser.runtime.sendMessage( {
         cmd: 'get-ship-name-from-id',
+        ids: ship_ids
+    } );
+    return result;
+}
+
+async function GetShipSpecs( ship_ids ){
+    let result = await browser.runtime.sendMessage( {
+        cmd: 'get-ship-specs',
         ids: ship_ids
     } );
     return result;
@@ -256,11 +262,57 @@ let KanColleTimerSidebar = {
         this.updateBuildTimer();
     },
 
+    updateFleet: async function( deck ){
+        let tbl_fleet = ["", "tbl-fleet-1st", "tbl-fleet-2nd", "tbl-fleet-3rd", "tbl-fleet-4th"];
+
+        for( let i = 0, fleet; fleet = deck[i]; i++ ){
+            let ship_ids = [];
+            for( let j = 0, ship_id; ship_id = fleet.api_ship[j]; j++ ){
+                if( ship_id !== -1 ){
+                    ship_ids.push( ship_id );
+                }
+            }
+            let specs = await GetShipSpecs( ship_ids );
+
+            let tbl_id = tbl_fleet[fleet.api_id];
+            let tbl_elem = document.getElementById( tbl_id );
+            RemoveChildren( tbl_elem );
+            for( let spec of specs ){
+                let t = document.querySelector( '#template-ship' );
+                let clone2 = document.importNode( t.content, true );
+                let elem = clone2.firstElementChild;
+
+                let stype = elem.querySelector( '.ship-type' );
+                let sname = elem.querySelector( '.ship-name' );
+                let shp = elem.querySelector( '.ship-hp' );
+                let scond = elem.querySelector( '.ship-cond' );
+                stype.textContent = spec._stype_name;
+                sname.textContent = spec._name;
+                shp.textContent = `${spec.api_nowhp}/${spec.api_maxhp}`;
+                scond.textContent = spec.api_cond;
+                tbl_elem.appendChild( clone2 );
+            }
+        }
+    },
+
     init: async function(){
         setInterval( () =>{
             this.updateTimers();
         }, 1000 );
 
+        $( '#select-fleet-234' ).change( () =>{
+            let n = $( '#select-fleet-234' ).val();
+            let tbl = $( '#fleet-234 table' );
+            for( let i = 0; i < 3; i++ ){
+                if( n - 2 == i ){
+                    $( tbl[i] ).show();
+                }else{
+                    $( tbl[i] ).hide();
+                }
+            }
+        } );
+
+        // 保存しているデータをロード
         let result = await browser.storage.local.get( 'deck' );
         if( result ){
             KanColleTimerSidebar.setMissionTimer( result.deck );
@@ -278,6 +330,7 @@ let KanColleTimerSidebar = {
             console.log( changes );
             if( changes.deck ){
                 KanColleTimerSidebar.setMissionTimer( changes.deck.newValue );
+                KanColleTimerSidebar.updateFleet( changes.deck.newValue );
             }
             if( changes.ndock ){
                 KanColleTimerSidebar.setRepairTimer( changes.ndock.newValue );
@@ -286,6 +339,9 @@ let KanColleTimerSidebar = {
                 KanColleTimerSidebar.setBuildTimer( changes.kdock.newValue );
             }
         } );
+
+        result = await browser.storage.local.get( 'test' );
+        console.log( 'kancolle timer x sidebar initialized.' );
     }
 };
 
