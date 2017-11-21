@@ -141,10 +141,11 @@ function UpdateMasterData( data ){
 }
 
 function UpdateDeck( data ){
-    let deck = data.api_data.api_deck_data;
     for( let i in KanColle.deck ){
-        if( KanColle.deck[i].api_id == deck.api_id ){
-            KanColle.deck[i] = deck;
+        for( let deck of data.api_data.api_deck_data ){
+            if( KanColle.deck[i].api_id == deck.api_id ){
+                KanColle.deck[i] = deck;
+            }
         }
     }
     SetLocalStorage( 'deck', KanColle.deck );
