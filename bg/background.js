@@ -178,7 +178,7 @@ function UpdateShip( api_ship ){
 }
 
 
-let ksapicall = {
+let kcsapicall = {
     "api_start2": function( data ){
         UpdateMasterData( data );
     },
@@ -222,8 +222,8 @@ function ProcessData( details, data ){
     let url = details.url;
     let k = url.match( /kcsapi\/(.*)/ );
 
-    if( typeof ksapicall[k[1]] === "function" ){
-        ksapicall[k[1]]( data );
+    if( typeof kcsapicall[k[1]] === "function" ){
+        kcsapicall[k[1]]( data );
     }
 }
 
