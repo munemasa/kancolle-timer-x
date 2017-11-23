@@ -303,6 +303,24 @@ let KanColleTimerSidebar = {
                 }
 
                 let ratio = spec.api_nowhp / spec.api_maxhp;
+                if( fleet.api_id == 1 ){
+                    // 第1艦隊のみ
+                    let percentage = ratio * 100;
+                    let image;
+                    if( spec.api_nowhp == spec.api_maxhp ){
+                        image = "../img/greenbar.png";
+                    }else if( percentage <= 25 ){
+                        image = "../img/redbar.png";
+                    }else if( percentage <= 50 ){
+                        image = "../img/orangebar.png";
+                    }else if( percentage <= 75 ){
+                        image = "../img/yellowbar.png";
+                    }else{
+                        image = "../img/lightgreenbar.png";
+                    }
+                    let style = `background-image: url("${image}"); background-position:left bottom; background-repeat:no-repeat; background-size: ${percentage}% 4px;`;
+                    elem.setAttribute( 'style', style );
+                }
                 if( ratio <= 0 ){
                     status.textContent = '[撃沈]';
                 }else if( ratio <= 0.25 ){
