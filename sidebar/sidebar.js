@@ -286,11 +286,35 @@ let KanColleTimerSidebar = {
                 let sname = elem.querySelector( '.ship-name' );
                 let shp = elem.querySelector( '.ship-hp' );
                 let scond = elem.querySelector( '.ship-cond' );
+                let status = elem.querySelector( '.ship-status' );
+
                 stype.textContent = spec._stype_name;
                 sname.textContent = spec._name;
                 shp.textContent = `${spec.api_nowhp}/${spec.api_maxhp}`;
                 scond.textContent = spec.api_cond;
-                tbl_elem.appendChild( clone2 );
+
+                /* デコレーション */
+                if( spec.api_cond <= 19 ){
+                    scond.setAttribute( 'cond', 'very-low' );
+                }else if( spec.api_cond <= 29 ){
+                    scond.setAttribute( 'cond', 'low' );
+                }else if( spec.api_cond >= 50 ){
+                    scond.setAttribute( 'cond', 'high' );
+                }
+
+                let ratio = spec.api_nowhp / spec.api_maxhp;
+                if( ratio <= 0 ){
+                    status.textContent = '[撃沈]';
+                }else if( ratio <= 0.25 ){
+                    status.textContent = '[大破]';
+                    $( elem ).addClass( 'large-damage' );
+                }else if( ratio <= 0.5 ){
+                    status.textContent = '[中破]';
+                }else if( ratio <= 0.75 ){
+                    status.textContent = '[小破]';
+                }
+
+                tbl_elem.appendChild( elem );
             }
         }
     },
