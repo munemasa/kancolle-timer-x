@@ -337,6 +337,17 @@ let KanColleTimerSidebar = {
         }
     },
 
+    loadSettings: function( config ){
+        this.config = config;
+
+        $( '#snd-mission-finished' ).attr( 'src', config['snd-mission-finished'] );
+        $( '#snd-mission-finish-soon' ).attr( 'src', config['snd-mission-finish-soon'] );
+        $( '#snd-repair-finished' ).attr( 'src', config['snd-repair-finished'] );
+        $( '#snd-repair-finish-soon' ).attr( 'src', config['snd-repair-finish-soon'] );
+        $( '#snd-build-finished' ).attr( 'src', config['snd-build-finished'] );
+        $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
+    },
+
     init: async function(){
         setInterval( () =>{
             this.updateTimers();
@@ -368,6 +379,12 @@ let KanColleTimerSidebar = {
             KanColleTimerSidebar.setBuildTimer( result.kdock );
         }
 
+        result = await browser.storage.local.get( 'kct_config' );
+        if( result ){
+            KanColleTimerSidebar.loadSettings( result.kct_config );
+        }
+
+
         browser.storage.onChanged.addListener( ( changes, area ) =>{
             console.log( changes );
             if( changes.deck ){
@@ -379,6 +396,10 @@ let KanColleTimerSidebar = {
             }
             if( changes.kdock ){
                 KanColleTimerSidebar.setBuildTimer( changes.kdock.newValue );
+            }
+
+            if( changes.kct_config ){
+                KanColleTimerSidebar.loadSettings( changes.kct_config.newValue );
             }
         } );
 

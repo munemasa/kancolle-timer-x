@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <script src="../libs/external/jquery-3.2.1.min.js"></script>
+  <script src="options.js"></script>
+
   <title>艦これタイマーXの設定</title>
 </head>
 <body>
@@ -10,7 +13,7 @@
 
   <h2>通知</h2>
 
-  <label><input type="checkbox">ポップアップ通知を行う</label>
+  <label><input type="checkbox" id="notify-popup" class="kct-settings">ポップアップ通知を行う</label>
 
   <h3>通知サウンド設定</h3>
   再生したい音声ファイルが置かれているURLを入力します。
@@ -18,36 +21,38 @@
   <table>
     <tr>
       <td>帰還時</td>
-      <td><input type="url"/></td>
+      <td><input type="url" id="snd-mission-finished" class="kct-settings"/></td>
     </tr>
     <tr>
       <td>1分前</td>
-      <td><input type="url"/></td>
+      <td><input type="url" id="snd-mission-finish-soon" class="kct-settings"/></td>
     </tr>
   </table>
   <h4>入渠</h4>
   <table>
     <tr>
       <td>修理完了時</td>
-      <td><input type="url"/></td>
+      <td><input type="url" id="snd-repair-finished" class="kct-settings"/></td>
     </tr>
     <tr>
       <td>1分前</td>
-      <td><input type="url"/></td>
+      <td><input type="url" id="snd-repair-finish-soon" class="kct-settings"/></td>
     </tr>
   </table>
   <h4>建造</h4>
   <table>
     <tr>
       <td>完成時</td>
-      <td><input type="url"/></td>
+      <td><input type="url" id="snd-build-finished" class="kct-settings"/></td>
     </tr>
     <tr>
       <td>1分前</td>
-      <td><input type="url"/></td>
+      <td><input type="url" id="snd-build-finish-soon" class="kct-settings"/></td>
     </tr>
   </table>
 
+  <hr/>
+  <button type="submit">設定を保存</button>
 </form>
 
 
