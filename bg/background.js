@@ -128,7 +128,7 @@ function SetLocalStorage( k, v ){
 
 async function LoadMasterData(){
     let result = await browser.storage.local.get( 'mst_data' );
-    if( result ){
+    if( result && result.mst_data ){
         UpdateMasterData( result.mst_data );
     }
 }
