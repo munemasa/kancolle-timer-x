@@ -177,6 +177,11 @@ function UpdateBuildTimer( data ){
     SetLocalStorage( 'kdock', KanColle.kdock );
 }
 
+function UpdateMaterial( material ){
+    KanColle.material = material;
+    SetLocalStorage( 'material', KanColle.material );
+}
+
 /**
  * 所有艦艇のデータを更新する
  * @param api_ship
@@ -202,6 +207,7 @@ let kcsapicall = {
         UpdateMissionTimer( data.api_data.api_deck_port );
         UpdateRepairTimer( data.api_data.api_ndock );
         UpdateShip( data.api_data.api_ship );
+        UpdateMaterial( data.api_data.api_material );
     },
     "api_get_member/deck": function( data ){
         UpdateMissionTimer( data.api_data );

@@ -366,6 +366,25 @@ let KanColleTimerSidebar = {
         }
     },
 
+    /**
+     * 資源の更新
+     * @param material
+     */
+    updateMaterial: function( material ){
+        for( let m of material ){
+            switch( m.api_id ){
+            case 6:
+                // 高速修復材
+                $( '#repair-kit-num' ).text( m.api_value );
+                break;
+
+            default:
+                break;
+            }
+        }
+
+    },
+
     loadSettings: function( config ){
         if( !config ) return;
         this.config = config;
@@ -426,6 +445,10 @@ let KanColleTimerSidebar = {
             }
             if( changes.kdock ){
                 KanColleTimerSidebar.setBuildTimer( changes.kdock.newValue );
+            }
+
+            if( changes.material ){
+                KanColleTimerSidebar.updateMaterial( changes.material.newValue );
             }
 
             if( changes.kct_config ){
