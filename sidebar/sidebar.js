@@ -101,13 +101,13 @@ let KanColleTimerSidebar = {
         for( let i = 0; i < 4; i++ ){
             missions.push( deck[i].api_mission[1] );
 
-            fleetname[i].innerHTML = deck[i].api_name;
+            fleetname[i].textContent = deck[i].api_name;
             let t = parseInt( deck[i].api_mission[2] );
-            datetime[i].innerHTML = t > 0 ? GetDateString( t ) : '---';
+            datetime[i].textContent = t > 0 ? GetDateString( t ) : '---';
 
             let now = (new Date()).getTime() / 1000;
             t /= 1000;
-            remain[i].innerHTML = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
+            remain[i].textContent = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
             if( t > 0 ){
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
@@ -119,7 +119,7 @@ let KanColleTimerSidebar = {
         if( !name ) return;
         for( let i = 0; i < 4; i++ ){
             if( name[i] ){
-                missionname[i].innerHTML = name[i];
+                missionname[i].textContent = name[i];
             }
         }
     },
@@ -137,18 +137,18 @@ let KanColleTimerSidebar = {
             ship_ids.push( ndock[i].api_ship_id );
 
             let t = ndock[i].api_complete_time;
-            datetime[i].innerHTML = t > 0 ? GetDateString( t ) : '---';
+            datetime[i].textContent = t > 0 ? GetDateString( t ) : '---';
 
             let now = (new Date()).getTime() / 1000;
             t /= 1000;
-            remain[i].innerHTML = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
+            remain[i].textContent = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
         }
 
         let name = await GetShipName( ship_ids );
         if( !name ) return;
 
         for( let i = 0; i < 4; i++ ){
-            shipname[i].innerHTML = `${name[i] ? name[i] : 'No.' + (i + 1)}`;
+            shipname[i].textContent = `${name[i] ? name[i] : 'No.' + (i + 1)}`;
         }
     },
 
@@ -165,18 +165,18 @@ let KanColleTimerSidebar = {
             ship_ids.push( kdock[i].api_created_ship_id );
 
             let t = kdock[i].api_complete_time;
-            datetime[i].innerHTML = t > 0 ? GetDateString( t ) : '---';
+            datetime[i].textContent = t > 0 ? GetDateString( t ) : '---';
 
             let now = (new Date()).getTime() / 1000;
             t /= 1000;
-            remain[i].innerHTML = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
+            remain[i].textContent = `(${t > 0 ? GetTimeString( t - now ) : '---'})`;
         }
 
         let name = await GetShipNameFromId( ship_ids );
         if( !name ) return;
 
         for( let i = 0; i < 4; i++ ){
-            shipname[i].innerHTML = `${name[i] ? name[i] : 'No.' + (i + 1)}`;
+            shipname[i].textContent = `${name[i] ? name[i] : 'No.' + (i + 1)}`;
         }
     },
 
@@ -189,7 +189,7 @@ let KanColleTimerSidebar = {
             t = parseInt( t / 1000 );
             if( t > 0 ){
                 // 遠征に出ている
-                remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
+                remain[i].textContent = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
                     PlayAudio( 'snd-mission-finish-soon', t );
@@ -199,7 +199,7 @@ let KanColleTimerSidebar = {
                 }
             }else{
                 // 遠征に出ていない
-                remain[i].innerHTML = '(---)';
+                remain[i].textContent = '(---)';
                 $( remain[i] ).removeClass( 'last-1min' );
             }
         }
@@ -214,7 +214,7 @@ let KanColleTimerSidebar = {
             let now = parseInt( (new Date()).getTime() / 1000 );
             t = parseInt( t / 1000 );
             if( t > 0 ){
-                remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
+                remain[i].textContent = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
                     PlayAudio( 'snd-repair-finish-soon', t );
@@ -223,7 +223,7 @@ let KanColleTimerSidebar = {
                     PlayAudio( 'snd-repair-finished', t );
                 }
             }else{
-                remain[i].innerHTML = '(---)';
+                remain[i].textContent = '(---)';
                 $( remain[i] ).removeClass( 'last-1min' );
             }
         }
@@ -238,7 +238,7 @@ let KanColleTimerSidebar = {
             let now = parseInt( (new Date()).getTime() / 1000 );
             t = parseInt( t / 1000 );
             if( t > 0 ){
-                remain[i].innerHTML = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
+                remain[i].textContent = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
                     PlayAudio( 'snd-build-finish-soon', t );
@@ -247,7 +247,7 @@ let KanColleTimerSidebar = {
                     PlayAudio( 'snd-build-finished', t );
                 }
             }else{
-                remain[i].innerHTML = '(---)';
+                remain[i].textContent = '(---)';
                 $( remain[i] ).removeClass( 'last-1min' );
             }
         }
