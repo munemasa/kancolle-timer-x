@@ -110,6 +110,9 @@ let KanColleTimerSidebar = {
         let missions = [];
         for( let i = 0; i < 4; i++ ){
             missions.push( deck[i].api_mission[1] );
+            if( i == 0 ){
+                $( '#1st-fleet-name' ).text( deck[i].api_name );
+            }
 
             fleetname[i].textContent = deck[i].api_name;
             let t = parseInt( deck[i].api_mission[2] );
