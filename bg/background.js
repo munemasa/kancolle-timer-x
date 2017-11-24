@@ -43,7 +43,7 @@ function GetShipName( request, sender, sendResponse ){
 }
 
 /**
- * 艦船自身のIDから艦名を取得する.
+ * 艦船固有のIDから艦名を取得する.
  * @param request
  * @param sender
  * @param sendResponse
@@ -78,6 +78,12 @@ function GetShipSpecs( request, sender, sendResponse ){
 }
 
 
+/**
+ * 遠征名を取得する
+ * @param request
+ * @param sender
+ * @param sendResponse
+ */
 function GetMissionName( request, sender, sendResponse ){
     let missions = request.missions;
     let result = missions.map( ( id ) =>{
@@ -140,10 +146,14 @@ function UpdateMasterData( data ){
     SetLocalStorage( 'mst_data', data.api_data );
 }
 
+/**
+ * 艦隊編成の更新をする
+ * @param data
+ */
 function UpdateDeck( data ){
     // 連合艦隊でも問題ないか未確認
     for( let i in KanColle.deck ){
-        for( let deck of data.api_data.api_deck_data ){
+        for( let deck of data.api_deck_data ){
             if( KanColle.deck[i].api_id == deck.api_id ){
                 KanColle.deck[i] = deck;
             }
@@ -167,12 +177,17 @@ function UpdateBuildTimer( data ){
     SetLocalStorage( 'kdock', KanColle.kdock );
 }
 
+/**
+ * 所有艦艇のデータを更新する
+ * @param api_ship
+ */
 function UpdateShip( api_ship ){
     let shipdata = {};
     for( let ship of api_ship ){
         ship._name = KanColle._api_mst_ship[ship.api_ship_id].api_name;
         ship._stype = KanColle._api_mst_ship[ship.api_ship_id].api_stype;
         ship._stype_name = KanColle._api_mst_stype[ship._stype].api_name;
+        ship._mst_data = KanColle._api_mst_ship[ship.api_ship_id];
         shipdata[ship.api_id] = ship;
     }
     KanColle._api_ship = shipdata;
@@ -212,7 +227,7 @@ let kcsapicall = {
             s._stype_name = KanColle._api_mst_stype[s._stype].api_name;
             KanColle._api_ship[s.api_id] = s;
         }
-        UpdateDeck( data );
+        UpdateDeck( data.api_data );
     }
 };
 

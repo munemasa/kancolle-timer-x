@@ -275,6 +275,13 @@ let KanColleTimerSidebar = {
         this.updateBuildTimer();
     },
 
+    isRepairing: function( ship_id ){
+        for( let n of this.ndock ){
+            if( n.api_ship_id == ship_id ) return true;
+        }
+        return false;
+    },
+
     updateFleet: async function( deck ){
         let tbl_fleet = ["", "tbl-fleet-1st", "tbl-fleet-2nd", "tbl-fleet-3rd", "tbl-fleet-4th"];
 
@@ -335,14 +342,23 @@ let KanColleTimerSidebar = {
                     elem.setAttribute( 'style', style );
                 }
                 if( ratio <= 0 ){
-                    status.textContent = '[撃沈]';
+                    $( status ).attr( 'icon', 'destroyed' );
                 }else if( ratio <= 0.25 ){
-                    status.textContent = '[大破]';
+                    $( status ).attr( 'icon', 'large-damage' );
                     $( elem ).addClass( 'large-damage' );
                 }else if( ratio <= 0.5 ){
-                    status.textContent = '[中破]';
+                    $( status ).attr( 'icon', 'medium-damage' );
                 }else if( ratio <= 0.75 ){
-                    status.textContent = '[小破]';
+                    $( status ).attr( 'icon', 'small-damage' );
+                }
+
+                if( spec._mst_data.api_fuel_max != spec.api_fuel ||
+                    spec._mst_data.api_bull_max != spec.api_bull ){
+                    $( status ).attr( 'icon', 'warning' );
+                }
+
+                if( this.isRepairing( spec.api_id ) ){
+                    $( status ).attr( 'icon', 'repair' );
                 }
 
                 tbl_elem.appendChild( elem );

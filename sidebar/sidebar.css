@@ -50,3 +50,29 @@ td[cond="high"] {
     /*background-color: #ffffc0;*/
     text-shadow: 2px 2px 3px #ffff40, -2px -2px 3px #ffff40, -2px 2px 3px #ffff40, 2px -2px 3px #ffff40;
 }
+
+td[icon="small-damage"]:after {
+    content: "[小破]";
+}
+
+td[icon="medium-damage"]:after {
+    content: "[中破]";
+}
+
+td[icon="large-damage"]:after {
+    content: "[大破]";
+}
+
+td[icon="destroyed"]:after {
+    content: "[轟沈]";
+}
+
+/* 未補給警告アイコン */
+td[icon="warning"]:after {
+    content: url("../img/alert.png");
+}
+
+/* 入渠中アイコン */
+td[icon="repair"]:after {
+    content: url("../img/cross.png");
+}
