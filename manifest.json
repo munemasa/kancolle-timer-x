@@ -17,7 +17,8 @@
     "*://*/kcsapi/*",
     "webRequest",
     "webRequestBlocking",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "options_ui": {
     "page": "options/options.html"

@@ -32,13 +32,23 @@ const MP3_BUILD_FINISH_SOON = "http://miku39.jp/sounds/kancolle/constructionfini
  * 音声を再生する.
  * @param id 再生するaudio要素のID
  * @param t 遠征などの終了時刻
+ * @param text ポップアップ等のテキスト通知用テキスト
  */
-function PlayAudio( id, t ){
+function PlayAudio( id, t, text ){
     let audio = document.getElementById( id );
     let time = parseInt( audio.getAttribute( 'kc-play-time' ) || 0 );
     if( t > time ){
         audio.play();
         audio.setAttribute( 'kc-play-time', t );
+
+        if( KanColleTimerSidebar.config['notify-popup'] && text ){
+            browser.notifications.create( {
+                "type": "basic",
+                "iconUrl": "http://pics.dmm.com/freegame/app/854854/200.jpg",
+                "title": "艦これタイマーX",
+                "message": text
+            } );
+        }
     }
 }
 
@@ -192,10 +202,10 @@ let KanColleTimerSidebar = {
                 remain[i].textContent = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
-                    PlayAudio( 'snd-mission-finish-soon', t );
+                    PlayAudio( 'snd-mission-finish-soon', t, `まもなく第${i + 1}艦隊が遠征から帰投します` );
                 }
                 if( t <= now ){
-                    PlayAudio( 'snd-mission-finished', t );
+                    PlayAudio( 'snd-mission-finished', t, `第${i + 1}艦隊が遠征から帰還しました` );
                 }
             }else{
                 // 遠征に出ていない
@@ -217,10 +227,10 @@ let KanColleTimerSidebar = {
                 remain[i].textContent = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
-                    PlayAudio( 'snd-repair-finish-soon', t );
+                    PlayAudio( 'snd-repair-finish-soon', t, `まもなく艦艇の修理が完了します` );
                 }
                 if( t <= now ){
-                    PlayAudio( 'snd-repair-finished', t );
+                    PlayAudio( 'snd-repair-finished', t, `艦艇の修理が完了しました` );
                 }
             }else{
                 remain[i].textContent = '(---)';
@@ -241,10 +251,10 @@ let KanColleTimerSidebar = {
                 remain[i].textContent = `(${t > now ? GetTimeString( t - now ) : '00:00:00'})`;
                 if( t - now <= 60 ){
                     $( remain[i] ).addClass( 'last-1min' );
-                    PlayAudio( 'snd-build-finish-soon', t );
+                    PlayAudio( 'snd-build-finish-soon', t, `まもなく艦艇の建造が完了します` );
                 }
                 if( t <= now ){
-                    PlayAudio( 'snd-build-finished', t );
+                    PlayAudio( 'snd-build-finished', t, `艦艇の建造が完了しました` );
                 }
             }else{
                 remain[i].textContent = '(---)';
