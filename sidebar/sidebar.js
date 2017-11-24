@@ -367,6 +367,7 @@ let KanColleTimerSidebar = {
     },
 
     loadSettings: function( config ){
+        if( !config ) return;
         this.config = config;
 
         $( '#snd-mission-finished' ).attr( 'src', config['snd-mission-finished'] );
