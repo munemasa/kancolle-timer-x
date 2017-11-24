@@ -225,6 +225,7 @@ let kcsapicall = {
             s._name = KanColle._api_mst_ship[s.api_ship_id].api_name;
             s._stype = KanColle._api_mst_ship[s.api_ship_id].api_stype;
             s._stype_name = KanColle._api_mst_stype[s._stype].api_name;
+            s._mst_data = KanColle._api_mst_ship[s.api_ship_id];
             KanColle._api_ship[s.api_id] = s;
         }
         UpdateDeck( data.api_data );
