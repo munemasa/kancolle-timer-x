@@ -190,6 +190,10 @@ function UpdateBuildTimer( data ){
     SetLocalStorage( 'kdock', KanColle.kdock );
 }
 
+/**
+ * 資源等の更新
+ * @param material[Array]
+ */
 function UpdateMaterial( material ){
     KanColle.material = material;
     SetLocalStorage( 'material', KanColle.material );
@@ -240,6 +244,9 @@ let kcsapicall = {
         UpdateRepairTimer( data.api_data.api_ndock );
         UpdateShipFull( data.api_data.api_ship );
         UpdateMaterial( data.api_data.api_material );
+    },
+    "api_get_member/material": function( data ){
+        UpdateMaterial( data.api_data );
     },
     "api_get_member/deck": function( data ){
         UpdateMissionTimer( data.api_data );
