@@ -1,0 +1,26 @@
+/* www.dmm.com用 */
+body {
+    margin: 0 !important;
+    min-width: 0 !important;
+}
+
+.dmm-ntgnavi {
+    display: none;
+}
+
+.naviapp {
+    margin: 0 !important;
+}
+
+/* osapi.dmm.com用 */
+#spacing_top {
+    display: none !important;
+}
+
+#flashWrap {
+    margin-left: 0 !important;
+}
+
+#sectionWrap {
+    width: auto;
+}
