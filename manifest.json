@@ -27,7 +27,9 @@
     "default_icon": {
       "16": "icons/icon-16.png"
     },
-    "default_title": "艦これタイマーX"
+    "browser_style": true,
+    "default_title": "改修工廠カレンダー",
+    "default_popup": "popup/powerup.html"
   },
   "sidebar_action": {
     "default_title": "艦これタイマーX",
