@@ -460,9 +460,16 @@ let KanColleTimerSidebar = {
         } );
 
         // 保存しているデータをロード
-        let result = await browser.storage.local.get( 'deck' );
+        let result;
+        result = await browser.storage.local.get( 'slotitem' );
+        if( result ){
+            KanColleTimerSidebar.slotitem = result.slotitem;
+        }
+
+        result = await browser.storage.local.get( 'deck' );
         if( result ){
             KanColleTimerSidebar.setMissionTimer( result.deck );
+            KanColleTimerSidebar.updateFleet( result.deck );
         }
         result = await browser.storage.local.get( 'ndock' );
         if( result ){
@@ -476,11 +483,6 @@ let KanColleTimerSidebar = {
         result = await browser.storage.local.get( 'kct_config' );
         if( result ){
             KanColleTimerSidebar.loadSettings( result.kct_config );
-        }
-
-        result = await browser.storage.local.get( 'slotitem' );
-        if( result ){
-            KanColleTimerSidebar.slotitem = result.slotitem;
         }
 
         browser.storage.onChanged.addListener( ( changes, area ) =>{
