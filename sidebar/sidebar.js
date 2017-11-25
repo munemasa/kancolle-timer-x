@@ -41,7 +41,7 @@ function PlayAudio( id, t, text ){
         audio.play();
         audio.setAttribute( 'kc-play-time', t );
 
-        if( KanColleTimerSidebar.config['notify-popup'] && text ){
+        if( KanColleTimerSidebar.config && KanColleTimerSidebar.config['notify-popup'] && text ){
             browser.notifications.create( {
                 "type": "basic",
                 "iconUrl": "http://pics.dmm.com/freegame/app/854854/200.jpg",
