@@ -11,7 +11,8 @@
   "description": "艦これタイマーX",
   "homepage_url": "http://miku39.jp/blog/wp/?page_id=1705",
   "icons": {
-    "48": "icons/icon-16.png"
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png"
   },
   "permissions": [
     "*://*/kcsapi/*",
@@ -27,7 +28,8 @@
   },
   "browser_action": {
     "default_icon": {
-      "16": "icons/icon-16.png"
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png"
     },
     "browser_style": true,
     "default_title": "艦これタイマーX",
@@ -37,7 +39,8 @@
     "default_title": "艦これタイマーX",
     "default_panel": "sidebar/sidebar.html",
     "default_icon": {
-      "16": "icons/icon-16.png"
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png"
     }
   },
   "content_scripts": [
