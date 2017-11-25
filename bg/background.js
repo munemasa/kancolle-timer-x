@@ -233,6 +233,7 @@ function UpdateSlotitem( slotitems ){
         items[s.api_id] = s;
     }
     KanColle._api_slot_item = items;
+    SetLocalStorage( 'slotitem', KanColle._api_slot_item );
 }
 
 let kcsapicall = {
@@ -267,6 +268,7 @@ let kcsapicall = {
         for( let item of data.api_data.api_slotitem ){
             KanColle._api_slot_item[item.api_id] = item;
         }
+        SetLocalStorage( 'slotitem', KanColle._api_slot_item );
     },
     "api_get_member/ship_deck": function( data ){
         // 戦闘後に更新される艦艇のデータ
@@ -285,6 +287,7 @@ let kcsapicall = {
         if( item ){
             KanColle._api_slot_item[item.api_id] = item;
         }
+        SetLocalStorage( 'slotitem', KanColle._api_slot_item );
     },
     "api_get_member/slot_item": function( data ){
         // 出撃後にやってくる装備品一覧

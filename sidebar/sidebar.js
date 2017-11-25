@@ -378,10 +378,19 @@ let KanColleTimerSidebar = {
                     $( status ).attr( 'icon', 'repair' );
                 }
 
+                /* 装備品表示 */
+                let slotitem = `${spec._stype_name} ${spec._name}\n`;
+                for( let item of spec.api_slot ){
+                    if( item < 0 ) continue;
+                    slotitem += KanColleTimerSidebar.slotitem[item]._mst_data.api_name + '\n';
+                }
+                elem.title = slotitem;
+
                 tbl_elem.appendChild( elem );
             }
 
             if( fleet.api_id == 1 ){
+                // 第1艦隊のコンディション回復タイマー設定
                 let refresh_timer = $( '#refresh-timer' );
                 if( min_cond < 49 ){
                     let now = GetCurrentTime();
@@ -469,6 +478,10 @@ let KanColleTimerSidebar = {
             KanColleTimerSidebar.loadSettings( result.kct_config );
         }
 
+        result = await browser.storage.local.get( 'slotitem' );
+        if( result ){
+            KanColleTimerSidebar.slotitem = result.slotitem;
+        }
 
         browser.storage.onChanged.addListener( ( changes, area ) =>{
             console.log( changes );
@@ -487,6 +500,9 @@ let KanColleTimerSidebar = {
                 KanColleTimerSidebar.updateMaterial( changes.material.newValue );
             }
 
+            if( changes.slotitem ){
+                KanColleTimerSidebar.slotitem = changes.slotitem.newValue;
+            }
             if( changes.kct_config ){
                 KanColleTimerSidebar.loadSettings( changes.kct_config.newValue );
             }
