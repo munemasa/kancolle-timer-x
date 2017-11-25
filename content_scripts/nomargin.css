@@ -12,6 +12,10 @@ body {
     margin: 0 !important;
 }
 
+#main-ntg {
+    margin: 0 !important;
+}
+
 /* osapi.dmm.com用 */
 #spacing_top {
     display: none !important;

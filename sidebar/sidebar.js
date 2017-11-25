@@ -313,6 +313,7 @@ let KanColleTimerSidebar = {
 
             let min_cond = 100;
             for( let spec of specs ){
+                if( !spec ) continue;
                 let t = document.querySelector( '#template-ship' );
                 let clone2 = document.importNode( t.content, true );
                 let elem = clone2.firstElementChild;
