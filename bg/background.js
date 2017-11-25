@@ -150,6 +150,12 @@ function UpdateMasterData( api_data ){
     }
     KanColle._api_mst_ship = shipdata;
 
+    let slotitem = {};
+    for( let item of KanColle.api_mst_slotitem ){
+        slotitem[item.api_id] = item;
+    }
+    KanColle._api_mst_slotitem = slotitem;
+
     SetLocalStorage( 'mst_data', api_data );
 }
 
@@ -216,6 +222,14 @@ function UpdateShipPartial( ships ){
     }
 }
 
+function UpdateSlotitem( slotitems ){
+    let items = {};
+    for( let s of slotitems ){
+        s._mst_data = KanColle._api_mst_slotitem[s.api_slotitem_id];
+        items[s.api_id] = s;
+    }
+    KanColle._api_slot_item = items;
+}
 
 let kcsapicall = {
     "api_start2": function( data ){
@@ -238,9 +252,14 @@ let kcsapicall = {
     },
     "api_get_member/require_info": function( data ){
         UpdateBuildTimer( data.api_data.api_kdock );
+        UpdateSlotitem( data.api_data.api_slot_item );
     },
     "api_req_kousyou/getship": function( data ){
         UpdateBuildTimer( data.api_data.api_kdock );
+
+        for( let item of data.api_data.api_slotitem ){
+            KanColle._api_slot_item[item.api_id] = item;
+        }
     },
     "api_get_member/ship_deck": function( data ){
         // 戦闘後に更新される艦艇のデータ
@@ -252,11 +271,30 @@ let kcsapicall = {
         // 改装したときに届く更新データ
         let ships = data.api_data.api_ship_data;
         UpdateShipPartial( ships );
+    },
+    "api_req_kousyou/createitem": function( data ){
+        // 工廠でアイテム開発
+        let item = data.api_data.api_slot_item;
+        if( item ){
+            KanColle._api_slot_item[item.api_id] = item;
+        }
+    },
+    "api_get_member/slot_item": function( data ){
+        // 出撃後にやってくる装備品一覧
+        UpdateSlotitem( data.api_data );
+    },
+
+    "api_req_kousyou/destroyship": function( data ){
+        // TODO 解体 POSTデータ読めないのでどの艦を解体したのか分からない
+    },
+    "api_req_kousyou/destroyitem2": function( data ){
+        // TODO 破棄 同上
     }
+
 };
 
 function ProcessData( details, data ){
-    console.log( `URL: ${details.url.substring( 1 )} ${details.requestId}` );
+    console.log( `URL: ${details.url.substring( 1 )}` );
     console.log( data );
 
     let url = details.url;
