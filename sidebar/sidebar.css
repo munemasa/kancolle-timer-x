@@ -1,6 +1,13 @@
 body {
     /*font-family: 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;*/
     font-family: helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+
+    background-color: #ffffff;
+}
+
+fieldset {
+    border-radius: 5px;
+    /*border: 2px gray groove;*/
 }
 
 .mission-name {
