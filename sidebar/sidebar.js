@@ -266,6 +266,18 @@ let KanColleTimerSidebar = {
         }
     },
 
+    updateRefreshTimer: function(){
+        let refresh_timer = $( '#refresh-timer' );
+        let t = refresh_timer.attr( 'refresh-time' );
+        let now = GetCurrentTime();
+        if( t && t > now ){
+            refresh_timer.text( GetTimeString( t - now ).substring( 3 ) );
+        }else{
+            refresh_timer.attr( 'refresh-time', '' );
+            refresh_timer.text( "00:00" );
+        }
+    },
+
     /**
      * 1秒ごとにカウントダウンする
      */
@@ -273,6 +285,7 @@ let KanColleTimerSidebar = {
         this.updateMissionTimer();
         this.updateRepairTimer();
         this.updateBuildTimer();
+        this.updateRefreshTimer();
     },
 
     isRepairing: function( ship_id ){
@@ -297,6 +310,8 @@ let KanColleTimerSidebar = {
             let tbl_id = tbl_fleet[fleet.api_id];
             let tbl_elem = document.getElementById( tbl_id );
             RemoveChildren( tbl_elem );
+
+            let min_cond = 100;
             for( let spec of specs ){
                 let t = document.querySelector( '#template-ship' );
                 let clone2 = document.importNode( t.content, true );
@@ -340,6 +355,8 @@ let KanColleTimerSidebar = {
                     }
                     let style = `background-image: url("${image}"); background-position:left bottom; background-repeat:no-repeat; background-size: ${percentage}% 4px;`;
                     elem.setAttribute( 'style', style );
+
+                    min_cond = spec.api_cond < min_cond ? spec.api_cond : min_cond;
                 }
                 if( ratio <= 0 ){
                     $( status ).attr( 'icon', 'destroyed' );
@@ -363,6 +380,25 @@ let KanColleTimerSidebar = {
 
                 tbl_elem.appendChild( elem );
             }
+
+            if( fleet.api_id == 1 ){
+                let refresh_timer = $( '#refresh-timer' );
+                if( min_cond < 49 ){
+                    let now = GetCurrentTime();
+                    let t0 = (49 - min_cond);
+                    if( t0 % 3 ){
+                        t0 += 3 - (t0 % 3); // 3HP/3分 で回復なので、3の倍数まで切り上げ
+                    }
+                    t0 *= 60;
+                    let refresh_time = t0 - (now % 180);
+                    refresh_timer.attr( 'refresh-time', now + refresh_time );
+                    refresh_timer.text( GetTimeString( refresh_time ).substring( 3 ) );
+                }else{
+                    refresh_timer.attr( 'refresh-time', '' );
+                    refresh_timer.text( "00:00" );
+                }
+            }
+
         }
     },
 
