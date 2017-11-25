@@ -12,6 +12,10 @@ body {
     margin: 0 !important;
 }
 
+#area-game {
+    text-align: left !important;
+}
+
 #main-ntg {
     margin: 0 !important;
 }
