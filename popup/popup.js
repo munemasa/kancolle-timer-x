@@ -3,13 +3,13 @@
 
 let Popup = {
 
-    openWindow: function( url ){
+    openWindow: function( url, w, h ){
         let mainURL = browser.extension.getURL( url );
         let creating = browser.windows.create( {
             url: mainURL,
             type: "panel",
-            width: 640,
-            height: 480
+            width: w,
+            height: h
         } );
         creating.then(
             ( windowInfo ) =>{
@@ -115,11 +115,16 @@ let Popup = {
         } );
 
         document.querySelector( '#take-fleet-screenshot' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../windows/ss_organization.html' );
+            this.openWindow( '../windows/ss_organization.html', 640, 480 );
         } );
 
         document.querySelector( '#open-settings' ).addEventListener( 'click', ( ev ) =>{
             browser.runtime.openOptionsPage();
+            window.close();
+        } );
+
+        document.querySelector( '#open-kct-window' ).addEventListener( 'click', ( ev ) =>{
+            this.openWindow( '../sidebar/sidebar.html', 272, 480 );
             window.close();
         } );
     }
