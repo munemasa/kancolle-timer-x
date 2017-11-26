@@ -16,81 +16,87 @@
 </head>
 <body>
 
-<fieldset id="mission-timer">
-  <legend>遠征</legend>
-  <div style="display:none;">
-    <div><span>■第1艦隊</span><span class="mission-name"></span></div>
-    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
-            class="mission-remain">---</span></div>
-  </div>
-  <div>
-    <div><span>■第2艦隊</span><span class="mission-name"></span></div>
-    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
-            class="mission-remain">---</span></div>
-  </div>
-  <div>
-    <div><span>■第3艦隊</span><span class="mission-name"></span></div>
-    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
-            class="mission-remain">---</span></div>
-  </div>
-  <div>
-    <div><span>■第4艦隊</span><span class="mission-name"></span></div>
-    <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
-            class="mission-remain">---</span></div>
-  </div>
-</fieldset>
+<div class="panel" draggable="true">
+  <fieldset id="mission-timer" draggable="true">
+    <legend>遠征</legend>
+    <div style="display:none;">
+      <div><span>■第1艦隊</span><span class="mission-name"></span></div>
+      <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+              class="mission-remain">---</span></div>
+    </div>
+    <div>
+      <div><span>■第2艦隊</span><span class="mission-name"></span></div>
+      <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+              class="mission-remain">---</span></div>
+    </div>
+    <div>
+      <div><span>■第3艦隊</span><span class="mission-name"></span></div>
+      <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+              class="mission-remain">---</span></div>
+    </div>
+    <div>
+      <div><span>■第4艦隊</span><span class="mission-name"></span></div>
+      <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
+              class="mission-remain">---</span></div>
+    </div>
+  </fieldset>
+</div>
 
-<fieldset id="repair-timer">
-  <legend>入渠ドック<label>[<img src="../img/repairkit.png"/><span id="repair-kit-num">---</span>]</label></legend>
-  <table>
-    <tr>
-      <td class="repair-ship-name">No.1</td>
-      <td class="repair-finish-time">---</td>
-      <td class="repair-remain">(---)</td>
-    </tr>
-    <tr>
-      <td class="repair-ship-name">No.2</td>
-      <td class="repair-finish-time">---</td>
-      <td class="repair-remain">(---)</td>
-    </tr>
-    <tr>
-      <td class="repair-ship-name">No.3</td>
-      <td class="repair-finish-time">---</td>
-      <td class="repair-remain">(---)</td>
-    </tr>
-    <tr>
-      <td class="repair-ship-name">No.4</td>
-      <td class="repair-finish-time">---</td>
-      <td class="repair-remain">(---)</td>
-    </tr>
-  </table>
-</fieldset>
+<div class="panel" draggable="true">
+  <fieldset id="repair-timer" draggable="true">
+    <legend>入渠ドック<label>[<img src="../img/repairkit.png"/><span id="repair-kit-num">---</span>]</label></legend>
+    <table>
+      <tr>
+        <td class="repair-ship-name">No.1</td>
+        <td class="repair-finish-time">---</td>
+        <td class="repair-remain">(---)</td>
+      </tr>
+      <tr>
+        <td class="repair-ship-name">No.2</td>
+        <td class="repair-finish-time">---</td>
+        <td class="repair-remain">(---)</td>
+      </tr>
+      <tr>
+        <td class="repair-ship-name">No.3</td>
+        <td class="repair-finish-time">---</td>
+        <td class="repair-remain">(---)</td>
+      </tr>
+      <tr>
+        <td class="repair-ship-name">No.4</td>
+        <td class="repair-finish-time">---</td>
+        <td class="repair-remain">(---)</td>
+      </tr>
+    </table>
+  </fieldset>
+</div>
 
-<fieldset id="build-timer">
-  <legend>建造ドック</legend>
-  <table>
-    <tr>
-      <td class="build-ship-name">No.1</td>
-      <td class="build-finish-time">---</td>
-      <td class="build-remain">(---)</td>
-    </tr>
-    <tr>
-      <td class="build-ship-name">No.2</td>
-      <td class="build-finish-time">---</td>
-      <td class="build-remain">(---)</td>
-    </tr>
-    <tr>
-      <td class="build-ship-name">No.3</td>
-      <td class="build-finish-time">---</td>
-      <td class="build-remain">(---)</td>
-    </tr>
-    <tr>
-      <td class="build-ship-name">No.4</td>
-      <td class="build-finish-time">---</td>
-      <td class="build-remain">(---)</td>
-    </tr>
-  </table>
-</fieldset>
+<div class="panel" draggable="true">
+  <fieldset id="build-timer">
+    <legend>建造ドック</legend>
+    <table>
+      <tr>
+        <td class="build-ship-name">No.1</td>
+        <td class="build-finish-time">---</td>
+        <td class="build-remain">(---)</td>
+      </tr>
+      <tr>
+        <td class="build-ship-name">No.2</td>
+        <td class="build-finish-time">---</td>
+        <td class="build-remain">(---)</td>
+      </tr>
+      <tr>
+        <td class="build-ship-name">No.3</td>
+        <td class="build-finish-time">---</td>
+        <td class="build-remain">(---)</td>
+      </tr>
+      <tr>
+        <td class="build-ship-name">No.4</td>
+        <td class="build-finish-time">---</td>
+        <td class="build-remain">(---)</td>
+      </tr>
+    </table>
+  </fieldset>
+</div>
 
 <template id="template-ship">
   <tr>
@@ -101,23 +107,25 @@
     <td class="ship-status"></td>
   </tr>
 </template>
-<fieldset id="fleet-1">
-  <legend><span id="1st-fleet-name">第1艦隊</span> (<span id="refresh-timer">00:00</span>)</legend>
-  <table id="tbl-fleet-1st" class="fleet">
-  </table>
-</fieldset>
-
-<fieldset id="fleet-234">
-  <legend><select id="select-fleet-234">
-    <option value="2">第2艦隊</option>
-    <option value="3">第3艦隊</option>
-    <option value="4">第4艦隊</option>
-  </select></legend>
-  <table id="tbl-fleet-2nd" class="fleet"></table>
-  <table id="tbl-fleet-3rd" class="fleet" style="display:none;"></table>
-  <table id="tbl-fleet-4th" class="fleet" style="display:none;"></table>
-</fieldset>
-
+<div class="panel" draggable="true">
+  <fieldset id="fleet-1">
+    <legend><span id="1st-fleet-name">第1艦隊</span> (<span id="refresh-timer">00:00</span>)</legend>
+    <table id="tbl-fleet-1st" class="fleet">
+    </table>
+  </fieldset>
+</div>
+<div class="panel" draggable="true">
+  <fieldset id="fleet-234">
+    <legend><select id="select-fleet-234">
+      <option value="2">第2艦隊</option>
+      <option value="3">第3艦隊</option>
+      <option value="4">第4艦隊</option>
+    </select></legend>
+    <table id="tbl-fleet-2nd" class="fleet"></table>
+    <table id="tbl-fleet-3rd" class="fleet" style="display:none;"></table>
+    <table id="tbl-fleet-4th" class="fleet" style="display:none;"></table>
+  </fieldset>
+</div>
 
 <a target="_blank" href="http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/">艦これ</a>
 

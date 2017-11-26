@@ -10,6 +10,11 @@ fieldset {
     /*border: 2px gray groove;*/
 }
 
+div.panel.over {
+    border: 1px dashed #000;
+    /*background-color: rgb(255,255,200);*/
+}
+
 .mission-name {
     margin-left: 0.5em;
 }

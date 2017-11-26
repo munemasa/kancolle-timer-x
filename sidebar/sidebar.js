@@ -444,6 +444,37 @@ let KanColleTimerSidebar = {
 
     },
 
+    /**
+     * 表示項目の表示順序を保存
+     */
+    savePanelOrder: function(){
+        let fieldset = $( 'fieldset' );
+        let order = [];
+        for( let i = 0, f; f = fieldset[i]; i++ ){
+            order.push( f.id );
+        }
+
+        browser.storage.local.set( {
+            'panel_order': order
+        } );
+    },
+
+    /**
+     * 表示物の表示順序を設定
+     * @param order
+     */
+    setPanelOrder: function( order ){
+        if( !order ) return;
+        console.log( order );
+
+        let panels = document.querySelectorAll( '.panel' );
+
+        for( let i = 0, id; id = order[i]; i++ ){
+            let f = document.querySelector( `#${id}` );
+            panels[i].appendChild( f );
+        }
+    },
+
     loadSettings: function( config ){
         if( !config ) return;
         this.config = config;
@@ -454,6 +485,60 @@ let KanColleTimerSidebar = {
         $( '#snd-repair-finish-soon' ).attr( 'src', config['snd-repair-finish-soon'] );
         $( '#snd-build-finished' ).attr( 'src', config['snd-build-finished'] );
         $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
+    },
+
+    initDragAndDrop: function(){
+        // see: https://www.html5rocks.com/ja/tutorials/dnd/basics/
+        var dragSrcEl = null;
+
+        function handleDragStart( e ){
+            console.log( this );
+            dragSrcEl = this;
+
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData( 'text/html', this.innerHTML );
+        }
+
+        function handleDragOver( e ){
+            e.preventDefault(); // Necessary. Allows us to drop.
+
+            e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+            return false;
+        }
+
+        function handleDragEnter( e ){
+            // this / e.target is the current hover target.
+            this.classList.add( 'over' );
+        }
+
+        function handleDragLeave( e ){
+            this.classList.remove( 'over' );  // this / e.target is previous target element.
+        }
+
+        function handleDrop( e ){
+            // this/e.target is current target element.
+            e.stopPropagation(); // Stops some browsers from redirecting.
+
+            // Don't do anything if dropping the same column we're dragging.
+            if( dragSrcEl != this ){
+                // Set the source column's HTML to the HTML of the columnwe dropped on.
+                dragSrcEl.innerHTML = this.innerHTML;
+                this.innerHTML = e.dataTransfer.getData( 'text/html' );
+            }
+            $( '.panel' ).removeClass( 'over' );
+
+            KanColleTimerSidebar.savePanelOrder();
+            return false;
+        }
+
+        let panel = document.querySelectorAll( '.panel' );
+        [].forEach.call( panel, function( pnl ){
+            pnl.addEventListener( 'dragstart', handleDragStart, false );
+            pnl.addEventListener( 'dragenter', handleDragEnter, false );
+            pnl.addEventListener( 'dragover', handleDragOver, false );
+            pnl.addEventListener( 'dragleave', handleDragLeave, false );
+            pnl.addEventListener( 'drop', handleDrop, false );
+        } );
     },
 
     init: async function(){
@@ -499,6 +584,11 @@ let KanColleTimerSidebar = {
             KanColleTimerSidebar.loadSettings( result.kct_config );
         }
 
+        result = await browser.storage.local.get( 'panel_order' );
+        if( result ){
+            KanColleTimerSidebar.setPanelOrder( result.panel_order );
+        }
+
         browser.storage.onChanged.addListener( ( changes, area ) =>{
             console.log( changes );
             if( changes.deck ){
@@ -523,6 +613,8 @@ let KanColleTimerSidebar = {
                 KanColleTimerSidebar.loadSettings( changes.kct_config.newValue );
             }
         } );
+
+        this.initDragAndDrop();
 
         result = await browser.storage.local.get( 'test' );
         console.log( 'kancolle timer x sidebar initialized.' );
