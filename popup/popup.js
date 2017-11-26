@@ -98,7 +98,6 @@ let Popup = {
 
     loadData: async function(){
         let result = await browser.storage.local.get( 'basic' );
-        console.log( result );
         if( result && result.basic ){
             let basic = result.basic;
 
