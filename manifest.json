@@ -21,7 +21,8 @@
     "webRequest",
     "webRequestBlocking",
     "storage",
-    "notifications"
+    "notifications",
+    "tabs"
   ],
   "options_ui": {
     "page": "options/options.html"

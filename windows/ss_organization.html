@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>艦隊編成を撮影</title>
+  <script src="../libs/utils.js"></script>
+  <script src="ss_organization.js"></script>
+</head>
+<body>
+
+</body>
+</html>
+
+<div flex="1" style="overflow:auto;">
+  <div align="center">
+    <label id="text">1枚目を撮影してください。</label>
+    <input id="take-ss" type="button" value="撮影"/>
+    <input id="save-ss" type="button" value="画像を保存"
+           oncommand=""/>
+    <!--<input type="button" value="つぶやく" oncommand="ScreenShotOrganization.tweet();"/>-->
+    <label>カラム数</label>
+    <select id="columns"
+            oncommand="">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3" selected>3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </div>
+  <div style="width: 50%;">
+    <img id="picture" width="680" height="365"/>
+  </div>
+</div>
