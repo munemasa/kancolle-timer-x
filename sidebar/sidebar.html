@@ -18,7 +18,7 @@
 
 <div class="panel" draggable="true">
   <fieldset id="mission-timer" draggable="true">
-    <legend>遠征</legend>
+    <legend><img src="../img/clock.png"/> 遠征</legend>
     <div style="display:none;">
       <div><span>■第1艦隊</span><span class="mission-name"></span></div>
       <div><span class="mission-fleet-name">---</span><span class="mission-finish-time">---</span><span
@@ -44,7 +44,8 @@
 
 <div class="panel" draggable="true">
   <fieldset id="repair-timer" draggable="true">
-    <legend>入渠ドック<label>[<img src="../img/repairkit.png"/><span id="repair-kit-num">---</span>]</label></legend>
+    <legend><img src="../img/cross.png"/> 入渠ドック<label>[<img src="../img/repairkit.png"/><span
+            id="repair-kit-num">---</span>]</label></legend>
     <table>
       <tr>
         <td class="repair-ship-name">No.1</td>
@@ -72,7 +73,7 @@
 
 <div class="panel" draggable="true">
   <fieldset id="build-timer">
-    <legend>建造ドック</legend>
+    <legend><img src="../img/build.png"/> 建造ドック</legend>
     <table>
       <tr>
         <td class="build-ship-name">No.1</td>
@@ -109,14 +110,15 @@
 </template>
 <div class="panel" draggable="true">
   <fieldset id="fleet-1">
-    <legend><span id="1st-fleet-name">第1艦隊</span> (<span id="refresh-timer">00:00</span>)</legend>
+    <legend><img src="../img/ship.png"/> <span id="1st-fleet-name">第1艦隊</span> (<span id="refresh-timer">00:00</span>)
+    </legend>
     <table id="tbl-fleet-1st" class="fleet">
     </table>
   </fieldset>
 </div>
 <div class="panel" draggable="true">
   <fieldset id="fleet-234">
-    <legend><select id="select-fleet-234">
+    <legend><img src="../img/ship.png"/> <select id="select-fleet-234">
       <option value="2">第2艦隊</option>
       <option value="3">第3艦隊</option>
       <option value="4">第4艦隊</option>

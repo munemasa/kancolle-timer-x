@@ -465,7 +465,6 @@ let KanColleTimerSidebar = {
      */
     setPanelOrder: function( order ){
         if( !order ) return;
-        console.log( order );
 
         let panels = document.querySelectorAll( '.panel' );
 
