@@ -106,6 +106,11 @@ let Popup = {
         document.querySelector( '#take-fleet-screenshot' ).addEventListener( 'click', ( ev ) =>{
             this.openWindow( '../windows/ss_organization.html' );
         } );
+
+        document.querySelector( '#open-settings' ).addEventListener( 'click', ( ev ) =>{
+            browser.runtime.openOptionsPage();
+            window.close();
+        } );
     }
 };
 
