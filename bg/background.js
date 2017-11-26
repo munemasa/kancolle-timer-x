@@ -236,6 +236,15 @@ function UpdateSlotitem( slotitems ){
     SetLocalStorage( 'slotitem', KanColle._api_slot_item );
 }
 
+function UpdateBasic( basic ){
+    let cur_ships = Object.keys( KanColle._api_ship ).length;
+    let cur_items = Object.keys( KanColle._api_slot_item ).length;
+
+    basic._cur_ships = cur_ships;
+    basic._cur_slotitem = cur_items;
+    SetLocalStorage( 'basic', basic );
+}
+
 let kcsapicall = {
     "api_start2": function( data ){
         UpdateMasterData( data.api_data );
@@ -245,6 +254,7 @@ let kcsapicall = {
         UpdateRepairTimer( data.api_data.api_ndock );
         UpdateShipFull( data.api_data.api_ship );
         UpdateMaterial( data.api_data.api_material );
+        UpdateBasic( data.api_data.api_basic );
     },
     "api_get_member/material": function( data ){
         UpdateMaterial( data.api_data );
@@ -335,6 +345,7 @@ function KanColleHttpCapture( details ){
             ProcessData( details, data );
         }catch( e ){
             console.log( `JSON.parse failed. ${e}` );
+            console.log( e );
         }
     };
 

@@ -96,10 +96,21 @@ let Popup = {
         image.src = ss;
     },
 
+    loadData: async function(){
+        let result = await browser.storage.local.get( 'basic' );
+        console.log( result );
+        if( result && result.basic ){
+            let basic = result.basic;
+
+            document.querySelector( '#num-ships' ).textContent = `${basic._cur_ships}/${basic.api_max_chara}`;
+            document.querySelector( '#num-slotitem' ).textContent = `${basic._cur_slotitem}/${basic.api_max_slotitem}`;
+        }
+    },
+
     init: function(){
+        this.loadData();
+
         document.querySelector( '#take-screenshot' ).addEventListener( 'click', ( ev ) =>{
-            ev.preventDefault();
-            ev.stopPropagation();
             Popup.captureScreenshot();
         } );
 

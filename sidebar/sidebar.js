@@ -266,6 +266,9 @@ let KanColleTimerSidebar = {
         }
     },
 
+    /**
+     * 第1艦隊のコンディション回復タイマーをカウントダウンする.
+     */
     updateRefreshTimer: function(){
         let refresh_timer = $( '#refresh-timer' );
         let t = refresh_timer.attr( 'refresh-time' );
@@ -279,7 +282,7 @@ let KanColleTimerSidebar = {
     },
 
     /**
-     * 1秒ごとにカウントダウンする
+     * 1秒ごとにすべてのタイマーをカウントダウンする
      */
     updateTimers: function(){
         this.updateMissionTimer();
@@ -288,6 +291,11 @@ let KanColleTimerSidebar = {
         this.updateRefreshTimer();
     },
 
+    /**
+     * 入渠中であればtrueを返す.
+     * @param ship_id
+     * @returns {boolean}
+     */
     isRepairing: function( ship_id ){
         for( let n of this.ndock ){
             if( n.api_ship_id == ship_id ) return true;
@@ -295,6 +303,11 @@ let KanColleTimerSidebar = {
         return false;
     },
 
+    /**
+     * 艦隊表示を更新する.
+     * @param deck
+     * @returns {Promise.<void>}
+     */
     updateFleet: async function( deck ){
         let tbl_fleet = ["", "tbl-fleet-1st", "tbl-fleet-2nd", "tbl-fleet-3rd", "tbl-fleet-4th"];
 

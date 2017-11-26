@@ -5,6 +5,11 @@ body {
 img {
     margin-right: 0.5em;
 }
+
 div {
     margin-bottom: 0.5em;
+}
+
+fieldset {
+    border-radius: 4px;
 }
