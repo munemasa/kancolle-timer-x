@@ -527,6 +527,19 @@ let KanColleTimerSidebar = {
             $( '.panel' ).removeClass( 'over' );
 
             KanColleTimerSidebar.savePanelOrder();
+
+            // イベントリスナを再設定
+            $( '#select-fleet-234' ).change( () =>{
+                let n = $( '#select-fleet-234' ).val();
+                let tbl = $( '#fleet-234 table' );
+                for( let i = 0; i < 3; i++ ){
+                    if( n - 2 == i ){
+                        $( tbl[i] ).show();
+                    }else{
+                        $( tbl[i] ).hide();
+                    }
+                }
+            } );
             return false;
         }
 
