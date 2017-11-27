@@ -535,8 +535,10 @@ let KanColleTimerSidebar = {
                 for( let i = 0; i < 3; i++ ){
                     if( n - 2 == i ){
                         $( tbl[i] ).show();
+                        $( '#select-fleet-234 option' )[i].setAttribute( 'selected', 'true' );
                     }else{
                         $( tbl[i] ).hide();
+                        $( '#select-fleet-234 option' )[i].removeAttribute( 'selected' );
                     }
                 }
             } );
@@ -564,8 +566,10 @@ let KanColleTimerSidebar = {
             for( let i = 0; i < 3; i++ ){
                 if( n - 2 == i ){
                     $( tbl[i] ).show();
+                    $( '#select-fleet-234 option' )[i].setAttribute( 'selected', 'true' );
                 }else{
                     $( tbl[i] ).hide();
+                    $( '#select-fleet-234 option' )[i].removeAttribute( 'selected' );
                 }
             }
         } );
@@ -628,7 +632,6 @@ let KanColleTimerSidebar = {
 
         this.initDragAndDrop();
 
-        result = await browser.storage.local.get( 'test' );
         console.log( 'kancolle timer x sidebar initialized.' );
     }
 };
