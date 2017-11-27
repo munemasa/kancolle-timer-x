@@ -52,8 +52,8 @@
       "matches": [
         "*://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854*"
       ],
-      "css": [
-        "content_scripts/nomargin.css"
+      "js": [
+        "content_scripts/measure.js"
       ],
       "run_at": "document_end"
     },
@@ -61,8 +61,8 @@
       "matches": [
         "*://osapi.dmm.com/gadgets/*"
       ],
-      "css": [
-        "content_scripts/nomargin.css"
+      "js": [
+        "content_scripts/measure.js"
       ],
       "all_frames": true,
       "run_at": "document_end"

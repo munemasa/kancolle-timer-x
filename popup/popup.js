@@ -45,14 +45,19 @@ let Popup = {
         let image = new Image();
         image.onload = ( ev ) =>{
             let canvas = document.createElement( 'canvas' );
-            canvas.width = 800;
-            canvas.height = 480;
+            let w = this._ss_flash_position.w;
+            let h = this._ss_flash_position.h;
+            canvas.width = w;
+            canvas.height = h;
 
             let ctx = canvas.getContext( "2d" );
             ctx.clearRect( 0, 0, canvas.width, canvas.height );
             ctx.save();
             ctx.scale( 1.0, 1.0 );
-            ctx.drawImage( image, 0, 0, 800, 480, 0, 0, 800, 480 );
+
+            let x = this._ss_game_position.offset_x + this._ss_flash_position.offset_x - this._ss_game_position.scroll_x;
+            let y = this._ss_game_position.offset_y + this._ss_flash_position.offset_y - this._ss_game_position.scroll_y;
+            ctx.drawImage( image, x, y, w, h, 0, 0, w, h );
 
             ctx.restore();
             // TODO 提督名マスクを入れる
@@ -104,6 +109,12 @@ let Popup = {
             document.querySelector( '#num-ships' ).textContent = `${basic._cur_ships}/${basic.api_max_chara}`;
             document.querySelector( '#num-slotitem' ).textContent = `${basic._cur_slotitem}/${basic.api_max_slotitem}`;
         }
+
+        let bg = await browser.runtime.getBackgroundPage();
+        let KanColle = bg.GetKanColle();
+
+        this._ss_game_position = KanColle._ss_game_position;
+        this._ss_flash_position = KanColle._ss_flash_position;
     },
 
     init: function(){

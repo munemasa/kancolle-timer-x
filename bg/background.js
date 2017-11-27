@@ -23,6 +23,9 @@ console.log( 'load kancolle timer x background script.' );
 
 let KanColle = {};
 
+function GetKanColle(){
+    return KanColle;
+}
 
 /**
  * 獲得順に割り当てられる保有艦のIDから艦名を取得する.
@@ -96,6 +99,24 @@ function GetMissionName( request, sender, sendResponse ){
     sendResponse( result );
 }
 
+function SetGamePosition( request, sender, sendResponse ){
+    KanColle._ss_game_position = request.value;
+    sendResponse( true );
+}
+
+function SetFlashPosition( request, sender, sendResponse ){
+    KanColle._ss_flash_position = request.value;
+    sendResponse( true );
+}
+
+function GetScreenshotPosition( request, sender, sendResponse ){
+    sendResponse( {
+        game: KanColle._ss_game_position,
+        flash: KanColle._ss_flash_position
+    } );
+}
+
+
 function HandleMessage( request, sender, sendResponse ){
     switch( request.cmd ){
     case 'get-mission-name':
@@ -109,6 +130,20 @@ function HandleMessage( request, sender, sendResponse ){
         break;
     case 'get-ship-specs':
         GetShipSpecs( request, sender, sendResponse );
+        break;
+
+
+        // 艦これの表示座標を定期的に送ってもらう
+    case 'set-game-position':
+        // 艦これのiframeのある位置
+        SetGamePosition( request, sender, sendResponse );
+        break;
+    case 'set-flash-position':
+        // iframe内で艦これのflashがある位置
+        SetFlashPosition( request, sender, sendResponse );
+        break;
+    case 'get-screenshot-position':
+        GetScreenshotPosition( request, sender, sendResponse );
         break;
     }
 }
