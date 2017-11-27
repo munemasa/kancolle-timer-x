@@ -37,11 +37,17 @@ let ScreenShotOrganization = {
 
         let ctx = canvas.getContext( '2d' );
         let img = new Image();
-        img.onload = function(){
+        img.onload = async function(){
             let w = 453;
             let h = 365;
-            let base_x = 330;
-            let base_y = 103;
+
+            let bg = await browser.runtime.getBackgroundPage();
+            let KanColle = bg.GetKanColle();
+
+            let offset_x = KanColle._ss_game_position.offset_x + KanColle._ss_flash_position.offset_x - KanColle._ss_game_position.scroll_x;
+            let offset_y = KanColle._ss_game_position.offset_y + KanColle._ss_flash_position.offset_y - KanColle._ss_game_position.scroll_y;
+            let base_x = 330 + offset_x;
+            let base_y = 103 + offset_y;
 
             let x = (cnt % ScreenShotOrganization.col) * w;
             let y = parseInt( cnt / ScreenShotOrganization.col ) * h;
