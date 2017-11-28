@@ -1,0 +1,15 @@
+body {
+    font-size: 9pt;
+}
+
+table {
+    border: 1px groove black;
+    border-collapse: collapse;
+}
+
+thead {
+}
+
+td {
+    text-align: right;
+}

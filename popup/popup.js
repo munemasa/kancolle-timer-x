@@ -128,6 +128,10 @@ let Popup = {
             this.openWindow( '../windows/ss_organization.html', 640, 480 );
         } );
 
+        document.querySelector( '#open-shiplist' ).addEventListener( 'click', ( ev ) =>{
+            this.openWindow( '../windows/shiplist.html', 640, 480 );
+        } );
+
         document.querySelector( '#open-settings' ).addEventListener( 'click', ( ev ) =>{
             browser.runtime.openOptionsPage();
             window.close();

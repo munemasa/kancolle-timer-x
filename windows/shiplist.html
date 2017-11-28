@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>艦娘一覧</title>
+  <link rel="stylesheet" href="shiplist.css">
+  <script src="../libs/external/d3/d3.min.js"></script>
+  <script src="../libs/external/jquery-3.2.1.min.js"></script>
+  <script src="../libs/utils.js"></script>
+  <script src="shiplist.js"></script>
+</head>
+<body>
+
+
+<template id="template-ship">
+  <tr>
+    <td class="ship-no">No.</td>
+    <td class="ship-type">艦種</td>
+    <td class="ship-name">艦名</td>
+    <td class="ship-level">Lv</td>
+    <td class="ship-cond">cond</td>
+    <td class="ship-repairtime">入渠</td>
+    <td class="ship-search">索敵</td>
+    <td class="ship-exp">EXP</td>
+    <td class="ship-payload">搭載</td>
+    <td class="ship-equip1">装備1</td>
+    <td class="ship-equip2">装備2</td>
+    <td class="ship-equip3">装備3</td>
+    <td class="ship-equip4">装備4</td>
+  </tr>
+</template>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>No.</th>
+    <th>艦種</th>
+    <th>艦名</th>
+    <th>Lv</th>
+    <th>状態</th>
+    <th>入渠</th>
+    <th>索敵</th>
+    <th>EXP.</th>
+    <th>搭載</th>
+    <th>装備1</th>
+    <th>装備2</th>
+    <th>装備3</th>
+    <th>装備4</th>
+  </tr>
+  </thead>
+  <tbody id="shiplist">
+
+  </tbody>
+
+</table>
+
+</body>
+</html>
