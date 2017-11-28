@@ -396,7 +396,10 @@ let KanColleTimerSidebar = {
                 let slotitem = `${spec._stype_name} ${spec._name} Lv${spec.api_lv}\n`;
                 for( let item of spec.api_slot ){
                     if( item < 0 ) continue;
-                    slotitem += '■ ' + KanColleTimerSidebar.slotitem[item]._mst_data.api_name + '\n';
+                    slotitem += `■ ${KanColleTimerSidebar.slotitem[item]._mst_data.api_name}\n`;
+                }
+                if( spec.api_slot_ex > 0 ){
+                    slotitem += `■ ${KanColleTimerSidebar.slotitem[spec.api_slot_ex]._mst_data.api_name}\n`;
                 }
                 elem.title = slotitem;
 
