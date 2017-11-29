@@ -93,7 +93,18 @@ let ShipList = {
             ship_type.textContent = ship._stype_name;
             ship_name.textContent = ship._name;
             ship_level.textContent = ship.api_lv;
+
             ship_cond.textContent = ship.api_cond;
+            /* デコレーション */
+            if( ship.api_cond <= 19 ){
+                ship_cond.setAttribute( 'cond', 'very-low' );
+            }else if( ship.api_cond <= 29 ){
+                ship_cond.setAttribute( 'cond', 'low' );
+            }else if( ship.api_cond >= 50 ){
+                ship_cond.setAttribute( 'cond', 'high' );
+            }
+
+
             ship_repairtime.textContent = ship.api_ndock_time > 0 ? GetTimeString( parseInt( ship.api_ndock_time / 1000 ) ) : '---';
             ship_search.textContent = ship.api_sakuteki[0];
             ship_exp.textContent = ship.api_exp[2] + '%';

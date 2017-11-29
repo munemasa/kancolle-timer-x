@@ -30,7 +30,7 @@
   </tr>
 </template>
 
-<table border="1">
+<table id="tbl-shiplist" border="1">
   <thead>
   <tr>
     <th>No.</th>
@@ -51,8 +51,65 @@
   <tbody id="shiplist">
 
   </tbody>
+  <thead>
+  <tr>
+    <th>No.</th>
+    <th>艦種</th>
+    <th>艦名</th>
+    <th>Lv</th>
+    <th>状態</th>
+    <th>入渠</th>
+    <th>索敵</th>
+    <th>EXP.</th>
+    <th>搭載</th>
+    <th>装備1</th>
+    <th>装備2</th>
+    <th>装備3</th>
+    <th>装備4</th>
+  </tr>
+  </thead>
 
 </table>
+
+<fieldset id="ship-spec">
+  <legend>性能諸元</legend>
+  <label>艦種</label> <label>艦名</label> <label>Lv 99</label> <label>EXP 0</label> <label>(Next 10,000)</label>
+  <table>
+    <tr>
+      <td>耐久</td>
+      <td>0</td>
+      <td>装甲</td>
+      <td>0</td>
+      <td>回避</td>
+      <td>0</td>
+      <td>搭載</td>
+      <td>0</td>
+      <td>速力</td>
+      <td>高速</td>
+      <td>射程</td>
+      <td>短</td>
+    </tr>
+    <tr>
+      <td>火力</td>
+      <td>0</td>
+      <td>雷装</td>
+      <td>0</td>
+      <td>対空</td>
+      <td>0</td>
+      <td>対潜</td>
+      <td>0</td>
+      <td>索敵</td>
+      <td>0</td>
+      <td>運</td>
+      <td>0</td>
+    </tr>
+  </table>
+  <div>装備1</div>
+  <div>装備2</div>
+  <div>装備3</div>
+  <div>装備4</div>
+  <div>装備5</div>
+</fieldset>
 
 </body>
 </html>
