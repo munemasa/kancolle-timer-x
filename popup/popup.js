@@ -63,13 +63,14 @@ let Popup = {
             // TODO 提督名マスクを入れる
 
             if( 1 ){
-                let dt = canvas.toDataURL( 'image/png' );
+                let is_jpeg = this.config && this.config['ss-format-jpeg'];
+                let dt = canvas.toDataURL( is_jpeg ? 'image/jpeg' : 'image/png' );
                 dt = dt.replace( /^data:image\/[^;]*/, 'data:application/octet-stream' );
 
                 let date = new Date();
                 let a = document.createElement( 'a' );
                 a.href = dt;
-                a.download = `screenshot-${this.getNowDateString()}.png`;
+                a.download = `screenshot-${this.getNowDateString()}.${is_jpeg ? 'jpg' : 'png'}`;
                 document.body.appendChild( a );
                 a.click();
             }else{
@@ -109,6 +110,9 @@ let Popup = {
             document.querySelector( '#num-ships' ).textContent = `${basic._cur_ships}/${basic.api_max_chara}`;
             document.querySelector( '#num-slotitem' ).textContent = `${basic._cur_slotitem}/${basic.api_max_slotitem}`;
         }
+
+        result = await browser.storage.local.get( 'kct_config' );
+        this.config = result.kct_config;
 
         let bg = await browser.runtime.getBackgroundPage();
         let KanColle = bg.GetKanColle();

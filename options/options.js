@@ -26,6 +26,7 @@ async function loadOptions(){
     console.log( config );
 
     config = config.kct_config;
+    document.querySelector( '#ss-format-jpeg' ).checked = config['ss-format-jpeg'];
     document.querySelector( '#notify-popup' ).checked = config['notify-popup'];
     document.querySelector( '#snd-mission-finished' ).value = config['snd-mission-finished'];
     document.querySelector( '#snd-mission-finish-soon' ).value = config['snd-mission-finish-soon'];
@@ -39,6 +40,7 @@ function saveOptions( ev ){
     ev.preventDefault();
 
     let config = {};
+    config['ss-format-jpeg'] = document.querySelector( '#ss-format-jpeg' ).checked;
     config['notify-popup'] = document.querySelector( '#notify-popup' ).checked;
     config['snd-mission-finished'] = document.querySelector( '#snd-mission-finished' ).value;
     config['snd-mission-finish-soon'] = document.querySelector( '#snd-mission-finish-soon' ).value;

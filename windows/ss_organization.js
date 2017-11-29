@@ -31,7 +31,6 @@ let ScreenShotOrganization = {
 
     getScreenshot: async function(){
         let canvas = this.canvas;
-
         let ss = await browser.tabs.captureVisibleTab( ScreenShotOrganization.windowId );
         let cnt = ScreenShotOrganization._cnt;
 
@@ -116,8 +115,12 @@ let ScreenShotOrganization = {
         callback( blob.size );
     },
 
-    save: function(){
-        let dt = this.canvas.toDataURL( 'image/png' );
+    save: async function(){
+        let config = await browser.storage.local.get( 'kct_config' );
+        let is_jpeg = config.kct_config && config.kct_config['ss-format-jpeg'];
+
+
+        let dt = this.canvas.toDataURL( is_jpeg ? 'image/jpeg' : 'image/png' );
         dt = dt.replace( /^data:image\/[^;]*/, 'data:application/octet-stream' );
 
         // Aタグの download 属性でDLできないので仕方なくこちらを使う.
@@ -128,7 +131,7 @@ let ScreenShotOrganization = {
             ia[i] = bin.charCodeAt( i );
         }
 
-        let name = `screenshot-fleet-${this.getNowDateString()}.png`;
+        let name = `screenshot-fleet-${this.getNowDateString()}.${is_jpeg ? 'jpg' : 'png'}`;
         let blob = new Blob( [ab], {type: "application/octet-stream"} );
         let dl = window.URL.createObjectURL( blob );
         browser.downloads.download( {
