@@ -1,5 +1,43 @@
+html {
+    height: 100%;
+}
+
 body {
     font-size: 9pt;
+    height: 97%;
+}
+
+div#container {
+    display: flex;
+    flex-direction: row;
+
+    height: 100%;
+
+    /*background-color: #ffdde9;*/
+    /*border: 2px solid black;*/
+}
+
+div#left {
+    /*background-color: #e5ffc7;*/
+}
+
+div#right {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: flex-end;*/
+}
+
+div#right-top {
+    /*height: 200px;*/
+
+    /*flex-basis: 80%;*/
+    overflow: scroll;
+
+    /*background-color: #fffe54;*/
+}
+
+div#right-bottom {
+    /*background-color: #80bdff;*/
 }
 
 table#tbl-shiplist {
@@ -15,9 +53,6 @@ table#tbl-shiplist tr:hover {
 
 fieldset {
     cursor: default;
-}
-
-thead {
 }
 
 table#tbl-shiplist td {
@@ -40,6 +75,10 @@ td[cond="high"] {
 }
 
 #ship-spec {
+}
+
+#ship-spec label {
+    margin-right: 0.5em;
 }
 
 #ship-spec td:nth-child(1) {

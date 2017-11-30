@@ -89,6 +89,8 @@ let ShipList = {
             let ship_equip3 = elem.querySelector( '.ship-equip3' );
             let ship_equip4 = elem.querySelector( '.ship-equip4' );
 
+            elem.setAttribute( 'ship_id', ship.api_id );
+
             no.textContent = i + 1;
             ship_type.textContent = ship._stype_name;
             ship_name.textContent = ship._name;
@@ -118,6 +120,35 @@ let ShipList = {
         }
     },
 
+    showDetails: function( ship_id ){
+        let ship = KanColle._api_ship[ship_id];
+
+        $( '#api_stype' ).text( ship._stype_name );
+        $( '#api_name' ).text( ship._name );
+        $( '#api_lv' ).text( `Lv ${ship.api_lv}` );
+        $( '#api_maxhp' ).text( ship.api_maxhp );
+        $( '#api_soukou' ).text( ship.api_soukou[0] );
+        $( '#api_kaihi' ).text( ship.api_kaihi[0] );
+        $( '#api_onslot' ).text( d3.sum( ship.api_onslot ) );
+        $( '#api_soku' ).text( ship._mst_data.api_soku < 10 ? "低速" : "高速" );
+        $( '#api_leng' ).text( ["", "短", "中", "長", "超長"][ship.api_leng] );
+        $( '#api_karyoku' ).text( ship.api_karyoku[0] );
+        $( '#api_raisou' ).text( ship.api_raisou[0] );
+        $( '#api_taiku' ).text( ship.api_taiku[0] );
+        $( '#api_taisen' ).text( ship.api_taisen[0] );
+        $( '#api_sakuteki' ).text( ship.api_sakuteki[0] );
+        $( '#api_lucky' ).text( ship.api_lucky[0] );
+        $( '#api_exp' ).text( `Exp ${FormatCommas( ship.api_exp[0] )}` );
+        $( '#api_exp_next' ).text( FormatCommas( ship.api_exp[1] ) );
+
+        $( '#api_slot_ex' ).text( ship.api_slot_ex > 0 ? KanColle._api_slot_item[ship.api_slot_ex]._mst_data.api_name : '' );
+
+        $( '#api_slot1' ).text( KanColle._api_slot_item[ship.api_slot[0]]._mst_data.api_name || '　' );
+        $( '#api_slot2' ).text( KanColle._api_slot_item[ship.api_slot[1]]._mst_data.api_name || '　' );
+        $( '#api_slot3' ).text( KanColle._api_slot_item[ship.api_slot[2]]._mst_data.api_name || '　' );
+        $( '#api_slot4' ).text( KanColle._api_slot_item[ship.api_slot[3]]._mst_data.api_name || '　' );
+    },
+
     init: async function(){
         let bg = await browser.runtime.getBackgroundPage();
         KanColle = bg.GetKanColle();
@@ -136,7 +167,10 @@ let ShipList = {
         this.sort( this.ships, 0 );
 
         this.createTable();
-
+        $( '#shiplist tr' ).on( 'click', ( ev ) =>{
+            console.log( ev );
+            this.showDetails( ev.currentTarget.getAttribute( 'ship_id' ) );
+        } );
     }
 };
 
