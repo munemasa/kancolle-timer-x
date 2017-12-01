@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>艦娘一覧</title>
+  <link rel="stylesheet" href="../libs/external/jstree/themes/default/style.min.css">
   <link rel="stylesheet" href="shiplist.css">
   <script src="../libs/external/d3/d3.min.js"></script>
   <script src="../libs/external/jquery-3.2.1.min.js"></script>
+  <script src="../libs/external/jstree/jstree.min.js"></script>
   <script src="../libs/utils.js"></script>
   <script src="shiplist.js"></script>
 </head>
@@ -34,7 +36,24 @@
 
 <div id="container">
   <div id="left">
-    Left pane
+    <ul>
+      <li class="jstree-open">
+        艦隊別
+        <ul>
+          <li>第1艦隊</li>
+          <li>第2艦隊</li>
+          <li>第3艦隊</li>
+          <li>第4艦隊</li>
+        </ul>
+      </li>
+      <li class="jstree-open">
+        艦種別
+        <ul id="show-by-ship-type">
+          <li><a href="#" class="jstree-clicked">全て</a></li>
+        </ul>
+      </li>
+    </ul>
+
   </div>
   <div id="right">
 
@@ -119,10 +138,10 @@
             <td id="api_lucky">0</td>
           </tr>
         </table>
-        <div id="api_slot1">装備1</div>
-        <div id="api_slot2">装備2</div>
-        <div id="api_slot3">装備3</div>
-        <div id="api_slot4">装備4</div>
+        <div id="api_slot1">　</div>
+        <div id="api_slot2">　</div>
+        <div id="api_slot3">　</div>
+        <div id="api_slot4">　</div>
       </fieldset>
     </div>
 

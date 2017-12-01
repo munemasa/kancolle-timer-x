@@ -168,9 +168,24 @@ let ShipList = {
 
         this.createTable();
         $( '#shiplist tr' ).on( 'click', ( ev ) =>{
-            console.log( ev );
             this.showDetails( ev.currentTarget.getAttribute( 'ship_id' ) );
         } );
+
+        // show-by-ship-type
+        let treeview = $( '#show-by-ship-type' );
+        let flg = {};
+        for( let s of ships ){
+            if( !flg[s._stype_name] ){
+                let li = document.createElement( 'li' );
+                $( li ).text( s._stype_name );
+                treeview.append( li );
+                flg[s._stype_name] = true;
+            }
+        }
+
+        $( '#left' ).on( 'changed.jstree', function( ev, data ){
+            console.log( data );
+        } ).jstree();
     }
 };
 
