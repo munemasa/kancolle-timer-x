@@ -185,7 +185,11 @@ let ShipList = {
 
         $( '#left' ).on( 'changed.jstree', function( ev, data ){
             console.log( data );
-        } ).jstree();
+        } ).jstree( {
+            'core': {
+                'multiple': false
+            }
+        } );
     }
 };
 
