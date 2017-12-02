@@ -80,7 +80,6 @@ let ShipList = {
             let ship_name = elem.querySelector( '.ship-name' );
             let ship_level = elem.querySelector( '.ship-level' );
             let ship_cond = elem.querySelector( '.ship-cond' );
-            let ship_repairtime = elem.querySelector( '.ship-repairtime' );
             let ship_search = elem.querySelector( '.ship-search' );
             let ship_exp = elem.querySelector( '.ship-exp' );
             let ship_payload = elem.querySelector( '.ship-payload' );
@@ -88,6 +87,10 @@ let ShipList = {
             let ship_equip2 = elem.querySelector( '.ship-equip2' );
             let ship_equip3 = elem.querySelector( '.ship-equip3' );
             let ship_equip4 = elem.querySelector( '.ship-equip4' );
+            let ship_karyoku = elem.querySelector( '.ship-karyoku' );
+            let ship_raisou = elem.querySelector( '.ship-raisou' );
+            let ship_taiku = elem.querySelector( '.ship-taiku' );
+            let ship_taisen = elem.querySelector( '.ship-taisen' );
 
             elem.setAttribute( 'ship_id', ship.api_id );
 
@@ -106,8 +109,11 @@ let ShipList = {
                 ship_cond.setAttribute( 'cond', 'high' );
             }
 
+            ship_karyoku.textContent = ship.api_karyoku[0];
+            ship_raisou.textContent = ship.api_raisou[0];
+            ship_taiku.textContent = ship.api_taiku[0];
+            ship_taisen.textContent = ship.api_taisen[0];
 
-            ship_repairtime.textContent = ship.api_ndock_time > 0 ? GetTimeString( parseInt( ship.api_ndock_time / 1000 ) ) : '---';
             ship_search.textContent = ship.api_sakuteki[0];
             ship_exp.textContent = ship.api_exp[2] + '%';
             ship_payload.textContent = d3.sum( ship.api_onslot );
