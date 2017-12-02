@@ -350,6 +350,8 @@ let ShipList = {
         ,
 
         init: async function(){
+            // プライベートブラウジングモードだと使えない手法だが
+            // 物は試しと、手抜きのため。
             let bg = await browser.runtime.getBackgroundPage();
             KanColle = bg.GetKanColle();
             KanColle._api_slot_item[-1] = {
