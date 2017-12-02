@@ -56,23 +56,27 @@ fieldset {
     cursor: default;
 }
 
+th {
+    background-color: #e0e0e0;
+}
+
 table#tbl-shiplist td {
     text-align: right;
 }
 
 td[cond='very-low'] {
-    /*background-color: #fa6b6a;*/
-    text-shadow: 2px 2px 3px #fa6b6a, -2px -2px 3px #fa6b6a, -2px 2px 3px #fa6b6a, 2px -2px 3px #fa6b6a;
+    background-color: #fa6b6a;
+    /*text-shadow: 2px 2px 3px #fa6b6a, -2px -2px 3px #fa6b6a, -2px 2px 3px #fa6b6a, 2px -2px 3px #fa6b6a;*/
 }
 
 td[cond='low'] {
-    /*background-color: #eea87a;*/
-    text-shadow: 2px 2px 3px #eea87a, -2px -2px 3px #eea87a, -2px 2px 3px #eea87a, 2px -2px 3px #eea87a;
+    background-color: #eea87a;
+    /*text-shadow: 2px 2px 3px #eea87a, -2px -2px 3px #eea87a, -2px 2px 3px #eea87a, 2px -2px 3px #eea87a;*/
 }
 
 td[cond="high"] {
-    /*background-color: #ffffc0;*/
-    text-shadow: 2px 2px 3px #ffff40, -2px -2px 3px #ffff40, -2px 2px 3px #ffff40, 2px -2px 3px #ffff40;
+    background-color: #ffffc0;
+    /*text-shadow: 2px 2px 3px #ffff40, -2px -2px 3px #ffff40, -2px 2px 3px #ffff40, 2px -2px 3px #ffff40;*/
 }
 
 #ship-spec {

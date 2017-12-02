@@ -155,7 +155,6 @@ let ShipList = {
 
             $( '#api_slot_ex' ).text( ship.api_slot_ex > 0 ? KanColle._api_slot_item[ship.api_slot_ex]._mst_data.api_name : '' );
 
-            //`${item._mst_data.api_name}${item.api_level > 0 ? '★+' + item.api_level : ''}`;
             let slot = [
                 $( '#api_slot1' ),
                 $( '#api_slot2' ),
