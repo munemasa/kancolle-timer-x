@@ -350,8 +350,6 @@ let ShipList = {
             }
 
             $( '#left' ).on( 'select_node.jstree', ( ev, data ) =>{
-                console.log( data );
-                console.log( data.selected[0] );
                 this.select( data.selected[0] );
             } ).jstree( {
                 'core': {
