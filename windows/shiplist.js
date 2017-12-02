@@ -252,12 +252,21 @@ let ShipList = {
 
             $( '#api_slot_ex' ).text( ship.api_slot_ex > 0 ? KanColle._api_slot_item[ship.api_slot_ex]._mst_data.api_name : '' );
 
-            let slot = [
-                $( '#api_slot1' ),
-                $( '#api_slot2' ),
-                $( '#api_slot3' ),
-                $( '#api_slot4' )
-            ];
+            // 装備の表示
+            let slot = [$( '#api_slot1' ), $( '#api_slot2' ), $( '#api_slot3' ), $( '#api_slot4' )];
+            let equip_parameter_name = {
+                "api_houg": "火力",
+                "api_raig": "雷装",
+                "api_baku": "爆装",
+                "api_tyku": "対空",
+                "api_tais": "対潜",
+                "api_houm": "命中",
+                "api_houk": "回避",
+                "api_saku": "索敵",
+                "api_raim": "雷撃命中", // かな？
+                "api_souk": "装甲"
+            };
+
             for( let i = 0; i < 4; i++ ){
                 if( ship.api_slot[i] > 0 ){
                     let item = KanColle._api_slot_item[ship.api_slot[i]];
@@ -267,9 +276,31 @@ let ShipList = {
                     let color2 = GetEquipmentSubColor( item._mst_data ) || color;
                     let str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
                     slot[i].attr( 'style', str );
+
+                    let value = [];
+                    for( let k in item._mst_data ){
+                        let v = GetSignedValue( item._mst_data[k] );
+                        switch( k ){
+                        case "api_houg": // 火力
+                        case "api_raig": // 雷装
+                        case "api_baku": // 爆装
+                        case "api_tyku": // 対空
+                        case "api_tais": // 対潜
+                        case "api_houm": // 命中
+                        case "api_houk": // 回避
+                        case "api_saku": // 索敵
+                        case "api_souk": // 装甲
+                            //case "api_raim": // 雷撃命中
+                            if( v ) value.push( equip_parameter_name[k] + v );
+                            break;
+                        }
+                    }
+
+                    document.querySelector( `#slot${i + 1}_spec` ).textContent = value.join( ' ' );
                 }else{
                     slot[i].text( '　' );
                     slot[i].attr( 'style', '' );
+                    document.querySelector( `#slot${i + 1}_spec` ).textContent = '';
                 }
             }
         }

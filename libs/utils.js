@@ -152,6 +152,15 @@ function GetTimeString( sec ){
 }
 
 /**
+ * 符号付き数字を返す
+ */
+function GetSignedValue( v ){
+    if( v > 0 ) return `+${v}`;
+    return v;
+}
+
+
+/**
  * 配列をシャッフルする.
  * @param list 配列
  */
