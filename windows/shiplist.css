@@ -52,6 +52,14 @@ table#tbl-shiplist tr:nth-child(10n) {
     border-bottom: 2px solid black;
 }
 
+.ship-type {
+    white-space: nowrap;
+}
+
+.ship-name {
+    white-space: nowrap;
+}
+
 fieldset {
     cursor: default;
 }
