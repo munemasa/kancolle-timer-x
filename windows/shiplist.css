@@ -90,6 +90,10 @@ td[cond="high"] {
 #ship-spec {
 }
 
+#equipment {
+    border-collapse: collapse;
+}
+
 #api_slot_ex:before {
     content: "■ ";
 }
