@@ -78,6 +78,10 @@ td[cond="high"] {
 #ship-spec {
 }
 
+#api_slot_ex:before {
+    content: "■ ";
+}
+
 #ship-spec label {
     margin-right: 0.5em;
 }
