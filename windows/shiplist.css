@@ -26,10 +26,12 @@ div#left > ul {
 div#right {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 div#right-top {
     overflow: auto;
+    height: 100%;
 }
 
 div#right-bottom {

@@ -66,11 +66,11 @@ let ShipList = {
     },
 
 
-    createTable: function(){
+    createTable: function( ships ){
         let table = document.querySelector( '#shiplist' )
         $( '#shiplist tr' ).remove();
 
-        for( let i = 0, ship; ship = this.ships[i]; i++ ){
+        for( let i = 0, ship; ship = ships[i]; i++ ){
             let t = document.querySelector( '#template-ship' );
             let clone2 = document.importNode( t.content, true );
             let elem = clone2.firstElementChild;
@@ -118,7 +118,11 @@ let ShipList = {
 
             table.appendChild( elem );
         }
+        $( '#shiplist tr' ).on( 'click', ( ev ) =>{
+            this.showDetails( ev.currentTarget.getAttribute( 'ship_id' ) );
+        } );
     },
+
 
     showDetails: function( ship_id ){
         let ship = KanColle._api_ship[ship_id];
@@ -149,6 +153,48 @@ let ShipList = {
         $( '#api_slot4' ).text( KanColle._api_slot_item[ship.api_slot[3]]._mst_data.api_name || '　' );
     },
 
+    select: function( type ){
+        switch( type ){
+        case 'fleet-1':
+        case 'fleet-2':
+        case 'fleet-3':
+        case 'fleet-4':
+            type.match( /fleet-(\d)/ );
+            let n = parseInt( RegExp.$1 );
+            let filtered = this.ships.filter( ( s ) =>{
+                for( let i = 0, deck; deck = KanColle.deck[i]; i++ ){
+                    if( deck.api_id == n ){
+                        if( deck.api_ship.includes( s.api_id ) ) return true;
+                    }
+                }
+                return false;
+            } );
+            this.createTable( filtered );
+            break;
+
+        case 'kind-all':
+            this.createTable( this.ships );
+            break;
+
+        default:
+            if( type.match( /kind-(\d+)/ ) ){
+                // 艦種別表示
+                let n = parseInt( RegExp.$1 );
+                let filtered = this.ships.filter( ( s ) =>{
+                    if( s._stype == n ){
+                        return true;
+                    }
+                    if( (n == 8 || n == 9) && ( s._stype == 8 || s._stype == 9) ){
+                        return true;
+                    }
+                    return false;
+                } );
+                this.createTable( filtered );
+            }
+            break;
+        }
+    },
+
     init: async function(){
         let bg = await browser.runtime.getBackgroundPage();
         KanColle = bg.GetKanColle();
@@ -165,11 +211,7 @@ let ShipList = {
 
         this.ships = ships;
         this.sort( this.ships, 0 );
-
-        this.createTable();
-        $( '#shiplist tr' ).on( 'click', ( ev ) =>{
-            this.showDetails( ev.currentTarget.getAttribute( 'ship_id' ) );
-        } );
+        this.createTable( this.ships );
 
         // show-by-ship-type
         let treeview = $( '#show-by-ship-type' );
@@ -177,14 +219,17 @@ let ShipList = {
         for( let s of ships ){
             if( !flg[s._stype_name] ){
                 let li = document.createElement( 'li' );
+                $( li ).attr( 'id', `kind-${s._stype}` );
                 $( li ).text( s._stype_name );
                 treeview.append( li );
                 flg[s._stype_name] = true;
             }
         }
 
-        $( '#left' ).on( 'changed.jstree', function( ev, data ){
+        $( '#left' ).on( 'select_node.jstree', ( ev, data ) =>{
             console.log( data );
+            console.log( data.selected[0] );
+            this.select( data.selected[0] );
         } ).jstree( {
             'core': {
                 'multiple': false
