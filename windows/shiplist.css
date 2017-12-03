@@ -1,6 +1,7 @@
 /*jQuery UIのスタイル修正*/
 .ui-tabs .ui-tabs-panel {
     padding: 0px !important;
+    padding-top: 2px !important;
 }
 
 /*----------*/
