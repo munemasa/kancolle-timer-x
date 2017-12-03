@@ -638,10 +638,45 @@ let KanColleTimerSidebar = {
         this.initDragAndDrop();
 
         console.log( 'kancolle timer x sidebar initialized.' );
+
+        // ウィンドウ位置サイズを復元
+        let win = await browser.windows.getCurrent();
+        if( win.title.match( /^moz-extension.*艦これタイマーX$/ ) && win.type != 'normal' ){
+            let pos = localStorage.getItem( 'kct_window_position' );
+            console.log( pos );
+            if( pos ){
+                pos = JSON.parse( pos );
+                browser.windows.update( win.id, {
+                    left: pos.x,
+                    top: pos.y,
+                    width: pos.w,
+                    height: pos.h
+                } )
+            }
+        }
+    },
+
+    unload: function( ev ){
+        let x = window.screenX;
+        let y = window.screenY;
+        let w = window.outerWidth;
+        let h = window.outerHeight;
+
+        let window_position = {
+            x: x,
+            y: y,
+            w: w,
+            h: h
+        };
+        localStorage.setItem( 'kct_window_position', JSON.stringify( window_position ) );
     }
 };
 
 
 window.addEventListener( 'load', ( ev ) =>{
     KanColleTimerSidebar.init();
+} );
+
+window.addEventListener( 'unload', ( ev ) =>{
+    KanColleTimerSidebar.unload( ev );
 } );
