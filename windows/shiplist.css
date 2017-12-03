@@ -132,3 +132,20 @@ td[cond="high"] {
     height: 100%;
     overflow: auto;
 }
+
+/* bar chart */
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: brown;
+}
+
+.axis--x path {
+    display: none;
+}
+
+#svg-histogram {
+    border: 1px solid black;
+}

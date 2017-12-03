@@ -358,6 +358,147 @@ let ShipList = {
         }
     },
 
+    createHistogram_d3v3: function(){
+        let histogram = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let ships = KanColleDatabase.ship.list().map( function( k ){
+            return KanColleDatabase.ship.get( k );
+        } );
+        for( let i = 0; i < ships.length; i++ ){
+            let k = parseInt( ships[i].api_lv / 10 );
+            histogram[k]++;
+        }
+
+        let margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width  = 800 - margin.left - margin.right,
+            height = 480 - margin.top - margin.bottom;
+
+        let x = d3.scale.ordinal().rangeRoundBands( [0, width], .1 );
+        let y = d3.scale.linear().range( [height, 0] );
+
+        let xAxis = d3.svg.axis()
+            .scale( x )
+            .orient( "bottom" )
+            .tickFormat( function( d ){
+                return d3.max( [(d * 10), 1] ) + "-";
+            } );
+
+        let yAxis = d3.svg.axis()
+            .scale( y )
+            .orient( "left" )
+            .tickFormat( function( d ){
+                return d + "隻";
+            } )
+            .ticks( 10 );
+
+        let svg = d3.select( "#histogram" ).append( "svg" )
+            .attr( "id", "svg-histogram" )
+            .attr( "width", width + margin.left + margin.right )
+            .attr( "height", height + margin.top + margin.bottom )
+            .append( "g" )
+            .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
+
+        x.domain( d3.keys( histogram ) );
+        y.domain( [0, d3.max( histogram )] );
+
+        svg.append( "g" )
+            .attr( "class", "x axis" )
+            .attr( "transform", "translate(0," + height + ")" )
+            .call( xAxis );
+
+        svg.append( "g" )
+            .attr( "class", "y axis" )
+            .call( yAxis );
+
+        svg.append( "g" )
+            .attr( "class", "grid" )
+            .call( d3.svg.axis()
+                .scale( y )
+                .orient( "left" )
+                .tickSize( -width, 0, 0 )
+                .tickFormat( "" )
+            );
+
+        svg.selectAll( ".bar" )
+            .data( histogram )
+            .enter().append( "rect" )
+            .attr( "class", "bar" )
+            .attr( "x", function( d, i ){
+                return x( i );
+            } )
+            .attr( "width", x.rangeBand() )
+            .attr( "y", function( d ){
+                return y( d );
+            } )
+            .attr( "height", function( d ){
+                return height - y( d );
+            } );
+    },
+
+    createHistogram: function( ships ){
+        let ship_histogram = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for( let i = 0; i < ships.length; i++ ){
+            let k = parseInt( ships[i].api_lv / 10 );
+            ship_histogram[k]++;
+        }
+
+        let histogram = [];
+        for( let i = 0; i < ship_histogram.length; i++ ){
+            histogram.push( {
+                key: d3.max( [i * 10, 1] ) + '-',
+                value: ship_histogram[i]
+            } );
+        }
+        console.log( histogram );
+
+        let margin = {top: 8, right: 30, bottom: 35, left: 20},
+            width  = 800 - margin.left - margin.right,
+            height = 480 - margin.top - margin.bottom;
+
+        let svg = d3.select( "#tabs-histogram" ).append( "svg" )
+            .attr( "id", "svg-histogram" )
+            .attr( "width", width + margin.left + margin.right )
+            .attr( "height", height + margin.top + margin.bottom )
+            .append( "g" )
+            .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
+
+        let x = d3.scaleBand().rangeRound( [0, width] ).padding( 0.1 );
+        let y = d3.scaleLinear().rangeRound( [height, 0] );
+
+        let g = svg.append( "g" )
+            .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
+
+        x.domain( histogram.map( ( d ) =>{
+            return d.key;
+        } ) );
+        y.domain( [0, d3.max( ship_histogram )] );
+
+        g.append( "g" )
+            .attr( "class", "axis axis--x" )
+            .attr( "transform", "translate(0," + (height) + ")" )
+            .call( d3.axisBottom( x ) );
+
+        g.append( "g" )
+            .attr( "class", "axis axis--y" )
+            .call( d3.axisLeft( y ) )
+            .append( "text" )
+            .attr( "transform", "rotate(-90)" );
+
+        g.selectAll( ".bar" )
+            .data( histogram )
+            .enter().append( "rect" )
+            .attr( "class", "bar" )
+            .attr( "x", function( d ){
+                return x( d.key );
+            } )
+            .attr( "y", function( d ){
+                return y( d.value );
+            } )
+            .attr( "width", x.bandwidth() )
+            .attr( "height", function( d ){
+                return height - y( d.value );
+            } );
+    },
+
     createPieChart: function( ships ){
         RemoveChildren( document.getElementById( 'pieChart' ) );
 
@@ -478,6 +619,7 @@ let ShipList = {
         this.sort( this.ships, 0 );
         this.createTable( this.ships );
 
+        this.createHistogram( this.ships );
 
         // show-by-ship-type
         let treeview = $( '#show-by-ship-type' );
