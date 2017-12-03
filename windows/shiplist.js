@@ -218,7 +218,12 @@ let ShipList = {
                 let equip = [ship_equip1, ship_equip2, ship_equip3, ship_equip4];
                 for( let i = 0; i < 4; i++ ){
                     let item = KanColle._api_slot_item[ship.api_slot[i]];
-                    equip[i].textContent = item._mst_data.api_name;
+                    try{
+                        equip[i].textContent = item._mst_data.api_name;
+                    }catch( e ){
+                        equip[i].textContent = '[Undetermined]';
+                        $( equip[i] ).addClass( 'undetermined_weapon' );
+                    }
                 }
 
                 table.appendChild( elem );
@@ -268,35 +273,41 @@ let ShipList = {
             };
 
             for( let i = 0; i < 4; i++ ){
+                slot[i].removeClass( 'undetermined_weapon' );
                 if( ship.api_slot[i] > 0 ){
                     let item = KanColle._api_slot_item[ship.api_slot[i]];
-                    slot[i].text( item._mst_data.api_name + (item.api_level > 0 ? '★+' + item.api_level : '') || '　' );
+                    try{
+                        slot[i].text( item._mst_data.api_name + (item.api_level > 0 ? '★+' + item.api_level : '') || '　' );
+                        let color = GetEquipmentColor( item._mst_data );
+                        let color2 = GetEquipmentSubColor( item._mst_data ) || color;
+                        let str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
+                        slot[i].attr( 'style', str );
 
-                    let color = GetEquipmentColor( item._mst_data );
-                    let color2 = GetEquipmentSubColor( item._mst_data ) || color;
-                    let str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
-                    slot[i].attr( 'style', str );
-
-                    let value = [];
-                    for( let k in item._mst_data ){
-                        let v = GetSignedValue( item._mst_data[k] );
-                        switch( k ){
-                        case "api_houg": // 火力
-                        case "api_raig": // 雷装
-                        case "api_baku": // 爆装
-                        case "api_tyku": // 対空
-                        case "api_tais": // 対潜
-                        case "api_houm": // 命中
-                        case "api_houk": // 回避
-                        case "api_saku": // 索敵
-                        case "api_souk": // 装甲
-                            //case "api_raim": // 雷撃命中
-                            if( v ) value.push( equip_parameter_name[k] + v );
-                            break;
+                        let value = [];
+                        for( let k in item._mst_data ){
+                            let v = GetSignedValue( item._mst_data[k] );
+                            switch( k ){
+                            case "api_houg": // 火力
+                            case "api_raig": // 雷装
+                            case "api_baku": // 爆装
+                            case "api_tyku": // 対空
+                            case "api_tais": // 対潜
+                            case "api_houm": // 命中
+                            case "api_houk": // 回避
+                            case "api_saku": // 索敵
+                            case "api_souk": // 装甲
+                                //case "api_raim": // 雷撃命中
+                                if( v ) value.push( equip_parameter_name[k] + v );
+                                break;
+                            }
                         }
-                    }
 
-                    document.querySelector( `#slot${i + 1}_spec` ).textContent = value.join( ' ' );
+                        document.querySelector( `#slot${i + 1}_spec` ).textContent = value.join( ' ' );
+                    }catch( e ){
+                        slot[i].text( '[Undetermined]' );
+                        slot[i].addClass( 'undetermined_weapon' );
+                        document.querySelector( `#slot${i + 1}_spec` ).textContent = '';
+                    }
                 }else{
                     slot[i].text( '　' );
                     slot[i].attr( 'style', '' );

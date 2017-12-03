@@ -111,3 +111,8 @@ td[cond="high"] {
     border-right: groove 1px;
     padding-right: 0.3em;
 }
+
+.undetermined_weapon {
+    color: red;
+    text-decoration: underline;
+}
