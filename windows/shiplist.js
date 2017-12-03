@@ -478,7 +478,12 @@ let ShipList = {
 
         g.append( "g" )
             .attr( 'class', 'horizontal-line' )
-            .call( d3.axisLeft( y ).tickSizeInner( -width ).tickSizeOuter( 0 ) );
+            .call( d3.axisLeft( y )
+                .tickSizeInner( -width ).tickSizeOuter( 0 )
+                .tickFormat( function( d ){
+                    return d + "隻";
+                } )
+            );
 
         g.selectAll( ".bar" )
             .data( histogram )
