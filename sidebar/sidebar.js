@@ -641,6 +641,7 @@ let KanColleTimerSidebar = {
 
         // ウィンドウ位置サイズを復元
         let win = await browser.windows.getCurrent();
+        this._win = win;
         if( win.title.match( /^moz-extension.*艦これタイマーX$/ ) && win.type != 'normal' ){
             let pos = localStorage.getItem( 'kct_window_position' );
             console.log( pos );
@@ -657,18 +658,20 @@ let KanColleTimerSidebar = {
     },
 
     unload: function( ev ){
-        let x = window.screenX;
-        let y = window.screenY;
-        let w = window.outerWidth;
-        let h = window.outerHeight;
+        if( this._win.title.match( /^moz-extension.*艦これタイマーX$/ ) && this._win.type != 'normal' ){
+            let x = window.screenX;
+            let y = window.screenY;
+            let w = window.outerWidth;
+            let h = window.outerHeight;
 
-        let window_position = {
-            x: x,
-            y: y,
-            w: w,
-            h: h
-        };
-        localStorage.setItem( 'kct_window_position', JSON.stringify( window_position ) );
+            let window_position = {
+                x: x,
+                y: y,
+                w: w,
+                h: h
+            };
+            localStorage.setItem( 'kct_window_position', JSON.stringify( window_position ) );
+        }
     }
 };
 
