@@ -310,7 +310,9 @@ let kcsapicall = {
     "api_req_kousyou/getship": function( data ){
         UpdateBuildTimer( data.api_data.api_kdock );
 
+        // TODO 散らばった装備品の似通った処理を整理したい
         for( let item of data.api_data.api_slotitem ){
+            item._mst_data = KanColle._api_mst_slotitem[item.api_slotitem_id];
             KanColle._api_slot_item[item.api_id] = item;
         }
         SetLocalStorage( 'slotitem', KanColle._api_slot_item );
@@ -330,6 +332,7 @@ let kcsapicall = {
         // 工廠でアイテム開発
         let item = data.api_data.api_slot_item;
         if( item ){
+            item._mst_data = KanColle._api_mst_slotitem[item.api_slotitem_id];
             KanColle._api_slot_item[item.api_id] = item;
         }
         SetLocalStorage( 'slotitem', KanColle._api_slot_item );
