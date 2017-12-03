@@ -133,7 +133,7 @@ let Popup = {
         } );
 
         document.querySelector( '#open-shiplist' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../windows/shiplist.html', 800, 480 );
+            this.openWindow( '../windows/shiplist.html', 800, 512 );
         } );
 
         document.querySelector( '#open-settings' ).addEventListener( 'click', ( ev ) =>{

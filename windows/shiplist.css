@@ -1,3 +1,9 @@
+/*jQuery UIのスタイル修正*/
+.ui-tabs .ui-tabs-panel {
+    padding: 0px !important;
+}
+
+/*----------*/
 html {
     height: 100%;
 }
@@ -7,11 +13,15 @@ body {
     height: 97%;
 }
 
+#tabs {
+    height: 100%;
+}
+
 div#container {
     display: flex;
     flex-direction: row;
 
-    height: 100%;
+    height: 90%;
 }
 
 div#left {
@@ -115,4 +125,9 @@ td[cond="high"] {
 .undetermined_weapon {
     color: red;
     text-decoration: underline;
+}
+
+#pieChart {
+    height: 100%;
+    overflow: auto;
 }

@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>艦娘一覧</title>
+  <link rel="stylesheet" href="../libs/external/jquery-ui/jquery-ui.css"/>
   <link rel="stylesheet" href="../libs/external/jstree/themes/default/style.min.css">
   <link rel="stylesheet" href="shiplist.css">
   <script src="../libs/external/d3/d3.min.js"></script>
+  <script src="../libs/external/d3pie/d3pie.js"></script>
   <script src="../libs/external/jquery-3.2.1.min.js"></script>
+  <script src="../libs/external/jquery-ui/jquery-ui.min.js"></script>
   <script src="../libs/external/jstree/jstree.min.js"></script>
   <script src="../libs/utils.js"></script>
   <script src="shiplist.js"></script>
@@ -38,136 +41,150 @@
   </tr>
 </template>
 
-<div id="container">
-  <div id="left">
-    <ul>
-      <li class="jstree-open">
-        艦隊別
-        <ul>
-          <li id="fleet-1">第1艦隊</li>
-          <li id="fleet-2">第2艦隊</li>
-          <li id="fleet-3">第3艦隊</li>
-          <li id="fleet-4">第4艦隊</li>
-        </ul>
-      </li>
-      <li class="jstree-open">
-        艦種別
-        <ul id="show-by-ship-type">
-          <li id="kind-all"><a href="#" class="jstree-clicked">全て</a></li>
-        </ul>
-      </li>
-    </ul>
+<div id="tabs">
+  <ul>
+    <li><a href="#container">艦娘一覧</a></li>
+    <li><a href="#tabs-piechart">構成比</a></li>
+    <li><a href="#tabs-3">レベル分布</a></li>
+  </ul>
 
-  </div>
-  <div id="right">
+  <div id="container">
+    <div id="left">
+      <ul>
+        <li class="jstree-open">
+          艦隊別
+          <ul>
+            <li id="fleet-1">第1艦隊</li>
+            <li id="fleet-2">第2艦隊</li>
+            <li id="fleet-3">第3艦隊</li>
+            <li id="fleet-4">第4艦隊</li>
+          </ul>
+        </li>
+        <li class="jstree-open">
+          艦種別
+          <ul id="show-by-ship-type">
+            <li id="kind-all"><a href="#" class="jstree-clicked">全て</a></li>
+          </ul>
+        </li>
+      </ul>
 
-    <div id="right-top">
-      <table id="tbl-shiplist" border="1">
-        <thead>
-        <tr>
-          <th>No.</th>
-          <th>艦種</th>
-          <th>艦名</th>
-          <th>Lv</th>
-          <th>状態</th>
-          <th>火力</th>
-          <th>雷装</th>
-          <th>対空</th>
-          <th>対潜</th>
-          <th>索敵</th>
-          <th>EXP.</th>
-          <th>搭載</th>
-          <th>装備1</th>
-          <th>装備2</th>
-          <th>装備3</th>
-          <th>装備4</th>
-        </tr>
-        </thead>
-        <tbody id="shiplist">
-
-        </tbody>
-        <thead>
-        <tr>
-          <th>No.</th>
-          <th>艦種</th>
-          <th>艦名</th>
-          <th>Lv</th>
-          <th>状態</th>
-          <th>火力</th>
-          <th>雷装</th>
-          <th>対空</th>
-          <th>対潜</th>
-          <th>索敵</th>
-          <th>EXP.</th>
-          <th>搭載</th>
-          <th>装備1</th>
-          <th>装備2</th>
-          <th>装備3</th>
-          <th>装備4</th>
-        </tr>
-        </thead>
-
-      </table>
     </div>
-    <tr id="right-bottom">
+    <div id="right">
 
-      <fieldset>
-        <legend>性能諸元</legend>
-        <label id="api_stype">艦種</label> <label id="api_name">艦名</label> <label id="api_lv">Lv ---</label> <label
-              id="api_exp">Exp 0</label> <label>(Next <span id="api_exp_next">0</span>)</label>
-        <label id="api_slot_ex"></label>
-        <table id="ship-spec">
+      <div id="right-top">
+        <table id="tbl-shiplist" border="1">
+          <thead>
           <tr>
-            <td>耐久</td>
-            <td id="api_maxhp">0</td>
-            <td>装甲</td>
-            <td id="api_soukou">0</td>
-            <td>回避</td>
-            <td id="api_kaihi">0</td>
-            <td>搭載</td>
-            <td id="api_onslot">0</td>
-            <td>速力</td>
-            <td id="api_soku">高速</td>
-            <td>射程</td>
-            <td id="api_leng">短</td>
+            <th>No.</th>
+            <th>艦種</th>
+            <th>艦名</th>
+            <th>Lv</th>
+            <th>状態</th>
+            <th>火力</th>
+            <th>雷装</th>
+            <th>対空</th>
+            <th>対潜</th>
+            <th>索敵</th>
+            <th>EXP.</th>
+            <th>搭載</th>
+            <th>装備1</th>
+            <th>装備2</th>
+            <th>装備3</th>
+            <th>装備4</th>
           </tr>
+          </thead>
+          <tbody id="shiplist">
+
+          </tbody>
+          <thead>
           <tr>
-            <td>火力</td>
-            <td id="api_karyoku">0</td>
-            <td>雷装</td>
-            <td id="api_raisou">0</td>
-            <td>対空</td>
-            <td id="api_taiku">0</td>
-            <td>対潜</td>
-            <td id="api_taisen">0</td>
-            <td>索敵</td>
-            <td id="api_sakuteki">0</td>
-            <td>運</td>
-            <td id="api_lucky">0</td>
+            <th>No.</th>
+            <th>艦種</th>
+            <th>艦名</th>
+            <th>Lv</th>
+            <th>状態</th>
+            <th>火力</th>
+            <th>雷装</th>
+            <th>対空</th>
+            <th>対潜</th>
+            <th>索敵</th>
+            <th>EXP.</th>
+            <th>搭載</th>
+            <th>装備1</th>
+            <th>装備2</th>
+            <th>装備3</th>
+            <th>装備4</th>
           </tr>
+          </thead>
+
         </table>
-        <table id="equipment">
-          <tr>
-            <td><label id="api_slot1">　</label></td>
-            <td><label id="slot1_spec"></label></td>
-          </tr>
-          <tr>
-            <td><label id="api_slot2">　</label></td>
-            <td><label id="slot2_spec"></label></td>
-          </tr>
-          <tr>
-            <td><label id="api_slot3">　</label></td>
-            <td><label id="slot3_spec"></label></td>
-          </tr>
-          <tr>
-            <td><label id="api_slot4">　</label></td>
-            <td><label id="slot4_spec"></label></td>
-          </tr>
-        </table>
-      </fieldset>
+      </div>
+      <tr id="right-bottom">
+
+        <fieldset>
+          <legend>性能諸元</legend>
+          <label id="api_stype">艦種</label> <label id="api_name">艦名</label> <label id="api_lv">Lv ---</label> <label
+                id="api_exp">Exp 0</label> <label>(Next <span id="api_exp_next">0</span>)</label>
+          <label id="api_slot_ex"></label>
+          <table id="ship-spec">
+            <tr>
+              <td>耐久</td>
+              <td id="api_maxhp">0</td>
+              <td>装甲</td>
+              <td id="api_soukou">0</td>
+              <td>回避</td>
+              <td id="api_kaihi">0</td>
+              <td>搭載</td>
+              <td id="api_onslot">0</td>
+              <td>速力</td>
+              <td id="api_soku">高速</td>
+              <td>射程</td>
+              <td id="api_leng">短</td>
+            </tr>
+            <tr>
+              <td>火力</td>
+              <td id="api_karyoku">0</td>
+              <td>雷装</td>
+              <td id="api_raisou">0</td>
+              <td>対空</td>
+              <td id="api_taiku">0</td>
+              <td>対潜</td>
+              <td id="api_taisen">0</td>
+              <td>索敵</td>
+              <td id="api_sakuteki">0</td>
+              <td>運</td>
+              <td id="api_lucky">0</td>
+            </tr>
+          </table>
+          <table id="equipment">
+            <tr>
+              <td><label id="api_slot1">　</label></td>
+              <td><label id="slot1_spec"></label></td>
+            </tr>
+            <tr>
+              <td><label id="api_slot2">　</label></td>
+              <td><label id="slot2_spec"></label></td>
+            </tr>
+            <tr>
+              <td><label id="api_slot3">　</label></td>
+              <td><label id="slot3_spec"></label></td>
+            </tr>
+            <tr>
+              <td><label id="api_slot4">　</label></td>
+              <td><label id="slot4_spec"></label></td>
+            </tr>
+          </table>
+        </fieldset>
+    </div>
+
   </div>
-
-</div>
+  <div id="tabs-piechart">
+    <div id="pieChart"></div>
+    <span style="float:left;">レベル<input id="level-threshold" type="number" value="1">以上</span>
+  </div>
+  <div id="tabs-3">
+    tab3
+  </div>
 </div>
 
 
