@@ -450,22 +450,22 @@ let ShipList = {
         }
         console.log( histogram );
 
-        let margin = {top: 8, right: 30, bottom: 35, left: 20},
-            width  = 800 - margin.left - margin.right,
-            height = 480 - margin.top - margin.bottom;
+        let margin = {top: 8, right: 30, bottom: 35, left: 20};
+        let width = 800 - margin.left - margin.right;
+        let height = 480 - margin.top - margin.bottom;
 
         let svg = d3.select( "#tabs-histogram" ).append( "svg" )
             .attr( "id", "svg-histogram" )
             .attr( "width", width + margin.left + margin.right )
             .attr( "height", height + margin.top + margin.bottom )
             .append( "g" )
-            .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
+            .attr( "transform", `translate(${margin.left},${margin.top})` );
 
-        let x = d3.scaleBand().rangeRound( [0, width] ).padding( 0.1 );
+        let x = d3.scaleBand().rangeRound( [0, width] ).padding( 0.2 );
         let y = d3.scaleLinear().rangeRound( [height, 0] );
 
         let g = svg.append( "g" )
-            .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
+            .attr( "transform", `translate(${margin.left},${margin.top})` );
 
         x.domain( histogram.map( ( d ) =>{
             return d.key;
@@ -473,15 +473,12 @@ let ShipList = {
         y.domain( [0, d3.max( ship_histogram )] );
 
         g.append( "g" )
-            .attr( "class", "axis axis--x" )
-            .attr( "transform", "translate(0," + (height) + ")" )
+            .attr( "transform", `translate(0,${height})` )
             .call( d3.axisBottom( x ) );
 
         g.append( "g" )
-            .attr( "class", "axis axis--y" )
-            .call( d3.axisLeft( y ) )
-            .append( "text" )
-            .attr( "transform", "rotate(-90)" );
+            .attr( 'class', 'horizontal-line' )
+            .call( d3.axisLeft( y ).tickSizeInner( -width ).tickSizeOuter( 0 ) );
 
         g.selectAll( ".bar" )
             .data( histogram )

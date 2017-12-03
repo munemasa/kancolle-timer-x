@@ -138,12 +138,9 @@ td[cond="high"] {
     fill: steelblue;
 }
 
-.bar:hover {
-    fill: brown;
-}
-
-.axis--x path {
-    display: none;
+.horizontal-line .tick line {
+    stroke: lightgrey;
+    opacity: 0.7;
 }
 
 #svg-histogram {
