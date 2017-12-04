@@ -125,7 +125,7 @@ function GetEquipmentSubColor( d ){
 
 
 let ShipList = {
-    ships: null,
+    ships: null, // 艦娘全員
 
     /**
      * 艦娘リスト（配列）をソート
@@ -321,7 +321,29 @@ let ShipList = {
         }
     },
 
+    filterByWeapon: function( item_id ){
+        if( item_id == 0 ){
+            this.createTable( this._show_ships );
+        }else{
+            let filtered = this._show_ships.filter( ( ship ) =>{
+                for( let i = 0, item; item = ship.api_slot[i]; i++ ){
+                    if( item == -1 ) continue;
+                    if( KanColle._api_slot_item[item]._mst_data.api_id == item_id ){
+                        return true;
+                    }
+                }
+                if( ship.api_slot_ex <= 0 ) return false;
+                if( KanColle._api_slot_item[ship.api_slot_ex]._mst_data.api_id == item_id ){
+                    return true;
+                }
+                return false;
+            } );
+            this.createTable( filtered );
+        }
+    },
+
     select: function( type ){
+        $( '#weapon-filter' ).val( 0 );
         switch( type ){
         case 'fleet-1':
         case 'fleet-2':
@@ -338,10 +360,12 @@ let ShipList = {
                 return false;
             } );
             this.createTable( filtered );
+            this._show_ships = filtered;
             break;
 
         case 'kind-all':
             this.createTable( this.ships );
+            this._show_ships = this.ships;
             break;
 
         default:
@@ -358,86 +382,12 @@ let ShipList = {
                     return false;
                 } );
                 this.createTable( filtered );
+                this._show_ships = filtered;
             }
             break;
         }
     },
 
-    createHistogram_d3v3: function(){
-        let histogram = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        let ships = KanColleDatabase.ship.list().map( function( k ){
-            return KanColleDatabase.ship.get( k );
-        } );
-        for( let i = 0; i < ships.length; i++ ){
-            let k = parseInt( ships[i].api_lv / 10 );
-            histogram[k]++;
-        }
-
-        let margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width  = 800 - margin.left - margin.right,
-            height = 480 - margin.top - margin.bottom;
-
-        let x = d3.scale.ordinal().rangeRoundBands( [0, width], .1 );
-        let y = d3.scale.linear().range( [height, 0] );
-
-        let xAxis = d3.svg.axis()
-            .scale( x )
-            .orient( "bottom" )
-            .tickFormat( function( d ){
-                return d3.max( [(d * 10), 1] ) + "-";
-            } );
-
-        let yAxis = d3.svg.axis()
-            .scale( y )
-            .orient( "left" )
-            .tickFormat( function( d ){
-                return d + "隻";
-            } )
-            .ticks( 10 );
-
-        let svg = d3.select( "#histogram" ).append( "svg" )
-            .attr( "id", "svg-histogram" )
-            .attr( "width", width + margin.left + margin.right )
-            .attr( "height", height + margin.top + margin.bottom )
-            .append( "g" )
-            .attr( "transform", "translate(" + margin.left + "," + margin.top + ")" );
-
-        x.domain( d3.keys( histogram ) );
-        y.domain( [0, d3.max( histogram )] );
-
-        svg.append( "g" )
-            .attr( "class", "x axis" )
-            .attr( "transform", "translate(0," + height + ")" )
-            .call( xAxis );
-
-        svg.append( "g" )
-            .attr( "class", "y axis" )
-            .call( yAxis );
-
-        svg.append( "g" )
-            .attr( "class", "grid" )
-            .call( d3.svg.axis()
-                .scale( y )
-                .orient( "left" )
-                .tickSize( -width, 0, 0 )
-                .tickFormat( "" )
-            );
-
-        svg.selectAll( ".bar" )
-            .data( histogram )
-            .enter().append( "rect" )
-            .attr( "class", "bar" )
-            .attr( "x", function( d, i ){
-                return x( i );
-            } )
-            .attr( "width", x.rangeBand() )
-            .attr( "y", function( d ){
-                return y( d );
-            } )
-            .attr( "height", function( d ){
-                return height - y( d );
-            } );
-    },
 
     createHistogram: function( ships ){
         let ship_histogram = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -453,7 +403,6 @@ let ShipList = {
                 value: ship_histogram[i]
             } );
         }
-        console.log( histogram );
 
         let margin = {top: 8, right: 30, bottom: 35, left: 20};
         let width = 800 - margin.left - margin.right;
@@ -623,6 +572,7 @@ let ShipList = {
         }
 
         this.ships = ships;
+        this._show_ships = ships;
         this.sort( this.ships, 0 );
         this.createTable( this.ships );
         this.createHistogram( this.ships );
@@ -634,26 +584,26 @@ let ShipList = {
             let d = KanColle._api_slot_item[k];
             tmp[d._mst_data.api_name] = d._mst_data;
         }
-
         let keys = d3.map( tmp ).keys();
-
-
+        keys.sort( ( a, b ) =>{
+            return tmp[a].api_id - tmp[b].api_id;
+        } );
         for( let i = 0; i < 4; i += 2 ){
             keys.sort( function( a, b ){
                 return tmp[a].api_type[i] - tmp[b].api_type[i];
             } );
         }
-
         keys.forEach( function( d ){
             let menuitem = document.createElement( 'option' );
             let color = GetEquipmentColor( tmp[d] );
             menuitem.appendChild( document.createTextNode( d ) );
             menuitem.setAttribute( "style", `border-left: ${color} 16px solid;` );
+            menuitem.setAttribute( 'value', tmp[d].api_id );
             $( '#weapon-filter' ).append( menuitem );
         } );
 
 
-        // show-by-ship-type
+        // 艦種別リストを作成
         let treeview = $( '#show-by-ship-type' );
         let flg = {};
         for( let s of ships ){
@@ -676,6 +626,10 @@ let ShipList = {
 
         $( '#level-threshold' ).on( 'change', ( ev ) =>{
             this.createPieChart( this.ships );
+        } );
+
+        $( '#weapon-filter' ).on( 'change', ( ev ) =>{
+            this.filterByWeapon( $( '#weapon-filter' ).val() );
         } );
     }
 };
