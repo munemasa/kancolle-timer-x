@@ -42,12 +42,14 @@ function PlayAudio( id, t, text ){
         audio.setAttribute( 'kc-play-time', t );
 
         if( KanColleTimerSidebar.config && KanColleTimerSidebar.config['notify-popup'] && text ){
-            browser.notifications.create( {
-                "type": "basic",
-                "iconUrl": "http://pics.dmm.com/freegame/app/854854/200.jpg",
-                "title": "艦これタイマーX",
-                "message": text
-            } );
+            browser.notifications.create(
+                id,
+                {
+                    "type": "basic",
+                    "iconUrl": "http://pics.dmm.com/freegame/app/854854/200.jpg",
+                    "title": "艦これタイマーX",
+                    "message": text
+                } );
         }
     }
 }
