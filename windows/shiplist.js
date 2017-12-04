@@ -574,7 +574,7 @@ let ShipList = {
             "effects": {
                 "pullOutSegmentOnClick": {
                     "effect": "linear",
-                    "speed": 400,
+                    "speed": 200,
                     "size": 8
                 }
             },
