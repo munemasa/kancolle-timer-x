@@ -199,7 +199,7 @@ function UpdateMasterData( api_data ){
  * @param data
  */
 function UpdateDeck( data ){
-    // 連合艦隊でも問題ないか未確認
+    // TODO 連合艦隊でも問題ないか未確認
     for( let i in KanColle.deck ){
         for( let deck of data.api_deck_data ){
             if( KanColle.deck[i].api_id == deck.api_id ){
