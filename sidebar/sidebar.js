@@ -579,6 +579,23 @@ let KanColleTimerSidebar = {
             }
         } );
 
+        // ウィンドウ位置サイズを復元
+        let win = await browser.windows.getCurrent();
+        this._win = win;
+        if( win.title.match( /^moz-extension.*艦これタイマーX$/ ) && win.type != 'normal' ){
+            let pos = localStorage.getItem( 'kct_window_position' );
+            console.log( pos );
+            if( pos ){
+                pos = JSON.parse( pos );
+                browser.windows.update( win.id, {
+                    left: pos.x,
+                    top: pos.y,
+                    width: pos.w,
+                    height: pos.h
+                } )
+            }
+        }
+
         // 保存しているデータをロード
         let result;
         result = await browser.storage.local.get( 'slotitem' );
@@ -639,22 +656,6 @@ let KanColleTimerSidebar = {
 
         console.log( 'kancolle timer x sidebar initialized.' );
 
-        // ウィンドウ位置サイズを復元
-        let win = await browser.windows.getCurrent();
-        this._win = win;
-        if( win.title.match( /^moz-extension.*艦これタイマーX$/ ) && win.type != 'normal' ){
-            let pos = localStorage.getItem( 'kct_window_position' );
-            console.log( pos );
-            if( pos ){
-                pos = JSON.parse( pos );
-                browser.windows.update( win.id, {
-                    left: pos.x,
-                    top: pos.y,
-                    width: pos.w,
-                    height: pos.h
-                } )
-            }
-        }
     },
 
     unload: function( ev ){
