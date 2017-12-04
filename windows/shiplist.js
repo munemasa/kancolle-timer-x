@@ -86,6 +86,8 @@ let EquipmentColor = {
     43: '#ffffff',	// 戦闘糧食
     44: '#78dcb5', // 洋上補給
 
+    47: '#39b74e', // 九六式陸攻
+
     99: ''
 };
 
@@ -100,6 +102,9 @@ function GetEquipmentColor( d ){
     if( (d.api_type[2] == 1 || d.api_type[2] == 4) && d.api_type[3] == 16 ){
         // 主砲・副砲扱いの高角砲たち
         color = "#66cc77";
+    }
+    if( !color ){
+        console.log( `Unknown color ${d.api_type[2]}` );
     }
     return color;
 }
@@ -620,8 +625,33 @@ let ShipList = {
         this.ships = ships;
         this.sort( this.ships, 0 );
         this.createTable( this.ships );
-
         this.createHistogram( this.ships );
+
+        // 装備フィルターメニュー
+        let tmp = {};
+        for( let k in KanColle._api_slot_item ){
+            if( k == -1 ) continue;
+            let d = KanColle._api_slot_item[k];
+            tmp[d._mst_data.api_name] = d._mst_data;
+        }
+
+        let keys = d3.map( tmp ).keys();
+
+
+        for( let i = 0; i < 4; i += 2 ){
+            keys.sort( function( a, b ){
+                return tmp[a].api_type[i] - tmp[b].api_type[i];
+            } );
+        }
+
+        keys.forEach( function( d ){
+            let menuitem = document.createElement( 'option' );
+            let color = GetEquipmentColor( tmp[d] );
+            menuitem.appendChild( document.createTextNode( d ) );
+            menuitem.setAttribute( "style", `border-left: ${color} 16px solid;` );
+            $( '#weapon-filter' ).append( menuitem );
+        } );
+
 
         // show-by-ship-type
         let treeview = $( '#show-by-ship-type' );
