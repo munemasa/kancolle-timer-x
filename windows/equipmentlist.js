@@ -30,7 +30,7 @@ let EquipmentList = {
         let prev_name = '';
         let description;
         let spec_str;
-
+        let style_str;
         let cnt = 0;
         for( let i = 0, item; item = this.allequipments[i]; i++ ){
             let t = document.querySelector( '#template-equipment' );
@@ -65,19 +65,21 @@ let EquipmentList = {
                 }
                 spec_str = value.join( ' ' );
 
+                // 装備スペック
                 let span = document.createElement( 'span' );
                 span.setAttribute( 'class', 'equip-specs' );
                 span.appendChild( document.createTextNode( spec_str ) );
                 e.appendChild( span );
 
+                // 装備品名
                 let label = document.createElement( 'label' );
                 label.setAttribute( 'class', 'equip-name' );
                 label.setAttribute( 'for', '_' + item._mst_data.api_id );
-                label.appendChild( document.createTextNode( equip_name ) );
+                label.appendChild( document.createTextNode( `${equip_name} (${this._count_all[item._mst_data.api_id]})` ) );
                 let color = GetEquipmentColor( item._mst_data );
                 let color2 = GetEquipmentSubColor( item._mst_data ) || color;
-                let str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
-                label.setAttribute( 'style', str );
+                style_str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
+                label.setAttribute( 'style', style_str );
                 if( cnt++ % 2 ){
                     $( label ).addClass( 'even' );
                 }
@@ -95,6 +97,7 @@ let EquipmentList = {
             }
 
             name.textContent = equip_name;
+            name.setAttribute( 'style', style_str );
 
             ship_name.textContent = `${item._owner_ship_name} ${item._owner_ship_lv}`;
 
@@ -115,6 +118,15 @@ let EquipmentList = {
             item[key]._owner_ship_lv = '';
             return item[key];
         } );
+
+        // 数える
+        let _count_all = {};
+        this.allequipments.forEach( function( d ){
+            let k = d._mst_data.api_id;
+            if( !_count_all[k] ) _count_all[k] = 0;
+            _count_all[k]++;
+        } );
+        this._count_all = _count_all;
 
         // 装備品に装備艦娘名を設定
         for( let k in KanColle._api_ship ){

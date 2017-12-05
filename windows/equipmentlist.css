@@ -6,10 +6,12 @@ body {
 
 label {
     display: block;
+    white-space: nowrap;
 }
 
 span.equip-specs {
     float: right;
+    padding-right: 0.5em;
 }
 
 label.equip-name:hover {
@@ -26,6 +28,7 @@ table.description {
 
 table.description td {
     width: 30%;
+    white-space: nowrap;
 }
 
 input[type="checkbox"].on-off {
