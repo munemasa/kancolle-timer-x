@@ -4,17 +4,20 @@ body {
     width: 95%;
 }
 
-
 label {
     display: block;
 }
 
-label.equip-specs {
+span.equip-specs {
     float: right;
 }
 
 label.equip-name:hover {
     cursor: pointer;
+}
+
+label.equip-name.even {
+    background-color: #efefef;
 }
 
 table.description {

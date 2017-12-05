@@ -26,7 +26,6 @@ let EquipmentList = {
     allequipments: [],
 
     create: function(){
-
         let e = document.querySelector( '#equipment-list' );
         let prev_name = '';
         let description;
@@ -66,17 +65,21 @@ let EquipmentList = {
                 }
                 spec_str = value.join( ' ' );
 
-                let label = document.createElement( 'label' );
-                label.setAttribute( 'class', 'equip-specs' );
-                label.appendChild( document.createTextNode( spec_str ) );
-                e.appendChild( label );
+                let span = document.createElement( 'span' );
+                span.setAttribute( 'class', 'equip-specs' );
+                span.appendChild( document.createTextNode( spec_str ) );
+                e.appendChild( span );
 
-                label = document.createElement( 'label' );
+                let label = document.createElement( 'label' );
                 label.setAttribute( 'class', 'equip-name' );
                 label.setAttribute( 'for', '_' + item._mst_data.api_id );
                 label.appendChild( document.createTextNode( equip_name ) );
+                let color = GetEquipmentColor( item._mst_data );
+                let color2 = GetEquipmentSubColor( item._mst_data ) || color;
+                let str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
+                label.setAttribute( 'style', str );
                 if( cnt++ % 2 ){
-                    label.setAttribute( 'style', 'background-color: #efefef;' );
+                    $( label ).addClass( 'even' );
                 }
                 e.appendChild( label );
 
