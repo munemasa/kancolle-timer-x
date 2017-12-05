@@ -398,3 +398,8 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 LoadMasterData();
+
+window.addEventListener( 'unload', ( ev ) =>{
+    console.log( 'unload background page.' );
+    localStorage.setItem( 'kct_test', Math.random() );
+} );
