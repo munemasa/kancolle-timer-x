@@ -21,6 +21,20 @@
  */
 
 
+let EquipmentParameterName = {
+    "api_houg": "火力",
+    "api_raig": "雷装",
+    "api_baku": "爆装",
+    "api_tyku": "対空",
+    "api_tais": "対潜",
+    "api_houm": "命中",
+    "api_houk": "回避",
+    "api_saku": "索敵",
+    "api_raim": "雷撃命中", // かな？
+    "api_souk": "装甲"
+};
+
+
 // TODO 装備品一覧でも使うので整理したい
 let EquipmentColor = {
     /*

@@ -136,6 +136,10 @@ let Popup = {
             this.openWindow( '../windows/shiplist.html', 800, 512 );
         } );
 
+        document.querySelector( '#open-equipmentlist' ).addEventListener( 'click', ( ev ) =>{
+            this.openWindow( '../windows/equipmentlist.html', 640, 480 );
+        } );
+
         document.querySelector( '#open-settings' ).addEventListener( 'click', ( ev ) =>{
             browser.runtime.openOptionsPage();
             window.close();

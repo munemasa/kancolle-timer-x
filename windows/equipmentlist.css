@@ -1,0 +1,40 @@
+body {
+    font-size: 9pt;
+    padding: 0.3em;
+    width: 95%;
+}
+
+
+label {
+    display: block;
+}
+
+label.equip-specs {
+    float: right;
+}
+
+label.equip-name:hover {
+    cursor: pointer;
+}
+
+table.description {
+    width: 100%;
+}
+
+table.description td {
+    width: 30%;
+}
+
+input[type="checkbox"].on-off {
+    display: none;
+}
+
+input[type="checkbox"].on-off + .description {
+    display: none;
+}
+
+input[type="checkbox"].on-off:checked + .description {
+    display: block;
+    padding-left: 2em;
+    border: 1px groove gray;
+}

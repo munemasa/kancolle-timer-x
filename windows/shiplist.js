@@ -163,18 +163,6 @@ let ShipList = {
 
         // 装備の表示
         let slot = [$( '#api_slot1' ), $( '#api_slot2' ), $( '#api_slot3' ), $( '#api_slot4' )];
-        let equip_parameter_name = {
-            "api_houg": "火力",
-            "api_raig": "雷装",
-            "api_baku": "爆装",
-            "api_tyku": "対空",
-            "api_tais": "対潜",
-            "api_houm": "命中",
-            "api_houk": "回避",
-            "api_saku": "索敵",
-            "api_raim": "雷撃命中", // かな？
-            "api_souk": "装甲"
-        };
 
         for( let i = 0; i < 4; i++ ){
             slot[i].removeClass( 'undetermined_weapon' );
@@ -201,7 +189,7 @@ let ShipList = {
                         case "api_saku": // 索敵
                         case "api_souk": // 装甲
                             //case "api_raim": // 雷撃命中
-                            if( v ) value.push( equip_parameter_name[k] + v );
+                            if( v ) value.push( EquipmentParameterName[k] + v );
                             break;
                         }
                     }
