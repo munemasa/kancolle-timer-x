@@ -114,6 +114,7 @@ let EquipmentList = {
         let item = KanColle._api_slot_item;
 
         this.allequipments = Object.keys( item ).map( function( key ){
+            // TODO TypeError: can't access dead object になることがある
             item[key]._owner_ship_name = '---';
             item[key]._owner_ship_lv = '';
             return item[key];

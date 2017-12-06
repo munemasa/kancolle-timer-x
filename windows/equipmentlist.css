@@ -42,5 +42,5 @@ input[type="checkbox"].on-off + .description {
 input[type="checkbox"].on-off:checked + .description {
     display: block;
     padding-left: 2em;
-    border: 1px groove gray;
+    /*border: 1px groove gray;*/
 }
