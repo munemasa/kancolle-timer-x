@@ -121,6 +121,10 @@ let ShipList = {
 
             let equip = [ship_equip1, ship_equip2, ship_equip3, ship_equip4];
             for( let i = 0; i < 4; i++ ){
+                if( ship.api_slot[i] == -1 ){
+                    equip[i].textContent = '';
+                    continue;
+                }
                 let item = KanColle._api_slot_item[ship.api_slot[i]];
                 try{
                     equip[i].textContent = item._mst_data.api_name;
