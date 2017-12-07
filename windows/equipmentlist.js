@@ -113,7 +113,10 @@ let EquipmentList = {
         // 装備アイテムリスト
         let item = KanColle._api_slot_item;
 
-        this.allequipments = Object.keys( item ).map( function( key ){
+        this.allequipments = Object.keys( item ).filter( ( i ) =>{
+            // 艦娘一覧で装備品の表示処理のために -1 のIDを持った架空装備を作成しているのでこれを避ける
+            return i != -1;
+        } ).map( function( key ){
             // TODO TypeError: can't access dead object になることがある
             item[key]._owner_ship_name = '---';
             item[key]._owner_ship_lv = '';
