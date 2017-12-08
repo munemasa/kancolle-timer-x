@@ -66,6 +66,20 @@ let ShipList = {
         } );
     },
 
+    sortList: function( type ){
+        switch( type ){
+        case 'sort-type':
+            this.sort( this._show_ships, 0 );
+            break;
+        case 'sort-lv':
+            this.sort( this._show_ships, 1 );
+            break;
+        case 'sort-cond':
+            this.sort( this._show_ships, 2 );
+            break;
+        }
+        this.createTable( this._show_ships );
+    },
 
     createTable: function( ships ){
         let table = document.querySelector( '#shiplist' )
@@ -521,6 +535,11 @@ let ShipList = {
 
         $( '#weapon-filter' ).on( 'change', ( ev ) =>{
             this.filterByWeapon( $( '#weapon-filter' ).val() );
+        } );
+
+        $( 'th.list-sort' ).on( 'click', function( ev ){
+            let id = $( this ).attr( 'id' );
+            ShipList.sortList( id );
         } );
     }
 };

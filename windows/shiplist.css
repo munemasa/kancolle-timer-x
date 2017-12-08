@@ -79,6 +79,10 @@ th {
     background-color: #e0e0e0;
 }
 
+th.list-sort {
+    cursor: pointer;
+}
+
 table#tbl-shiplist td {
     text-align: right;
 }
