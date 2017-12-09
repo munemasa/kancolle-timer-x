@@ -13,3 +13,19 @@ div {
 fieldset {
     border-radius: 4px;
 }
+
+.menuitem {
+    border: 1px outset gray;
+    border-radius: 2px;
+    padding: 4px;
+    margin: 2px;
+}
+
+.menuitem:hover {
+    background-color: #f0f0f0;
+}
+
+.menuitem a {
+    text-decoration: none;
+    width: 100%;
+}
