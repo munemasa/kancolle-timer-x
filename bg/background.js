@@ -21,10 +21,28 @@
  */
 console.log( 'load kancolle timer x background script.' );
 
-let KanColle = {};
+let KanColle = {
+    resourcelog: []
+};
 
 function GetKanColle(){
     return KanColle;
+}
+
+
+function SaveResourceData(){
+    // 資源グラフを保存
+    KanColle.resourcelog.forEach( ( e ) =>{
+        // 資源グラフで設定した値がDead objectになるので削除する
+        delete e.date;
+    } );
+    let month_ago = GetCurrentTime() - 60 * 60 * 24 * 31;
+    month_ago = parseInt( month_ago / 60 );
+    let data = KanColle.resourcelog.filter(
+        function( elem, index, array ){
+            return elem.record_time > month_ago;
+        } );
+    localStorage.setItem( 'kct_resource', JSON.stringify( data ) );
 }
 
 /**
@@ -232,6 +250,43 @@ function UpdateBuildTimer( data ){
 function UpdateMaterial( material ){
     KanColle.material = material;
     SetLocalStorage( 'material', KanColle.material );
+
+    let last_data;
+    last_data = KanColle.resourcelog[KanColle.resourcelog.length - 1] || {record_time: 0};
+
+    let now = parseInt( GetCurrentTime() / 60 );
+    let m = {};
+    m.record_time = now;
+    for( let value of material ){
+        switch( value.api_id ){
+        case 1: // 燃料
+            m.fuel = value.api_value;
+            break;
+        case 2: // 弾薬
+            m.bullet = value.api_value;
+            break;
+        case 3: // 鋼材
+            m.steel = value.api_value;
+            break;
+        case 4: // ボーキサイト
+            m.bauxite = value.api_value;
+            break;
+        case 6: // バケツ
+            m.bucket = value.api_value;
+            break;
+        }
+    }
+    if( last_data.record_time != m.record_time &&
+        (
+            last_data.fuel != m.fuel ||
+            last_data.bullet != m.bullet ||
+            last_data.steel != m.steel ||
+            last_data.bauxite != m.bauxite ||
+            last_data.bucket != m.bucket) ){
+        KanColle.resourcelog.push( m );
+
+        SaveResourceData();
+    }
 }
 
 /**
@@ -398,6 +453,12 @@ browser.webRequest.onBeforeRequest.addListener(
 );
 
 LoadMasterData();
+
+
+let tmp = localStorage.getItem( 'kct_resource' );
+if( tmp ){
+    KanColle.resourcelog = JSON.parse( tmp );
+}
 
 window.addEventListener( 'unload', ( ev ) =>{
     console.log( 'unload background page.' );
