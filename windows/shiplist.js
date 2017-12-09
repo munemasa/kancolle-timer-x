@@ -57,7 +57,30 @@ let ShipList = {
                 tmpa = a.api_cond;
                 tmpb = b.api_cond;
                 break;
-            case 3: // 入渠時間
+
+            case 3: // 火力
+                tmpa = a.api_karyoku[0];
+                tmpb = b.api_karyoku[0];
+                break;
+            case 4: // 雷装
+                tmpa = a.api_raisou[0];
+                tmpb = b.api_raisou[0];
+                break;
+            case 5: // 対空
+                tmpa = a.api_taiku[0];
+                tmpb = b.api_taiku[0];
+                break;
+            case 6: // 対潜
+                tmpa = a.api_taisen[0];
+                tmpb = b.api_taisen[0];
+                break;
+            case 7: // 索敵
+                tmpa = a.api_sakuteki[0];
+                tmpb = b.api_sakuteki[0];
+                break;
+
+
+            case 99: // 入渠時間
                 tmpa = a.api_ndock_time;
                 tmpb = b.api_ndock_time;
                 break;
@@ -77,6 +100,22 @@ let ShipList = {
         case 'sort-cond':
             this.sort( this._show_ships, 2 );
             break;
+        case 'sort-karyoku':
+            this.sort( this._show_ships, 3 );
+            break;
+        case 'sort-raisou':
+            this.sort( this._show_ships, 4 );
+            break;
+        case 'sort-taiku':
+            this.sort( this._show_ships, 5 );
+            break;
+        case 'sort-taisen':
+            this.sort( this._show_ships, 6 );
+            break;
+        case 'sort-sakuteki':
+            this.sort( this._show_ships, 7 );
+            break;
+
         }
         this.createTable( this._show_ships );
     },
