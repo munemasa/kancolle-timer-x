@@ -295,14 +295,14 @@ let ShipList = {
         case 'fleet-4':
             type.match( /fleet-(\d)/ );
             let n = parseInt( RegExp.$1 );
-            let filtered = this.ships.filter( ( s ) =>{
-                for( let i = 0, deck; deck = KanColle.deck[i]; i++ ){
-                    if( deck.api_id == n ){
-                        if( deck.api_ship.includes( s.api_id ) ) return true;
+            let filtered = [];
+            for( let i = 0, deck; deck = KanColle.deck[i]; i++ ){
+                if( deck.api_id == n ){
+                    for( let j = 0, ship; ship = deck.api_ship[j]; j++ ){
+                        filtered.push( KanColle._api_ship[ship] );
                     }
                 }
-                return false;
-            } );
+            }
             this.createTable( filtered );
             this._show_ships = filtered;
             break;
@@ -320,7 +320,7 @@ let ShipList = {
                     if( s._stype == n ){
                         return true;
                     }
-                    if( (n == 8 || n == 9) && ( s._stype == 8 || s._stype == 9) ){
+                    if( (n == 8 || n == 9) && (s._stype == 8 || s._stype == 9) ){
                         return true;
                     }
                     return false;
