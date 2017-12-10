@@ -117,7 +117,6 @@ let EquipmentList = {
             // 艦娘一覧で装備品の表示処理のために -1 のIDを持った架空装備を作成しているのでこれを避ける
             return i != -1;
         } ).map( function( key ){
-            // TODO TypeError: can't access dead object になることがある
             item[key]._owner_ship_name = '---';
             item[key]._owner_ship_lv = '';
             return item[key];
@@ -164,9 +163,21 @@ let EquipmentList = {
 
         this.initEquipmentList();
         this.create();
+    },
+
+    destroy: function(){
+        // 他で TypeError: can't access dead object になるので削除する
+        for( let item of this.allequipments ){
+            delete item._owner_ship_name;
+            delete item._owner_ship_lv;
+        }
     }
 };
 
 window.addEventListener( 'load', ( ev ) =>{
     EquipmentList.init();
+} );
+
+window.addEventListener( 'unload', ( ev ) =>{
+    EquipmentList.destroy();
 } );

@@ -504,11 +504,6 @@ let ShipList = {
         // 物は試しと、手抜きのため。
         let bg = await browser.runtime.getBackgroundPage();
         KanColle = bg.GetKanColle();
-        KanColle._api_slot_item[-1] = {
-            _mst_data: {
-                api_name: ''
-            }
-        };
 
         let ships = [];
         for( let i in KanColle._api_ship ){
