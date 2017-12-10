@@ -164,7 +164,11 @@ let ResourceGraph = {
         svg.append( "g" )
             .attr( 'class', 'vertical-line' )
             .attr( "transform", `translate(0, ${height})` )
-            .call( d3.axisBottom( x ).tickSizeInner( -height ) );
+            .call( d3.axisBottom( x ).tickSizeInner( -height )
+                .tickFormat( ( d ) =>{
+                    let str = GetDateString( d.getTime() );
+                    return str.substring( 0, str.length - 3 );
+                } ) );
 
         svg.append( "g" )
             .attr( 'class', 'horizontal-line' )
