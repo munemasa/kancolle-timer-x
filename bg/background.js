@@ -22,7 +22,22 @@
 console.log( 'load kancolle timer x background script.' );
 
 let KanColle = {
-    resourcelog: []
+    resourcelog: [],
+
+
+    /**
+     * 指定の艦隊番号(1-4)の艦隊を返す.
+     * @param fleet_no
+     * @returns {*}
+     */
+    getDeck: function( fleet_no ){
+        for( let fleet of this.deck ){
+            if( fleet.api_id == fleet_no ){
+                return fleet;
+            }
+        }
+        return null;
+    }
 };
 
 function GetKanColle(){
@@ -277,8 +292,7 @@ function UpdateMaterial( material ){
         }
     }
     if( last_data.record_time != m.record_time &&
-        (
-            last_data.fuel != m.fuel ||
+        (last_data.fuel != m.fuel ||
             last_data.bullet != m.bullet ||
             last_data.steel != m.steel ||
             last_data.bauxite != m.bauxite ||
@@ -334,6 +348,193 @@ function UpdateBasic( basic ){
     basic._cur_slotitem = cur_items;
     SetLocalStorage( 'basic', basic );
 }
+
+
+function GunBattle( hougeki, myfleet, data ){
+    for( let i = 0; i < hougeki.api_at_eflag.length; i++ ){
+        let atk = hougeki.api_at_list[i]; // 攻撃する艦 index 0,1,2,...
+
+        for( let j = 0; j < hougeki.api_df_list[i].length; j++ ){
+            let def = hougeki.api_df_list[i][j];
+            let damage = hougeki.api_damage[i][j];
+            damage = parseInt( damage );
+            if( hougeki.api_at_eflag[i] == 0 ){
+                // 自軍→敵軍
+                let ship = KanColle._api_mst_ship[data.api_ship_ke[def]];
+                data.api_e_nowhps[def] -= damage;
+                console.log( `#${j} ${KanColle._api_ship[myfleet.api_ship[atk]]._name} が ${ship.api_name} に ${damage} ダメージ` );
+            }else{
+                data.api_f_nowhps[def] -= damage;
+                console.log( `#${j} ${KanColle._api_ship[myfleet.api_ship[def]]._name} に ${damage} ダメージ` );
+            }
+        }
+    }
+}
+
+function TorpedoBattle( raigeki, myfleet, data ){
+    // 自軍→敵軍
+    for( let i = 0; i < raigeki.api_edam.length; i++ ){
+        let damage = raigeki.api_edam[i];
+        if( damage > 0 ){
+            damage = parseInt( damage );
+            data.api_e_nowhps[i] -= damage;
+            let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+            console.log( `#${i + 1} ${ship.api_name} に ${damage} ダメージ` );
+        }
+    }
+    // 敵軍→自軍
+    for( let i = 0; i < raigeki.api_fdam.length; i++ ){
+        let damage = raigeki.api_fdam[i];
+        if( damage > 0 ){
+            damage = parseInt( damage );
+            data.api_f_nowhps[i] -= damage;
+            console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} に ${damage} ダメージ` );
+        }
+    }
+}
+
+function DispBattleResult( myfleet, data ){
+    console.log( '自軍' );
+    for( let i = 0; i < data.api_f_nowhps.length; i++ ){
+        let nowhp = data.api_f_nowhps[i];
+        let maxhp = data.api_f_maxhps[i];
+        let ratio = nowhp / maxhp;
+
+        // 第1艦隊のみ
+        let percentage = ratio * 100;
+        let dmg;
+        if( nowhp == maxhp ){
+            dmg = '';
+        }else if( percentage <= 25 ){
+            dmg = "大破";
+        }else if( percentage <= 50 ){
+            dmg = "中破";
+        }else if( percentage <= 75 ){
+            dmg = "小破";
+        }else{
+            dmg = "";
+        }
+        console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} HP ${nowhp}/${maxhp} (${dmg})` );
+    }
+    console.log( '敵軍' );
+    for( let i = 0; i < data.api_e_nowhps.length; i++ ){
+        let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+        console.log( `#${i + 1} ${ship.api_name} HP ${data.api_e_nowhps[i] <= 0 ? '撃沈' : data.api_e_nowhps[i]}` );
+    }
+}
+
+function NormalDaytimeBattle( data ){
+    console.log( `第${data.api_deck_id}艦隊 昼戦` );
+    let myfleet = KanColle.getDeck( data.api_deck_id );
+
+    console.log( '敵軍艦隊HP' );
+    for( let i = 0; i < data.api_e_nowhps.length; i++ ){
+        let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+        console.log( `#${i + 1} ${ship.api_name}(Lv${data.api_ship_lv[i]}) ${data.api_e_nowhps[i]}/${data.api_e_maxhps[i]}` );
+    }
+
+    console.log( '自軍艦隊HP' );
+    for( let i = 0; i < data.api_f_nowhps.length; i++ ){
+        console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
+    }
+
+    console.log( '*** 先制対潜水艦戦 ***' );
+    if( data.api_opening_taisen ){
+        // 砲撃戦と同じ処理
+        GunBattle( data.api_opening_taisen, myfleet, data );
+    }
+
+    //--- 開幕戦
+    console.log( '*** 先制雷撃戦 ***' );
+    if( data.api_opening_atack ){
+        TorpedoBattle( data.api_opening_atack, myfleet, data );
+    }
+
+    console.log( '*** 航空戦 ***' );
+    // 艦艇へのダメージ処理はここだけ
+    if( data.api_kouku && data.api_kouku.api_stage3 ){
+        let raigeki = data.api_kouku.api_stage3;
+        TorpedoBattle( raigeki, myfleet, data );
+    }
+
+    //--- 砲撃戦1
+    console.log( '*** 砲撃戦1 ***' );
+    if( data.api_hougeki1 ){
+        GunBattle( data.api_hougeki1, myfleet, data );
+    }
+    console.log( '*** 砲撃戦2 ***' );
+    if( data.api_hougeki2 ){
+        GunBattle( data.api_hougeki2, myfleet, data );
+    }
+    console.log( '*** 砲撃戦3 ***' );
+    if( data.api_hougeki3 ){
+        GunBattle( data.api_hougeki3, myfleet, data );
+    }
+
+    //--- 雷撃戦
+    console.log( '*** 雷撃戦 ***' );
+    if( data.api_raigeki ){
+        TorpedoBattle( data.api_raigeki, myfleet, data );
+    }
+
+    //--- 結果
+    console.log( '*** 結果 ***' );
+    DispBattleResult( myfleet, data );
+}
+
+function NormalMidnightBattle( data ){
+    console.log( `第${data.api_deck_id}艦隊 夜戦` );
+    let myfleet = KanColle.getDeck( data.api_deck_id );
+
+    console.log( '敵軍艦隊HP' );
+    for( let i = 0; i < data.api_e_nowhps.length; i++ ){
+        let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+        console.log( `${ship.api_name}(Lv${data.api_ship_lv[i]}) ${data.api_e_nowhps[i]}/${data.api_e_maxhps[i]}` );
+    }
+
+    console.log( '自軍艦隊HP' );
+    for( let i = 0; i < data.api_f_nowhps.length; i++ ){
+        console.log( `${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
+    }
+
+    //--- 砲撃戦
+    console.log( '*** 砲撃戦 ***' );
+    if( data.api_hougeki ){
+        GunBattle( data.api_hougeki, myfleet, data );
+    }
+
+    //--- 結果
+    console.log( '*** 結果 ***' );
+    DispBattleResult( myfleet, data );
+}
+
+function AirBattle( data ){
+    console.log( `第${data.api_deck_id}艦隊 航空戦` );
+    let myfleet = KanColle.getDeck( data.api_deck_id );
+
+    console.log( '敵軍艦隊HP' );
+    for( let i = 0; i < data.api_e_nowhps.length; i++ ){
+        let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+        console.log( `${ship.api_name}(Lv${data.api_ship_lv[i]}) ${data.api_e_nowhps[i]}/${data.api_e_maxhps[i]}` );
+    }
+
+    console.log( '自軍艦隊HP' );
+    for( let i = 0; i < data.api_f_nowhps.length; i++ ){
+        console.log( `${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
+    }
+
+    console.log( '*** 航空戦 ***' );
+    // 艦艇へのダメージ処理はここだけ
+    if( data.api_kouku && data.api_kouku.api_stage3 ){
+        let raigeki = data.api_kouku.api_stage3;
+        TorpedoBattle( raigeki, myfleet, data );
+    }
+
+    //--- 結果
+    console.log( '*** 結果 ***' );
+    DispBattleResult( myfleet, data );
+}
+
 
 let kcsapicall = {
     "api_start2": function( data ){
@@ -395,6 +596,18 @@ let kcsapicall = {
     "api_get_member/slot_item": function( data ){
         // 出撃後にやってくる装備品一覧
         UpdateSlotitem( data.api_data );
+    },
+
+
+    "api_req_sortie/battle": function( data ){
+        NormalDaytimeBattle( data.api_data );
+    },
+    "api_req_battle_midnight/battle": function( data ){
+        NormalMidnightBattle( data.api_data );
+    },
+
+    "api_req_sortie/ld_airbattle": function( data ){
+        AirBattle( data.api_data );
     },
 
     "api_req_kousyou/destroyship": function( data ){
