@@ -351,6 +351,7 @@ function UpdateBasic( basic ){
 
 
 function GunBattle( hougeki, myfleet, data ){
+    if( !hougeki.api_at_eflag ) return; // 夜戦の潜水艦対潜水艦で砲雷撃戦がないとき
     for( let i = 0; i < hougeki.api_at_eflag.length; i++ ){
         let atk = hougeki.api_at_list[i]; // 攻撃する艦 index 0,1,2,...
 
