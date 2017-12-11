@@ -452,6 +452,46 @@ let KanColleTimerSidebar = {
     },
 
     /**
+     * コンディション一覧の更新
+     * @param deck
+     */
+    updateCondition: async function( deck ){
+        let tbl_fleet = ["", "1st-fleet-cond", "2nd-fleet-cond", "3rd-fleet-cond", "4th-fleet-cond"];
+
+        for( let i = 0, fleet; fleet = deck[i]; i++ ){
+            let ship_ids = [];
+            for( let j = 0, ship_id; ship_id = fleet.api_ship[j]; j++ ){
+                if( ship_id !== -1 ){
+                    ship_ids.push( ship_id );
+                }
+            }
+            let specs = await GetShipSpecs( ship_ids );
+
+            let tbl_id = tbl_fleet[fleet.api_id];
+            let tbl_elem = document.getElementById( tbl_id );
+            RemoveChildren( tbl_elem );
+
+            for( let spec of specs ){
+                if( !spec ) continue;
+                let scond = document.createElement( 'label' );
+                scond.appendChild( document.createTextNode( spec.api_cond ) );
+                scond.setAttribute( 'style', 'margin-left:1em;' );
+
+                /* デコレーション */
+                if( spec.api_cond <= 19 ){
+                    scond.setAttribute( 'cond', 'very-low' );
+                }else if( spec.api_cond <= 29 ){
+                    scond.setAttribute( 'cond', 'low' );
+                }else if( spec.api_cond >= 50 ){
+                    scond.setAttribute( 'cond', 'high' );
+                }
+
+                tbl_elem.appendChild( scond );
+            }
+        }
+    },
+
+    /**
      * 表示項目の表示順序を保存
      */
     savePanelOrder: function(){
@@ -609,6 +649,7 @@ let KanColleTimerSidebar = {
         if( result ){
             KanColleTimerSidebar.setMissionTimer( result.deck );
             KanColleTimerSidebar.updateFleet( result.deck );
+            KanColleTimerSidebar.updateCondition( result.deck );
         }
         result = await browser.storage.local.get( 'ndock' );
         if( result ){
@@ -634,6 +675,7 @@ let KanColleTimerSidebar = {
             if( changes.deck ){
                 KanColleTimerSidebar.setMissionTimer( changes.deck.newValue );
                 KanColleTimerSidebar.updateFleet( changes.deck.newValue );
+                KanColleTimerSidebar.updateCondition( changes.deck.newValue );
             }
             if( changes.ndock ){
                 KanColleTimerSidebar.setRepairTimer( changes.ndock.newValue );
