@@ -373,22 +373,26 @@ function GunBattle( hougeki, myfleet, data ){
 
 function TorpedoBattle( raigeki, myfleet, data ){
     // 自軍→敵軍
-    for( let i = 0; i < raigeki.api_edam.length; i++ ){
-        let damage = raigeki.api_edam[i];
-        if( damage > 0 ){
-            damage = parseInt( damage );
-            data.api_e_nowhps[i] -= damage;
-            let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
-            console.log( `#${i + 1} ${ship.api_name} に ${damage} ダメージ` );
+    if( raigeki.api_edam ){
+        for( let i = 0; i < raigeki.api_edam.length; i++ ){
+            let damage = raigeki.api_edam[i];
+            if( damage > 0 ){
+                damage = parseInt( damage );
+                data.api_e_nowhps[i] -= damage;
+                let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+                console.log( `#${i + 1} ${ship.api_name} に ${damage} ダメージ` );
+            }
         }
     }
     // 敵軍→自軍
-    for( let i = 0; i < raigeki.api_fdam.length; i++ ){
-        let damage = raigeki.api_fdam[i];
-        if( damage > 0 ){
-            damage = parseInt( damage );
-            data.api_f_nowhps[i] -= damage;
-            console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} に ${damage} ダメージ` );
+    if( raigeki.api_fdam ){
+        for( let i = 0; i < raigeki.api_fdam.length; i++ ){
+            let damage = raigeki.api_fdam[i];
+            if( damage > 0 ){
+                damage = parseInt( damage );
+                data.api_f_nowhps[i] -= damage;
+                console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} に ${damage} ダメージ` );
+            }
         }
     }
 }
@@ -438,7 +442,33 @@ function NormalDaytimeBattle( data ){
         console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
     }
 
-    console.log( '*** 先制対潜水艦戦 ***' );
+    console.log( '*** 支援艦隊 ***' );
+    if( data.api_support_info ){
+        if( data.api_support_info.api_support_airatack ){
+            let fleet_no = data.api_support_info.api_support_airatack.api_deck_id;
+            console.log( `第${fleet_no}艦隊の支援攻撃` );
+            let raigeki = data.api_support_info.api_support_airatack.api_stage3;
+            let support_fleet = KanColle.getDeck( fleet_no );
+            TorpedoBattle( raigeki, support_fleet, data );
+        }
+        if( data.api_support_info.api_support_hourai ){
+            // TODO 支援の砲雷撃戦が他と共通点があれば独立
+            let hourai = data.api_support_info.api_support_hourai;
+            let fleet_no = hourai.api_deck_id;
+            console.log( `第${fleet_no}艦隊の支援攻撃` );
+            for( let i = 0; i < hourai.api_damage.length; i++ ){
+                if( hourai.api_damage[i] > 0 ){
+                    let damage = parseInt( hourai.api_damage[i] );
+                    data.api_e_nowhps[i] -= damage;
+
+                    let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+                    console.log( `${ship.api_name} に ${damage} ダメージ` );
+                }
+            }
+        }
+    }
+
+    console.log( '*** 先制爆雷 ***' );
     if( data.api_opening_taisen ){
         // 砲撃戦と同じ処理
         GunBattle( data.api_opening_taisen, myfleet, data );
