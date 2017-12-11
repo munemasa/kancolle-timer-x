@@ -519,12 +519,12 @@ function NormalMidnightBattle( data ){
     console.log( '敵軍艦隊HP' );
     for( let i = 0; i < data.api_e_nowhps.length; i++ ){
         let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
-        console.log( `${ship.api_name}(Lv${data.api_ship_lv[i]}) ${data.api_e_nowhps[i]}/${data.api_e_maxhps[i]}` );
+        console.log( `#${i + 1} ${ship.api_name}(Lv${data.api_ship_lv[i]}) ${data.api_e_nowhps[i]}/${data.api_e_maxhps[i]}` );
     }
 
     console.log( '自軍艦隊HP' );
     for( let i = 0; i < data.api_f_nowhps.length; i++ ){
-        console.log( `${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
+        console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
     }
 
     //--- 砲撃戦
@@ -633,6 +633,11 @@ let kcsapicall = {
         NormalDaytimeBattle( data.api_data );
     },
     "api_req_battle_midnight/battle": function( data ){
+        NormalMidnightBattle( data.api_data );
+    },
+
+    "api_req_battle_midnight/sp_midnight": function( data ){
+        // 5-3 の夜戦マップ
         NormalMidnightBattle( data.api_data );
     },
 
