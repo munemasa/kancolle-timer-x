@@ -147,7 +147,7 @@ let ResourceGraph = {
             max = 3000;
         }
         y2.domain( [min, max] );
-        
+
         svg.append( "g" )
             .attr( 'class', 'vertical-line' )
             .attr( "transform", `translate(0, ${height})` )

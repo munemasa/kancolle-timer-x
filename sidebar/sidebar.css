@@ -81,11 +81,11 @@ td[icon="destroyed"]:after {
 }
 
 /* 未補給警告アイコン */
-td[icon="warning"]:after {
+td[icon="warning"]:after, span[icon="warining"]:after {
     content: url("../img/alert.png");
 }
 
 /* 入渠中アイコン */
-td[icon="repair"]:after {
+td[icon="repair"]:after, span[icon="repair"]:after {
     content: url("../img/cross.png");
 }

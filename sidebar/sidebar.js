@@ -137,6 +137,31 @@ let KanColleTimerSidebar = {
                 missionname[i].textContent = name[i];
             }
         }
+
+        for( let i = 0, fleet; fleet = deck[i]; i++ ){
+            let ship_ids = [];
+            for( let j = 0, ship_id; ship_id = fleet.api_ship[j]; j++ ){
+                if( ship_id !== -1 ){
+                    ship_ids.push( ship_id );
+                }
+            }
+            // TODO データ取得まわりを1ヶ所にまとめて効率良くしたい
+            let specs = await GetShipSpecs( ship_ids );
+
+            $( missionname[i] ).attr( 'icon', '' );
+            for( let spec of specs ){
+                if( !spec ) continue;
+
+                if( spec._mst_data.api_fuel_max != spec.api_fuel ||
+                    spec._mst_data.api_bull_max != spec.api_bull ){
+                    $( missionname[i] ).attr( 'icon', 'warning' );
+                }
+
+                if( this.isRepairing( spec.api_id ) ){
+                    $( missionname[i] ).attr( 'icon', 'repair' );
+                }
+            }
+        }
     },
 
     setRepairTimer: async function( ndock ){
