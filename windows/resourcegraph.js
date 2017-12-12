@@ -147,20 +147,7 @@ let ResourceGraph = {
             max = 3000;
         }
         y2.domain( [min, max] );
-
-        // 日付軸
-        // svg.append( "g" )
-        //     .attr( "class", "x axis" )
-        //     .attr( "transform", "translate(0," + height + ")" )
-        //     .call( xAxis )
-        //     .selectAll( "text" )
-        //     .attr( "transform", "rotate(0)" )
-        //     .attr( "transform", function( d, i ){
-        //         // ひとつごとに位置をずらす
-        //         return "translate(0," + 12 * (i % 2) + ")";
-        //     } )
-        //     .style( "text-anchor", "center" );
-
+        
         svg.append( "g" )
             .attr( 'class', 'vertical-line' )
             .attr( "transform", `translate(0, ${height})` )
