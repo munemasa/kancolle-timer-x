@@ -165,6 +165,7 @@ let ResourceGraph = {
             .attr( 'class', 'vertical-line' )
             .attr( "transform", `translate(0, ${height})` )
             .call( d3.axisBottom( x ).tickSizeInner( -height )
+                .ticks(5)
                 .tickFormat( ( d ) =>{
                     let str = GetDateString( d.getTime() );
                     return str.substring( 0, str.length - 3 );
