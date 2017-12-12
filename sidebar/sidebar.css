@@ -81,7 +81,7 @@ td[icon="destroyed"]:after {
 }
 
 /* 未補給警告アイコン */
-td[icon="warning"]:after, span[icon="warining"]:after {
+td[icon="warning"]:after, span[icon="warning"]:after {
     content: url("../img/alert.png");
 }
 
