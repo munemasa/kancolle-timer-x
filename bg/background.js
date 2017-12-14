@@ -755,3 +755,98 @@ window.addEventListener( 'unload', ( ev ) =>{
     console.log( 'unload background page.' );
     localStorage.setItem( 'kct_test', Math.random() );
 } );
+
+
+/*--- page actionの設定 ---*/
+
+function GetNowDateString(){
+    let d = new Date();
+    let month = d.getMonth() + 1;
+    month = month < 10 ? "0" + month : month;
+    let date = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+    let hour = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+    let min = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+    let sec = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
+    let ms = d.getMilliseconds();
+    if( ms < 10 ){
+        ms = "000" + ms;
+    }else if( ms < 100 ){
+        ms = "00" + ms;
+    }else if( ms < 1000 ){
+        ms = "0" + ms;
+    }
+    return "" + d.getFullYear() + month + date + hour + min + sec + ms;
+}
+
+async function CaptureScreenshot(){
+    let ss = await browser.tabs.captureVisibleTab();
+
+    let image = new Image();
+    image.onload = ( ev ) =>{
+        let canvas = document.createElement( 'canvas' );
+        let w = KanColle._ss_flash_position.w;
+        let h = KanColle._ss_flash_position.h;
+        canvas.width = w;
+        canvas.height = h;
+
+        let ctx = canvas.getContext( "2d" );
+        ctx.clearRect( 0, 0, canvas.width, canvas.height );
+        ctx.save();
+        ctx.scale( 1.0, 1.0 );
+
+        let x = KanColle._ss_game_position.offset_x + KanColle._ss_flash_position.offset_x - KanColle._ss_game_position.scroll_x;
+        let y = KanColle._ss_game_position.offset_y + KanColle._ss_flash_position.offset_y - KanColle._ss_game_position.scroll_y;
+        ctx.drawImage( image, x, y, w, h, 0, 0, w, h );
+
+        ctx.restore();
+
+        let is_jpeg = KanColle.config && KanColle.config['ss-format-jpeg'];
+        let dt = canvas.toDataURL( is_jpeg ? 'image/jpeg' : 'image/png' );
+        dt = dt.replace( /^data:image\/[^;]*/, 'data:application/octet-stream' );
+
+        let bin = atob( dt.split( ',' )[1] );
+        let ab = new ArrayBuffer( bin.length );
+        let ia = new Uint8Array( ab );
+        for( let i = 0; i < bin.length; i++ ){
+            ia[i] = bin.charCodeAt( i );
+        }
+
+        let name = `screenshot-${GetNowDateString()}.${is_jpeg ? 'jpg' : 'png'}`;
+        let blob = new Blob( [ab], {type: "application/octet-stream"} );
+        let dl = window.URL.createObjectURL( blob );
+        browser.downloads.download( {
+            url: dl,
+            filename: name,
+            saveAs: false,
+        } ).then( ( id ) =>{
+            console.log( `screenshot saved: ${id}` )
+        }, ( err ) =>{
+            console.log( err );
+        } );
+    };
+    image.src = ss;
+}
+
+
+function initializePageAction( tab ){
+    if( tab.url.match( /www.dmm.com\/.*\/app_id=854854/ ) ){
+        browser.pageAction.setIcon( {tabId: tab.id, path: "../img/camera.svg"} );
+        browser.pageAction.setTitle( {tabId: tab.id, title: '艦これ画面撮影'} );
+        browser.pageAction.show( tab.id );
+    }
+}
+
+browser.tabs.query( {} ).then( ( tabs ) =>{
+    for( let tab of tabs ){
+        initializePageAction( tab );
+    }
+} );
+
+browser.tabs.onUpdated.addListener( ( id, changeInfo, tab ) =>{
+    initializePageAction( tab );
+} );
+
+browser.pageAction.onClicked.addListener( ( ev ) =>{
+    console.log( 'Take KanColle screenshot.' );
+    CaptureScreenshot();
+} );
