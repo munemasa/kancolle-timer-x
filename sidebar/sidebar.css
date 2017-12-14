@@ -34,6 +34,11 @@ div.panel.over {
     font-weight: bold;
 }
 
+#damaged-ships {
+    max-height: 8em;
+    overflow: auto;
+}
+
 table.fleet {
     border-collapse: collapse;
     width: 100%;
