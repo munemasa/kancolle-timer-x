@@ -541,6 +541,8 @@ let KanColleTimerSidebar = {
             return b.api_ndock_time - a.api_ndock_time;
         } );
 
+        $( '#num-damaged-ships' ).text( `(${damaged.length})` );
+
         damaged.forEach( ( ship ) =>{
             let t = document.querySelector( '#template-damaged-ship' );
             let clone2 = document.importNode( t.content, true );
