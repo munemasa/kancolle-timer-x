@@ -44,8 +44,27 @@ table.fleet td {
     padding-left: 0.2em;
 }
 
-tr.large-damage {
+table#damaged-ships-table {
+    width: 100%;
+}
+
+table#damaged-ships-table td:last-child {
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+}
+
+tr.large-damage, td.large-damage {
     background-color: #ff8080;
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, -1px 1px 2px white, 1px -1px 2px white;
+}
+
+tr.medium-damage, td.medium-damage {
+    background-color: #ffbc5d;
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, -1px 1px 2px white, 1px -1px 2px white;
+}
+
+tr.small-damage, td.small-damage {
+    background-color: #ffea5d;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, -1px 1px 2px white, 1px -1px 2px white;
 }
 
@@ -65,27 +84,33 @@ td[cond="high"], label[cond='high'] {
 }
 
 td[icon="small-damage"]:after {
+    padding-left: 0.2em;
     content: "[小破]";
 }
 
 td[icon="medium-damage"]:after {
+    padding-left: 0.2em;
     content: "[中破]";
 }
 
 td[icon="large-damage"]:after {
+    padding-left: 0.2em;
     content: "[大破]";
 }
 
 td[icon="destroyed"]:after {
+    padding-left: 0.2em;
     content: "[轟沈]";
 }
 
 /* 未補給警告アイコン */
 td[icon="warning"]:after, span[icon="warning"]:after {
+    padding-left: 0.2em;
     content: url("../img/alert.png");
 }
 
 /* 入渠中アイコン */
 td[icon="repair"]:after, span[icon="repair"]:after {
+    padding-left: 0.2em;
     content: url("../img/cross.png");
 }

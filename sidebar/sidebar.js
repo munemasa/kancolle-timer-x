@@ -92,6 +92,19 @@ async function GetShipSpecs( ship_ids ){
     return result;
 }
 
+async function GetAllShipSpecs(){
+    let result = await browser.runtime.sendMessage( {
+        cmd: 'get-all-ship-specs'
+    } );
+    return result;
+}
+
+async function GetAllDamagedShipSpecs(){
+    let result = await browser.runtime.sendMessage( {
+        cmd: 'get-all-damaged-ship-specs'
+    } );
+    return result;
+}
 
 let KanColleTimerSidebar = {
 
@@ -423,11 +436,11 @@ let KanColleTimerSidebar = {
                 let slotitem = `${spec._stype_name} ${spec._name} Lv${spec.api_lv}\n`;
                 for( let item of spec.api_slot ){
                     if( item < 0 ) continue;
-                    let it = KanColleTimerSidebar.slotitem[item];
+                    let it = this.slotitem[item];
                     slotitem += `■ ${it._mst_data.api_name}${it.api_level > 0 ? '★+' + it.api_level : ''}\n`;
                 }
                 if( spec.api_slot_ex > 0 ){
-                    let it = KanColleTimerSidebar.slotitem[spec.api_slot_ex];
+                    let it = this.slotitem[spec.api_slot_ex];
                     slotitem += `■ ${it._mst_data.api_name}${it.api_level > 0 ? '★+' + it.api_level : ''}\n`;
                 }
                 elem.title = slotitem;
@@ -514,6 +527,52 @@ let KanColleTimerSidebar = {
                 tbl_elem.appendChild( scond );
             }
         }
+    },
+
+    /**
+     * 被害艦娘一覧の更新
+     */
+    updateDamagedShips: async function(){
+        let damaged = await GetAllDamagedShipSpecs();
+        let table = $( '#damaged-ships-table' );
+        table.empty();
+
+        damaged.sort( ( a, b ) =>{
+            return b.api_ndock_time - a.api_ndock_time;
+        } );
+
+        damaged.forEach( ( ship ) =>{
+            let t = document.querySelector( '#template-damaged-ship' );
+            let clone2 = document.importNode( t.content, true );
+            let elem = clone2.firstElementChild;
+
+            let stype = elem.querySelector( '.ship-type' );
+            let sname = elem.querySelector( '.ship-name' );
+            let srepairtime = elem.querySelector( '.ship-repairtime' );
+
+            $( stype ).text( ship._stype_name );
+            $( sname ).text( ship._name );
+            $( srepairtime ).text( GetTimeString( ship.api_ndock_time / 1000 ) );
+
+            let ratio = ship.api_nowhp / ship.api_maxhp;
+            if( ratio <= 0 ){
+                $( srepairtime ).attr( 'icon', 'destroyed' );
+            }else if( ratio <= 0.25 ){
+                $( srepairtime ).attr( 'icon', 'large-damage' );
+                $( srepairtime ).addClass( 'large-damage' );
+            }else if( ratio <= 0.5 ){
+                $( srepairtime ).attr( 'icon', 'medium-damage' );
+                $( srepairtime ).addClass( 'medium-damage' );
+            }else if( ratio <= 0.75 ){
+                $( srepairtime ).attr( 'icon', 'small-damage' );
+                $( srepairtime ).addClass( 'small-damage' );
+            }
+            if( this.isRepairing( ship.api_id ) ){
+                $( srepairtime ).attr( 'icon', 'repair' );
+            }
+
+            table.append( elem );
+        } );
     },
 
     /**
@@ -667,57 +726,59 @@ let KanColleTimerSidebar = {
         let result;
         result = await browser.storage.local.get( 'slotitem' );
         if( result ){
-            KanColleTimerSidebar.slotitem = result.slotitem;
+            this.slotitem = result.slotitem;
         }
 
         result = await browser.storage.local.get( 'deck' );
         if( result ){
-            KanColleTimerSidebar.setMissionTimer( result.deck );
-            KanColleTimerSidebar.updateFleet( result.deck );
-            KanColleTimerSidebar.updateCondition( result.deck );
+            this.setMissionTimer( result.deck );
+            this.updateFleet( result.deck );
+            this.updateCondition( result.deck );
+            this.updateDamagedShips();
         }
         result = await browser.storage.local.get( 'ndock' );
         if( result ){
-            KanColleTimerSidebar.setRepairTimer( result.ndock );
+            this.setRepairTimer( result.ndock );
         }
         result = await browser.storage.local.get( 'kdock' );
         if( result ){
-            KanColleTimerSidebar.setBuildTimer( result.kdock );
+            this.setBuildTimer( result.kdock );
         }
 
         result = await browser.storage.local.get( 'kct_config' );
         if( result ){
-            KanColleTimerSidebar.loadSettings( result.kct_config );
+            this.loadSettings( result.kct_config );
         }
 
         result = await browser.storage.local.get( 'panel_order' );
         if( result ){
-            KanColleTimerSidebar.setPanelOrder( result.panel_order );
+            this.setPanelOrder( result.panel_order );
         }
 
         browser.storage.onChanged.addListener( ( changes, area ) =>{
             console.log( changes );
             if( changes.deck ){
-                KanColleTimerSidebar.setMissionTimer( changes.deck.newValue );
-                KanColleTimerSidebar.updateFleet( changes.deck.newValue );
-                KanColleTimerSidebar.updateCondition( changes.deck.newValue );
+                this.setMissionTimer( changes.deck.newValue );
+                this.updateFleet( changes.deck.newValue );
+                this.updateCondition( changes.deck.newValue );
+                this.updateDamagedShips();
             }
             if( changes.ndock ){
-                KanColleTimerSidebar.setRepairTimer( changes.ndock.newValue );
+                this.setRepairTimer( changes.ndock.newValue );
             }
             if( changes.kdock ){
-                KanColleTimerSidebar.setBuildTimer( changes.kdock.newValue );
+                this.setBuildTimer( changes.kdock.newValue );
             }
 
             if( changes.material ){
-                KanColleTimerSidebar.updateMaterial( changes.material.newValue );
+                this.updateMaterial( changes.material.newValue );
             }
 
             if( changes.slotitem ){
-                KanColleTimerSidebar.slotitem = changes.slotitem.newValue;
+                this.slotitem = changes.slotitem.newValue;
             }
             if( changes.kct_config ){
-                KanColleTimerSidebar.loadSettings( changes.kct_config.newValue );
+                this.loadSettings( changes.kct_config.newValue );
             }
         } );
 

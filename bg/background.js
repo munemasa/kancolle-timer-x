@@ -115,6 +115,32 @@ function GetShipSpecs( request, sender, sendResponse ){
 
 
 /**
+ * 全艦艇のスペックを取得する.
+ * @param request
+ * @param sender
+ * @param sendResponse
+ */
+function GetAllShipSpecs( request, sender, sendResponse ){
+    sendResponse( KanColle._api_ship );
+}
+
+/**
+ * 全損傷艦艇のスペックを取得する.
+ * @param request
+ * @param sender
+ * @param sendResponse
+ */
+function GetAllDamagedShipSpecs( request, sender, sendResponse ){
+    let damaged = Object.keys( KanColle._api_ship ).filter( ( id ) =>{
+        return KanColle._api_ship[id].api_ndock_time > 0;
+    } ).map( ( id ) =>{
+        return KanColle._api_ship[id];
+    } );
+    sendResponse( damaged );
+}
+
+
+/**
  * 遠征名を取得する
  * @param request
  * @param sender
@@ -153,18 +179,29 @@ function GetScreenshotPosition( request, sender, sendResponse ){
 function HandleMessage( request, sender, sendResponse ){
     switch( request.cmd ){
     case 'get-mission-name':
+        // 遠征名を返す
         GetMissionName( request, sender, sendResponse );
         break;
     case 'get-ship-name':
+        // 艦娘名を返す
         GetShipName( request, sender, sendResponse );
         break;
     case 'get-ship-name-from-id':
+        // 艦船IDから艦娘名を返す
         GetShipNameFromId( request, sender, sendResponse );
         break;
     case 'get-ship-specs':
+        // 指定の艦娘のスペックを返す
         GetShipSpecs( request, sender, sendResponse );
         break;
-
+    case 'get-all-ship-specs':
+        // 全艦娘のスペックを返す
+        GetAllShipSpecs( request, sender, sendResponse );
+        break;
+    case 'get-all-damaged-ship-specs':
+        // 損害艦艇のスペックを返す
+        GetAllDamagedShipSpecs( request, sender, sendResponse );
+        break;
 
         // 艦これの表示座標を定期的に送ってもらう
     case 'set-game-position':
@@ -198,6 +235,11 @@ async function LoadMasterData(){
     let result = await browser.storage.local.get( 'mst_data' );
     if( result && result.mst_data ){
         UpdateMasterData( result.mst_data );
+    }
+
+    result = await browser.storage.local.get( 'deck' );
+    if( result ){
+        KanColle.deck = result.deck;
     }
 }
 
