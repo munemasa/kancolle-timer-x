@@ -76,7 +76,7 @@
     ]
   },
   "page_action": {
-    "default_icon": "img/pageaction_screenshot.png",
+    "default_icon": "img/screenshot.png",
     "browser_style": true
   }
 }
