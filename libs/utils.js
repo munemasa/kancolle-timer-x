@@ -152,6 +152,30 @@ function GetTimeString( sec ){
 }
 
 /**
+ * 現在日時をYYYYMMDDHHMMSSssssの文字列で返す.
+ * @returns {string}
+ */
+function GetNowDateString(){
+    let d = new Date();
+    let month = d.getMonth() + 1;
+    month = month < 10 ? "0" + month : month;
+    let date = d.getDate() < 10 ? "0" + d.getDate() : d.getDate();
+    let hour = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+    let min = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+    let sec = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
+    let ms = d.getMilliseconds();
+    if( ms < 10 ){
+        ms = "000" + ms;
+    }else if( ms < 100 ){
+        ms = "00" + ms;
+    }else if( ms < 1000 ){
+        ms = "0" + ms;
+    }
+    return "" + d.getFullYear() + month + date + hour + min + sec + ms;
+}
+
+
+/**
  * 符号付き数字を返す
  */
 function GetSignedValue( v ){
