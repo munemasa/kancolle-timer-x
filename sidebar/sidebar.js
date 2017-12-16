@@ -278,6 +278,11 @@ let KanColleTimerSidebar = {
         this.updateRepairTimer();
         this.updateBuildTimer();
         this.updateRefreshTimer();
+
+        if( (GetCurrentTime() % 300) == 0 ){
+            // 定期的に任務リストを更新すると締め切り過ぎたものの色が変わってくれる
+            this.updateQuestList( this.questlist );
+        }
     },
 
     /**
