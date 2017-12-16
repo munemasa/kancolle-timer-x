@@ -50,6 +50,7 @@ table.fleet td {
 }
 
 table#damaged-ships-table {
+    border-collapse: collapse;
     width: 100%;
 }
 
