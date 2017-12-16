@@ -55,57 +55,6 @@ function PlayAudio( id, t, text ){
 }
 
 
-/**
- * 指定の遠征の名前を返す
- * @param mission_ids{Array}
- * @returns {Promise.<*>}
- */
-async function GetMissionName( mission_ids ){
-    let result = await browser.runtime.sendMessage( {
-        cmd: 'get-mission-name',
-        missions: mission_ids
-    } );
-    return result;
-}
-
-async function GetShipName( ship_ids ){
-    let result = await browser.runtime.sendMessage( {
-        cmd: 'get-ship-name',
-        ids: ship_ids
-    } );
-    return result;
-}
-
-async function GetShipNameFromId( ship_ids ){
-    let result = await browser.runtime.sendMessage( {
-        cmd: 'get-ship-name-from-id',
-        ids: ship_ids
-    } );
-    return result;
-}
-
-async function GetShipSpecs( ship_ids ){
-    let result = await browser.runtime.sendMessage( {
-        cmd: 'get-ship-specs',
-        ids: ship_ids
-    } );
-    return result;
-}
-
-async function GetAllShipSpecs(){
-    let result = await browser.runtime.sendMessage( {
-        cmd: 'get-all-ship-specs'
-    } );
-    return result;
-}
-
-async function GetAllDamagedShipSpecs(){
-    let result = await browser.runtime.sendMessage( {
-        cmd: 'get-all-damaged-ship-specs'
-    } );
-    return result;
-}
-
 let KanColleTimerSidebar = {
 
     /**
@@ -581,6 +530,8 @@ let KanColleTimerSidebar = {
      * @param quests
      */
     updateQuestList: function( quests ){
+        this.questlist = quests;
+
         let list = Object.keys( quests ).map( ( k ) =>{
             return quests[k];
         } ).sort( ( a, b ) =>{
