@@ -486,7 +486,6 @@ let KanColleTimerSidebar = {
                 break;
             }
         }
-
     },
 
     /**
@@ -575,6 +574,79 @@ let KanColleTimerSidebar = {
 
             table.append( elem );
         } );
+    },
+
+    /**
+     * 任務一覧の表示
+     * @param quests
+     */
+    updateQuestList: function( quests ){
+        let list = Object.keys( quests ).map( ( k ) =>{
+            return quests[k];
+        } ).sort( ( a, b ) =>{
+            return a.api_no - b.api_no;
+        } );
+
+        let tbl = $( '#tbl-questlist' );
+        tbl.empty();
+
+        for( let q of list ){
+            if( q.api_state == 2 ){
+                let t = document.querySelector( '#template-quest' );
+                let clone2 = document.importNode( t.content, true );
+                let elem = clone2.firstElementChild;
+                let questname = elem.querySelector( '.quest-name' );
+                let questtype = elem.querySelector( '.quest-type' );
+
+                let category_color = {
+                    0: "",
+                    1: "#41c161", // 編成
+                    2: "#df4f42", // 出撃
+                    3: "#7ebb56", // 演習
+                    4: "#45b9c3", // 遠征
+                    5: "#cab057", // 補給・入渠
+                    6: "#7d4f33", // 工廠
+                    7: "#b599c9", // 改装
+                    8: "#df4f42", // 出撃
+                };
+                let str = 'padding-left: 0.3em; border-left: 5px solid ' + category_color[q.api_category];
+                $( questname ).attr( 'style', str );
+                $( questname ).text( q.api_title );
+
+                let type = ['', '日', '週', '月', '単', '他'];
+                if( q.api_type <= type.length ){
+                    $( questtype ).text( `[${type[q.api_type]}]` );
+                }else{
+                    $( questtype ).text( `[${q.api_type}]` );
+                }
+
+                if( q.api_type == 1 || q.api_type == 2 || q.api_type == 3 ){
+                    // 日週月の任務は締め切り時刻のチェックをする
+                    let now = (new Date()).getTime();
+                    if( now > q._deadline ){
+                        $( elem ).addClass( 'old-quest' );
+                    }
+                }
+
+                switch( q.api_progress_flag ){
+                case 1:// 50%
+                    str = '50%';
+                    $( questtype ).attr( 'style', `background-color: #88ff88;` );
+                    break;
+                case 2:// 80%
+                    str = '80%';
+                    $( questtype ).attr( 'style', `background-color: #3cb371;` );
+                    break;
+                default:
+                    str = '0%';
+                    break;
+                }
+
+                elem.title = `進捗:${str}\n${q.api_detail.replace( '<br>', '\n' )}`;
+
+                tbl.append( elem );
+            }
+        }
     },
 
     /**
@@ -781,6 +853,10 @@ let KanColleTimerSidebar = {
             }
             if( changes.kct_config ){
                 this.loadSettings( changes.kct_config.newValue );
+            }
+
+            if( changes.questlist ){
+                this.updateQuestList( changes.questlist.newValue );
             }
         } );
 

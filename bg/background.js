@@ -23,7 +23,7 @@ console.log( 'load kancolle timer x background script.' );
 
 let KanColle = {
     resourcelog: [],
-
+    questlist: {},
 
     /**
      * 指定の艦隊番号(1-4)の艦隊を返す.
@@ -391,6 +391,53 @@ function UpdateBasic( basic ){
     SetLocalStorage( 'basic', basic );
 }
 
+function UpdateQuestList( data ){
+    function deadline( t, weekly ){
+        const base = 331200000;	// 1970/1/4 20:00 UTC = 1970/1/5(月) 5:00 JST
+        const fuzz = 60000;
+        const span = 86400000 * (weekly ? 7 : 1);
+        let d;
+        let elapsed;	// 期間開始からの経過時間
+
+        if( !t || t < 0 )
+            return -1;	// エラー
+
+        elapsed = (t - base) % span;
+        if( elapsed < fuzz )
+            return 0;	// 時計ずれを考慮
+
+        return t + span - elapsed;
+    }
+
+    let now = new Date();
+    for( let q of data.api_list ){
+        if( q == -1 ) continue;
+        switch( q.api_type ){
+        case 1: // デイリー
+        case 2: // ウィークリー
+            q._deadline = deadline( now.getTime(), q.api_type == 2 );
+            break;
+
+        case 3: // マンスリー
+            let nextmonth;
+            if( now.getDate() == 1 && now.getHours() < 5 ){
+                // 1日5時までは先月の区分なので、今月1日5時までが締め切り
+                nextmonth = new Date( now.getFullYear(), now.getMonth(), 1, 5, 0, 0 );
+            }else{
+                nextmonth = new Date( now.getFullYear(), now.getMonth() + 1, 1, 5, 0, 0 );
+            }
+            q._deadline = nextmonth.getTime();
+        }
+
+        KanColle.questlist[q.api_no] = q;
+        if( q.state == 3 ){
+            delete KanColle.questlist[q.api_no];
+        }
+    }
+
+    SetLocalStorage( 'questlist', KanColle.questlist );
+}
+
 
 function GunBattle( hougeki, myfleet, data ){
     if( !hougeki.api_at_eflag ) return; // 夜戦の潜水艦対潜水艦で砲雷撃戦がないとき
@@ -669,6 +716,14 @@ let kcsapicall = {
     "api_get_member/slot_item": function( data ){
         // 出撃後にやってくる装備品一覧
         UpdateSlotitem( data.api_data );
+    },
+
+    "api_get_member/questlist": function( data ){
+        UpdateQuestList( data.api_data );
+    },
+    "api_req_quest/stop": function( data ){
+        // 任務の取り消し
+        // POSTした内容が読めないので何をキャンセルしたのか分からない
     },
 
 
