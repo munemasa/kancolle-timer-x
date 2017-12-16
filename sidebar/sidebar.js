@@ -541,6 +541,18 @@ let KanColleTimerSidebar = {
         let tbl = $( '#tbl-questlist' );
         tbl.empty();
 
+        let category_color = {
+            0: "",
+            1: "#41c161", // 編成
+            2: "#df4f42", // 出撃
+            3: "#7ebb56", // 演習
+            4: "#45b9c3", // 遠征
+            5: "#cab057", // 補給・入渠
+            6: "#7d4f33", // 工廠
+            7: "#b599c9", // 改装
+            8: "#df4f42", // 出撃
+        };
+
         for( let q of list ){
             if( q.api_state == 2 ){
                 let t = document.querySelector( '#template-quest' );
@@ -549,17 +561,6 @@ let KanColleTimerSidebar = {
                 let questname = elem.querySelector( '.quest-name' );
                 let questtype = elem.querySelector( '.quest-type' );
 
-                let category_color = {
-                    0: "",
-                    1: "#41c161", // 編成
-                    2: "#df4f42", // 出撃
-                    3: "#7ebb56", // 演習
-                    4: "#45b9c3", // 遠征
-                    5: "#cab057", // 補給・入渠
-                    6: "#7d4f33", // 工廠
-                    7: "#b599c9", // 改装
-                    8: "#df4f42", // 出撃
-                };
                 let str = 'padding-left: 0.3em; border-left: 5px solid ' + category_color[q.api_category];
                 $( questname ).attr( 'style', str );
                 $( questname ).text( q.api_title );
@@ -593,7 +594,9 @@ let KanColleTimerSidebar = {
                     break;
                 }
 
-                elem.title = `進捗:${str}\n${q.api_detail.replace( '<br>', '\n' )}`;
+                let deadline = q._deadline ? `${new Date( q._deadline ).toLocaleString()}` : '';
+
+                elem.title = `進捗:${str} ${deadline}まで\n${q.api_detail.replace( '<br>', '' )}`;
 
                 tbl.append( elem );
             }
