@@ -816,6 +816,42 @@ window.addEventListener( 'unload', ( ev ) =>{
 } );
 
 
+/* 艦これページが開いたときに艦これタイマーウィンドウを開く */
+async function OpenWin(){
+    let result = await browser.storage.local.get( 'kct_config' );
+    if( result ){
+        if( !result.kct_config['auto-open-window'] ) return;
+    }else{
+        return;
+    }
+
+    let windows = await browser.windows.getAll();
+
+    for( let win of windows ){
+        if( win.title.match( /moz-extension:.*艦これタイマーX/ ) ){
+            browser.windows.update( win.id, {focused: true} );
+            return;
+        }
+    }
+    OpenWindow( '../sidebar/sidebar.html', 272, 480 );
+}
+
+let filter = {
+    url: [
+        {hostContains: "dmm.com"}
+    ]
+};
+browser.webNavigation.onDOMContentLoaded.addListener(
+    ( details ) =>{
+        if( details.url.match( /app_id=854854/ ) ){
+            console.log( 'open kct window.' );
+            OpenWin();
+        }
+    },
+    filter
+);
+
+
 /*--- page actionの設定 ---*/
 
 async function CaptureScreenshot(){

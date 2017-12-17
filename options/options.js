@@ -28,6 +28,8 @@ async function loadOptions(){
     config = config.kct_config;
     document.querySelector( '#ss-format-jpeg' ).checked = config['ss-format-jpeg'];
     document.querySelector( '#notify-popup' ).checked = config['notify-popup'];
+    document.querySelector( '#auto-open-window' ).checked = config['auto-open-window'];
+
     document.querySelector( '#snd-mission-finished' ).value = config['snd-mission-finished'];
     document.querySelector( '#snd-mission-finish-soon' ).value = config['snd-mission-finish-soon'];
     document.querySelector( '#snd-repair-finished' ).value = config['snd-repair-finished'];
@@ -51,6 +53,7 @@ function saveOptions( ev ){
     config['snd-build-finished'] = document.querySelector( '#snd-build-finished' ).value;
     config['snd-build-finish-soon'] = document.querySelector( '#snd-build-finish-soon' ).value;
 
+    config['auto-open-window'] = document.querySelector( '#auto-open-window' ).checked;
     config['font-size'] = document.querySelector( '#font-size' ).value;
 
     browser.storage.local.set( {

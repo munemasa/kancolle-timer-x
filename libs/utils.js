@@ -348,6 +348,7 @@ function FormatCommas( str ){
     }
 }
 
+/*--- WebExtensions固有のもの ---*/
 
 /**
  * テキストデータをファイルに保存する
@@ -400,6 +401,24 @@ function CopyToClipboard( text ){
     textarea.select();
     document.execCommand( "Copy" );
     document.body.removeChild( textarea );
+}
+
+
+function OpenWindow( url, w, h ){
+    let mainURL = browser.extension.getURL( url );
+    let creating = browser.windows.create( {
+        url: mainURL,
+        type: "panel",
+        width: w,
+        height: h
+    } );
+    creating.then(
+        ( windowInfo ) =>{
+            console.log( `Created window: ${windowInfo.id}` );
+        },
+        ( error ) =>{
+            console.log( `create window Error: ${error}` );
+        } );
 }
 
 

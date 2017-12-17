@@ -1,24 +1,27 @@
-//var capturing = browser.tabs.captureVisibleTab();
+/*
+ Copyright (c) 2017 amano <amano@miku39.jp>
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
 
 
 let Popup = {
-
-    openWindow: function( url, w, h ){
-        let mainURL = browser.extension.getURL( url );
-        let creating = browser.windows.create( {
-            url: mainURL,
-            type: "panel",
-            width: w,
-            height: h
-        } );
-        creating.then(
-            ( windowInfo ) =>{
-                console.log( `Created window: ${windowInfo.id}` );
-            },
-            ( error ) =>{
-                console.log( `create window Error: ${error}` );
-            } );
-    },
 
     getNowDateString: function(){
         let d = new Date();
@@ -132,19 +135,19 @@ let Popup = {
         } );
 
         document.querySelector( '#take-fleet-screenshot' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../windows/ss_organization.html', 640, 480 );
+            OpenWindow( '../windows/ss_organization.html', 640, 480 );
         } );
 
         document.querySelector( '#open-shiplist' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../windows/shiplist.html', 800, 512 );
+            OpenWindow( '../windows/shiplist.html', 800, 512 );
         } );
 
         document.querySelector( '#open-equipmentlist' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../windows/equipmentlist.html', 640, 480 );
+            OpenWindow( '../windows/equipmentlist.html', 640, 480 );
         } );
 
         document.querySelector( '#open-resource-graph' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../windows/resourcegraph.html', 840, 532 );
+            OpenWindow( '../windows/resourcegraph.html', 840, 532 );
         } );
 
         document.querySelector( '#open-settings' ).addEventListener( 'click', ( ev ) =>{
@@ -153,7 +156,7 @@ let Popup = {
         } );
 
         document.querySelector( '#open-kct-window' ).addEventListener( 'click', ( ev ) =>{
-            this.openWindow( '../sidebar/sidebar.html', 272, 480 );
+            OpenWindow( '../sidebar/sidebar.html', 272, 480 );
             window.close();
         } );
     }
