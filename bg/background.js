@@ -383,11 +383,15 @@ function UpdateSlotitem( slotitems ){
 }
 
 function UpdateBasic( basic ){
-    let cur_ships = Object.keys( KanColle._api_ship ).length;
-    let cur_items = Object.keys( KanColle._api_slot_item ).length;
-
-    basic._cur_ships = cur_ships;
-    basic._cur_slotitem = cur_items;
+    try{
+        let cur_ships = Object.keys( KanColle._api_ship ).length;
+        let cur_items = Object.keys( KanColle._api_slot_item ).length;
+        basic._cur_ships = cur_ships;
+        basic._cur_slotitem = cur_items;
+    }catch( e ){
+        basic._cur_ships = 0;
+        basic._cur_slotitem = 0;
+    }
     SetLocalStorage( 'basic', basic );
 }
 
