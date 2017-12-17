@@ -650,75 +650,6 @@ let KanColleTimerSidebar = {
         $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
     },
 
-    initDragAndDrop: function(){
-        // see: https://www.html5rocks.com/ja/tutorials/dnd/basics/
-        var dragSrcEl = null;
-
-        function handleDragStart( e ){
-            console.log( this );
-            dragSrcEl = this;
-
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData( 'text/html', this.innerHTML );
-        }
-
-        function handleDragOver( e ){
-            e.preventDefault(); // Necessary. Allows us to drop.
-
-            e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-            return false;
-        }
-
-        function handleDragEnter( e ){
-            // this / e.target is the current hover target.
-            this.classList.add( 'over' );
-        }
-
-        function handleDragLeave( e ){
-            this.classList.remove( 'over' );  // this / e.target is previous target element.
-        }
-
-        function handleDrop( e ){
-            // this/e.target is current target element.
-            e.stopPropagation(); // Stops some browsers from redirecting.
-
-            // Don't do anything if dropping the same column we're dragging.
-            if( dragSrcEl != this ){
-                // Set the source column's HTML to the HTML of the columnwe dropped on.
-                dragSrcEl.innerHTML = this.innerHTML;
-                this.innerHTML = e.dataTransfer.getData( 'text/html' );
-            }
-            $( '.panel' ).removeClass( 'over' );
-
-            KanColleTimerSidebar.savePanelOrder();
-
-            // イベントリスナを再設定
-            $( '#select-fleet-234' ).change( () =>{
-                let n = $( '#select-fleet-234' ).val();
-                let tbl = $( '#fleet-234 table' );
-                for( let i = 0; i < 3; i++ ){
-                    if( n - 2 == i ){
-                        $( tbl[i] ).show();
-                        $( '#select-fleet-234 option' )[i].setAttribute( 'selected', 'true' );
-                    }else{
-                        $( tbl[i] ).hide();
-                        $( '#select-fleet-234 option' )[i].removeAttribute( 'selected' );
-                    }
-                }
-            } );
-            return false;
-        }
-
-        let panel = document.querySelectorAll( '.panel' );
-        [].forEach.call( panel, function( pnl ){
-            pnl.addEventListener( 'dragstart', handleDragStart, false );
-            pnl.addEventListener( 'dragenter', handleDragEnter, false );
-            pnl.addEventListener( 'dragover', handleDragOver, false );
-            pnl.addEventListener( 'dragleave', handleDragLeave, false );
-            pnl.addEventListener( 'drop', handleDrop, false );
-        } );
-    },
-
     createPiePath: function( radius, percentage ){
         let degree = 360 * (percentage / 100);
         let path = d3.path();
@@ -844,7 +775,13 @@ let KanColleTimerSidebar = {
             }
         } );
 
-        this.initDragAndDrop();
+        // this.initDragAndDrop();
+
+        Sortable.create( document.querySelector( '#main' ), {
+            onEnd: ( ev ) =>{
+                this.savePanelOrder();
+            }
+        } );
 
         console.log( 'kancolle timer x sidebar initialized.' );
 
