@@ -40,13 +40,14 @@ let Popup = {
     },
 
     captureScreenshot: async function(){
+        let zoom = await browser.tabs.getZoom();
         let ss = await browser.tabs.captureVisibleTab();
 
         let image = new Image();
         image.onload = ( ev ) =>{
             let canvas = document.createElement( 'canvas' );
-            let w = this._ss_flash_position.w;
-            let h = this._ss_flash_position.h;
+            let w = this._ss_flash_position.w * zoom;
+            let h = this._ss_flash_position.h * zoom;
             canvas.width = w;
             canvas.height = h;
 
@@ -57,6 +58,8 @@ let Popup = {
 
             let x = this._ss_game_position.offset_x + this._ss_flash_position.offset_x - this._ss_game_position.scroll_x;
             let y = this._ss_game_position.offset_y + this._ss_flash_position.offset_y - this._ss_game_position.scroll_y;
+            x *= zoom;
+            y *= zoom;
             ctx.drawImage( image, x, y, w, h, 0, 0, w, h );
 
             ctx.restore();
