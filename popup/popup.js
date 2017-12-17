@@ -43,6 +43,7 @@ let Popup = {
     },
 
     captureScreenshot: async function(){
+        // TODO あちこちに散らばったスクショコードは整理したい
         let zoom = await browser.tabs.getZoom();
         let ss = await browser.tabs.captureVisibleTab();
 
