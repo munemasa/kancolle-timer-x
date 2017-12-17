@@ -34,6 +34,8 @@ async function loadOptions(){
     document.querySelector( '#snd-repair-finish-soon' ).value = config['snd-repair-finish-soon'];
     document.querySelector( '#snd-build-finished' ).value = config['snd-build-finished'];
     document.querySelector( '#snd-build-finish-soon' ).value = config['snd-build-finish-soon'];
+
+    document.querySelector( '#font-size' ).value = config['font-size'];
 }
 
 function saveOptions( ev ){
@@ -48,6 +50,8 @@ function saveOptions( ev ){
     config['snd-repair-finish-soon'] = document.querySelector( '#snd-repair-finish-soon' ).value;
     config['snd-build-finished'] = document.querySelector( '#snd-build-finished' ).value;
     config['snd-build-finish-soon'] = document.querySelector( '#snd-build-finish-soon' ).value;
+
+    config['font-size'] = document.querySelector( '#font-size' ).value;
 
     browser.storage.local.set( {
         'kct_config': config

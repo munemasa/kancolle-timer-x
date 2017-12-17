@@ -648,6 +648,10 @@ let KanColleTimerSidebar = {
         $( '#snd-repair-finish-soon' ).attr( 'src', config['snd-repair-finish-soon'] );
         $( '#snd-build-finished' ).attr( 'src', config['snd-build-finished'] );
         $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
+
+
+        let pt = config['font-size'] || 9;
+        document.body.style.fontSize = `${pt}pt`;
     },
 
     createPiePath: function( radius, percentage ){
