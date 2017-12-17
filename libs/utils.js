@@ -98,6 +98,11 @@ function GetRandomIntLCG( min, max ){
 }
 
 
+function Deg2Rad( deg ){
+    return Math.PI * (deg / 180);
+}
+
+
 /**
  *  現在時刻を秒で返す(UNIX時間).
  */

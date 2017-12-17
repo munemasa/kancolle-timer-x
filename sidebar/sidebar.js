@@ -719,7 +719,32 @@ let KanColleTimerSidebar = {
         } );
     },
 
+    createPiePath: function( radius, percentage ){
+        let degree = 360 * (percentage / 100);
+        let path = d3.path();
+        path.moveTo( radius, radius );
+        path.arc( radius, radius, radius, 0, Deg2Rad( degree ), 1 );
+        return path;
+    },
+
+    test: function(){
+        return;
+
+        let percentage = 22;
+        let degree = 360 * (percentage / 100);
+        let svg = d3.select( 'svg' );
+        let radius = 20;
+
+        let path = this.createPiePath( 20, 22 );
+
+        svg.append( 'path' )
+            .attr( 'transform', `rotate(-90, ${radius},${radius})` )
+            .attr( "d", path.toString() );
+    },
+
     init: async function(){
+        this.test();
+
         setInterval( () =>{
             this.updateTimers();
         }, 1000 );
