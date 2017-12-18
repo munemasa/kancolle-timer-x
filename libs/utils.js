@@ -237,7 +237,6 @@ function CreateXHR( method, uri, substitution ){
     let req = new XMLHttpRequest();
     if( !req ) return null;
     req.open( method, uri );
-    req.setRequestHeader( "User-Agent", `NicoLiveHelperX/${NicoLiveHelper.version}` );
     req.timeout = 30 * 1000; // 30sec timeout for Gecko 12.0+
     return req;
 }

@@ -51,6 +51,23 @@ function PlayAudio( id, t, text ){
                     "message": text
                 } );
         }
+        if( KanColleTimerSidebar.config && KanColleTimerSidebar.config['webhook'] && text ){
+            let webhookurl = KanColleTimerSidebar.config['webhook'];
+            let data = {
+                'data': {
+                    'type': id,
+                    'text': text
+                }
+            };
+            let xhr = CreateXHR( 'POST', webhookurl );
+            xhr.setRequestHeader( 'Content-type', 'application/json' );
+            xhr.send( JSON.stringify( data ) );
+            xhr.onreadystatechange = function(){
+                if( xhr.readyState == 4 ){
+                    console.log( `Webhook HTTP Status ${xhr.status}` );
+                }
+            };
+        }
     }
 }
 

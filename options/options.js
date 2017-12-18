@@ -30,14 +30,15 @@ async function loadOptions(){
     document.querySelector( '#notify-popup' ).checked = config['notify-popup'];
     document.querySelector( '#auto-open-window' ).checked = config['auto-open-window'];
 
-    document.querySelector( '#snd-mission-finished' ).value = config['snd-mission-finished'];
-    document.querySelector( '#snd-mission-finish-soon' ).value = config['snd-mission-finish-soon'];
-    document.querySelector( '#snd-repair-finished' ).value = config['snd-repair-finished'];
-    document.querySelector( '#snd-repair-finish-soon' ).value = config['snd-repair-finish-soon'];
-    document.querySelector( '#snd-build-finished' ).value = config['snd-build-finished'];
-    document.querySelector( '#snd-build-finish-soon' ).value = config['snd-build-finish-soon'];
+    document.querySelector( '#snd-mission-finished' ).value = config['snd-mission-finished'] || '';
+    document.querySelector( '#snd-mission-finish-soon' ).value = config['snd-mission-finish-soon'] || '';
+    document.querySelector( '#snd-repair-finished' ).value = config['snd-repair-finished'] || '';
+    document.querySelector( '#snd-repair-finish-soon' ).value = config['snd-repair-finish-soon'] || '';
+    document.querySelector( '#snd-build-finished' ).value = config['snd-build-finished'] || '';
+    document.querySelector( '#snd-build-finish-soon' ).value = config['snd-build-finish-soon'] || '';
+    document.querySelector( '#webhook' ).value = config['webhook'] || '';
 
-    document.querySelector( '#font-size' ).value = config['font-size'];
+    document.querySelector( '#font-size' ).value = config['font-size'] || 9;
 }
 
 function saveOptions( ev ){
@@ -52,6 +53,7 @@ function saveOptions( ev ){
     config['snd-repair-finish-soon'] = document.querySelector( '#snd-repair-finish-soon' ).value;
     config['snd-build-finished'] = document.querySelector( '#snd-build-finished' ).value;
     config['snd-build-finish-soon'] = document.querySelector( '#snd-build-finish-soon' ).value;
+    config['webhook'] = document.querySelector( '#webhook' ).value;
 
     config['auto-open-window'] = document.querySelector( '#auto-open-window' ).checked;
     config['font-size'] = document.querySelector( '#font-size' ).value;

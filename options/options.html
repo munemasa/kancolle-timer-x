@@ -12,60 +12,63 @@
 <form>
   <h2>表示</h2>
 
-  <div>
-    <label>
-      フォントサイズ
-    </label>
-    <input type="number" id="font-size" class="kct-settings" value="9"/> ポイント
+  <div style="border: 1px solid gray; border-radius: 4px; padding:1em;">
+    <div>
+      <label>
+        フォントサイズ
+      </label>
+      <input type="number" id="font-size" class="kct-settings" value="9"/> ポイント
+    </div>
+    <div style="margin-top:1em;">
+      <label><input type="checkbox" id="auto-open-window" class="kct-settings">艦これページを開いた時に自動でウィンドウを開く</label>
+    </div>
   </div>
-  <div style="margin-top:1em;">
-    <label><input type="checkbox" id="auto-open-window" class="kct-settings">艦これを始めた時に自動でウィンドウを開く</label>
-  </div>
-
 
   <h2>通知</h2>
 
-  <label><input type="checkbox" id="notify-popup" class="kct-settings">ポップアップ通知を行う</label>
+  <div style="border: 1px solid gray; border-radius: 4px; padding:1em;">
+    <label><input type="checkbox" id="notify-popup" class="kct-settings">ポップアップ通知を行う</label>
 
-  <h3>通知サウンド設定</h3>
-  再生したい音声ファイルが置かれているURLを入力します。
-  <h4>遠征</h4>
-  <table>
-    <tr>
-      <td>帰還時</td>
-      <td><input type="url" id="snd-mission-finished" class="kct-settings"/></td>
-    </tr>
-    <tr>
-      <td>1分前</td>
-      <td><input type="url" id="snd-mission-finish-soon" class="kct-settings"/></td>
-    </tr>
-  </table>
-  <h4>入渠</h4>
-  <table>
-    <tr>
-      <td>修理完了時</td>
-      <td><input type="url" id="snd-repair-finished" class="kct-settings"/></td>
-    </tr>
-    <tr>
-      <td>1分前</td>
-      <td><input type="url" id="snd-repair-finish-soon" class="kct-settings"/></td>
-    </tr>
-  </table>
-  <h4>建造</h4>
-  <table>
-    <tr>
-      <td>完成時</td>
-      <td><input type="url" id="snd-build-finished" class="kct-settings"/></td>
-    </tr>
-    <tr>
-      <td>1分前</td>
-      <td><input type="url" id="snd-build-finish-soon" class="kct-settings"/></td>
-    </tr>
-  </table>
+    <h3>通知サウンド設定</h3>
+    再生したい音声ファイルが置かれているURLを入力します。
+    <h4>遠征</h4>
+
+    <label>帰還時
+      <input type="url" style="width:100%;" id="snd-mission-finished" class="kct-settings"/>
+    </label>
+    <label>1分前
+      <input type="url" style="width:100%;" id="snd-mission-finish-soon" class="kct-settings"/>
+    </label>
+
+    <h4>入渠</h4>
+    <label>
+      修理完了時
+      <input type="url" style="width:100%;" id="snd-repair-finished" class="kct-settings"/>
+    </label>
+    <label>
+      1分前
+      <input type="url" style="width:100%;" id="snd-repair-finish-soon" class="kct-settings"/>
+    </label>
+
+    <h4>建造</h4>
+    <label>
+      完成時
+      <input type="url" style="width:100%;" id="snd-build-finished" class="kct-settings"/>
+    </label>
+    <label>
+      1分前
+      <input type="url" style="width:100%;" id="snd-build-finish-soon" class="kct-settings"/>
+    </label>
+    <h3>WebHook</h3>
+    <label>Webhookアドレス(使用しなければ空にしてください)
+      <input type="url" style="width:100%;" id="webhook" class="kct-settings"/>
+    </label>
+  </div>
 
   <h2>スクリーンショット</h2>
-  <label><input type="checkbox" id="ss-format-jpeg" class="kct-settings">JPEGで保存する</label>
-
+  <div style="border: 1px solid gray; border-radius: 4px; padding:1em;">
+    <label><input type="checkbox" id="ss-format-jpeg" class="kct-settings">JPEGで保存する</label>
+  </div>
   <hr/>
   <button type="submit">設定を保存</button>
 </form>
