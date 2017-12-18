@@ -243,6 +243,10 @@ async function LoadMasterData(){
     }
 }
 
+/**
+ * マスターデータ更新
+ * @param api_data{Object}
+ */
 function UpdateMasterData( api_data ){
     for( let k in api_data ){
         KanColle[k] = api_data[k];
