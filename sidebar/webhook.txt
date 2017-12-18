@@ -1,0 +1,21 @@
+POSTリクエスト
+Content-type: application/json
+
+{
+    'data': {
+        'type': <string>,
+        'text': <string>
+    }
+}
+
+
+type:
+    snd-mission-finished
+    snd-mission-finish-soon
+    snd-repair-finished
+    snd-repair-finish-soon
+    snd-build-finished
+    snd-build-finish-soon
+
+text:
+    通知メッセージ
