@@ -516,6 +516,9 @@ function DispBattleResult( myfleet, data ){
         }else{
             dmg = "";
         }
+        if( nowhp <= 0 ){
+            dmg = '轟沈';
+        }
         console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} HP ${nowhp}/${maxhp} (${dmg})` );
     }
     console.log( '敵軍' );
