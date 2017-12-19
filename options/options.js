@@ -35,9 +35,15 @@ async function LoadOptions(){
     console.log( config );
 
     config = config.kct_config;
+    LoadBool( 'auto-open-window', config, false );
     LoadBool( 'ss-format-jpeg', config, false );
     LoadBool( 'notify-popup', config, false );
-    LoadBool( 'auto-open-window', config, false );
+    LoadBool( 'popup-mission-finished', config, false );
+    LoadBool( 'popup-mission-1min-before', config, false );
+    LoadBool( 'popup-repair-finished', config, false );
+    LoadBool( 'popup-repair-1min-before', config, false );
+    LoadBool( 'popup-build-finished', config, false );
+    LoadBool( 'popup-build-1min-before', config, false );
 
     LoadValue( 'snd-mission-finished', config, '' );
     LoadValue( 'snd-mission-finish-soon', config, '' );
@@ -62,9 +68,15 @@ function SaveOptions( ev ){
     ev.preventDefault();
 
     let config = {};
+    SaveBool( 'auto-open-window', config );
     SaveBool( 'ss-format-jpeg', config );
     SaveBool( 'notify-popup', config );
-    SaveBool( 'auto-open-window', config );
+    SaveBool( 'popup-mission-finished', config );
+    SaveBool( 'popup-mission-1min-before', config );
+    SaveBool( 'popup-repair-finished', config );
+    SaveBool( 'popup-repair-1min-before', config );
+    SaveBool( 'popup-build-finished', config );
+    SaveBool( 'popup-build-1min-before', config );
 
     SaveValue( 'snd-mission-finished', config );
     SaveValue( 'snd-mission-finish-soon', config );

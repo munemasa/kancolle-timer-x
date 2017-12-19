@@ -41,18 +41,42 @@ function PlayAudio( id, t, text ){
         audio.play();
         audio.setAttribute( 'kc-play-time', t );
 
-        if( KanColleTimerSidebar.config && KanColleTimerSidebar.config['notify-popup'] && text ){
-            browser.notifications.create(
-                id,
-                {
-                    "type": "basic",
-                    "iconUrl": "http://pics.dmm.com/freegame/app/854854/200.jpg",
-                    "title": "艦これタイマーX",
-                    "message": text
-                } );
+        let config = KanColleTimerSidebar.config;
+        if( config && config['notify-popup'] && text ){
+            let flg = false;
+            switch( id ){
+            case 'snd-mission-finished':
+                flg = config['popup-mission-finished'];
+                break;
+            case 'snd-mission-finish-soon':
+                flg = config['popup-mission-1min-before'];
+                break;
+            case 'snd-repair-finished':
+                flg = config['popup-repair-finished'];
+                break;
+            case 'snd-repair-finish-soon':
+                flg = config['popup-repair-1min-before'];
+                break;
+            case 'snd-build-finished':
+                flg = config['popup-build-finished'];
+                break;
+            case 'snd-build-finish-soon':
+                flg = config['popup-build-1min-before'];
+                break;
+            }
+            if( flg ){
+                browser.notifications.create(
+                    id,
+                    {
+                        "type": "basic",
+                        "iconUrl": "http://pics.dmm.com/freegame/app/854854/200.jpg",
+                        "title": "艦これタイマーX",
+                        "message": text
+                    } );
+            }
         }
-        if( KanColleTimerSidebar.config && KanColleTimerSidebar.config['webhook'] && text ){
-            let webhookurl = KanColleTimerSidebar.config['webhook'];
+        if( config && config['webhook'] && text ){
+            let webhookurl = config['webhook'];
             let data = {
                 'data': {
                     'type': id,

@@ -27,7 +27,29 @@
   <h2>通知</h2>
 
   <div style="border: 1px solid gray; border-radius: 4px; padding:1em;">
+    <h3>ポップアップ通知</h3>
     <label><input type="checkbox" id="notify-popup" class="kct-settings">ポップアップ通知を行う</label>
+
+    <table>
+      <tr>
+        <td><label for="popup-mission-finished">遠征帰還時</label></td>
+        <td><input type="checkbox" id="popup-mission-finished" class="kct-settings"></td>
+        <td style="text-align: right;"><label for="popup-mission-1min-before">1分前</label></td>
+        <td><input type="checkbox" id="popup-mission-1min-before" class="kct-settings"></td>
+      </tr>
+      <tr>
+        <td><label for="popup-repair-finished">修理完了時</label></td>
+        <td><input type="checkbox" id="popup-repair-finished" class="kct-settings"></td>
+        <td style="text-align: right;"><label for="popup-repair-1min-before">1分前</label></td>
+        <td><input type="checkbox" id="popup-repair-1min-before" class="kct-settings"></td>
+      </tr>
+      <tr>
+        <td><label for="popup-build-finished">艦娘完成時</label></td>
+        <td><input type="checkbox" id="popup-build-finished" class="kct-settings"></td>
+        <td style="text-align: right;"><label for="popup-build-1min-before">1分前</label></td>
+        <td><input type="checkbox" id="popup-build-1min-before" class="kct-settings"></td>
+      </tr>
+    </table>
 
     <h3>通知サウンド設定</h3>
     再生したい音声ファイルが置かれているURLを入力します。
