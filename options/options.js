@@ -20,43 +20,61 @@
  THE SOFTWARE.
  */
 
-async function loadOptions(){
+
+function LoadValue( key, config, defvalue ){
+    document.querySelector( `#${key}` ).value = config[key] || defvalue;
+}
+
+function LoadBool( key, config, defvalue ){
+    document.querySelector( `#${key}` ).checked = config[key] || defvalue;
+}
+
+async function LoadOptions(){
 
     let config = await browser.storage.local.get( 'kct_config' );
     console.log( config );
 
     config = config.kct_config;
-    document.querySelector( '#ss-format-jpeg' ).checked = config['ss-format-jpeg'];
-    document.querySelector( '#notify-popup' ).checked = config['notify-popup'];
-    document.querySelector( '#auto-open-window' ).checked = config['auto-open-window'];
+    LoadBool( 'ss-format-jpeg', config, false );
+    LoadBool( 'notify-popup', config, false );
+    LoadBool( 'auto-open-window', config, false );
 
-    document.querySelector( '#snd-mission-finished' ).value = config['snd-mission-finished'] || '';
-    document.querySelector( '#snd-mission-finish-soon' ).value = config['snd-mission-finish-soon'] || '';
-    document.querySelector( '#snd-repair-finished' ).value = config['snd-repair-finished'] || '';
-    document.querySelector( '#snd-repair-finish-soon' ).value = config['snd-repair-finish-soon'] || '';
-    document.querySelector( '#snd-build-finished' ).value = config['snd-build-finished'] || '';
-    document.querySelector( '#snd-build-finish-soon' ).value = config['snd-build-finish-soon'] || '';
-    document.querySelector( '#webhook' ).value = config['webhook'] || '';
+    LoadValue( 'snd-mission-finished', config, '' );
+    LoadValue( 'snd-mission-finish-soon', config, '' );
+    LoadValue( 'snd-repair-finished', config, '' );
+    LoadValue( 'snd-repair-finish-soon', config, '' );
+    LoadValue( 'snd-build-finished', config, '' );
+    LoadValue( 'snd-build-finish-soon', config, '' );
+    LoadValue( 'webhook', config, '' );
 
-    document.querySelector( '#font-size' ).value = config['font-size'] || 9;
+    LoadValue( 'font-size', config, 9 );
 }
 
-function saveOptions( ev ){
+function SaveValue( key, config ){
+    config[key] = document.querySelector( `#${key}` ).value;
+}
+
+function SaveBool( key, config, value ){
+    config[key] = document.querySelector( `#${key}` ).checked;
+}
+
+function SaveOptions( ev ){
     ev.preventDefault();
 
     let config = {};
-    config['ss-format-jpeg'] = document.querySelector( '#ss-format-jpeg' ).checked;
-    config['notify-popup'] = document.querySelector( '#notify-popup' ).checked;
-    config['snd-mission-finished'] = document.querySelector( '#snd-mission-finished' ).value;
-    config['snd-mission-finish-soon'] = document.querySelector( '#snd-mission-finish-soon' ).value;
-    config['snd-repair-finished'] = document.querySelector( '#snd-repair-finished' ).value;
-    config['snd-repair-finish-soon'] = document.querySelector( '#snd-repair-finish-soon' ).value;
-    config['snd-build-finished'] = document.querySelector( '#snd-build-finished' ).value;
-    config['snd-build-finish-soon'] = document.querySelector( '#snd-build-finish-soon' ).value;
-    config['webhook'] = document.querySelector( '#webhook' ).value;
+    SaveBool( 'ss-format-jpeg', config );
+    SaveBool( 'notify-popup', config );
+    SaveBool( 'auto-open-window', config );
 
-    config['auto-open-window'] = document.querySelector( '#auto-open-window' ).checked;
-    config['font-size'] = document.querySelector( '#font-size' ).value;
+    SaveValue( 'snd-mission-finished', config );
+    SaveValue( 'snd-mission-finish-soon', config );
+    SaveValue( 'snd-repair-finished', config );
+    SaveValue( 'snd-repair-finish-soon', config );
+    SaveValue( 'snd-build-finished', config );
+    SaveValue( 'snd-build-finish-soon', config );
+    SaveValue( 'webhook', config );
+
+    SaveValue( 'font-size', config );
 
     browser.storage.local.set( {
         'kct_config': config
@@ -65,9 +83,9 @@ function saveOptions( ev ){
 
 
 window.addEventListener( 'load', function( ev ){
-    loadOptions();
+    LoadOptions();
 
     document.querySelector( "form" ).addEventListener( "submit", function( ev ){
-        saveOptions( ev );
+        SaveOptions( ev );
     } );
 } );
