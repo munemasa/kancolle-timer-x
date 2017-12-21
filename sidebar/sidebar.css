@@ -34,6 +34,14 @@ div.panel.over {
     font-weight: bold;
 }
 
+table.timer {
+    border-collapse: collapse;
+}
+
+table.timer td {
+    padding-right: 0.2em;
+}
+
 table.fleet {
     border-collapse: collapse;
     width: 100%;
