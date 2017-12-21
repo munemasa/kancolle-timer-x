@@ -495,14 +495,23 @@ function TorpedoBattle( raigeki, myfleet, data ){
     }
 }
 
+/**
+ * 戦闘結果を表示する.
+ * @param myfleet 戦闘した艦隊(デッキ)の艦娘リスト
+ * @param data 戦闘データ
+ */
 function DispBattleResult( myfleet, data ){
+    let result = {
+        fleet_no: data.api_deck_id,
+        friend: [],
+        enemy: []
+    };
     console.log( '自軍' );
     for( let i = 0; i < data.api_f_nowhps.length; i++ ){
         let nowhp = data.api_f_nowhps[i];
         let maxhp = data.api_f_maxhps[i];
         let ratio = nowhp / maxhp;
 
-        // 第1艦隊のみ
         let percentage = ratio * 100;
         let dmg;
         if( nowhp == maxhp ){
@@ -520,12 +529,16 @@ function DispBattleResult( myfleet, data ){
             dmg = '轟沈';
         }
         console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} HP ${nowhp}/${maxhp} (${dmg})` );
+        result.friend.push( [KanColle._api_ship[myfleet.api_ship[i]]._name, nowhp, maxhp] );
     }
     console.log( '敵軍' );
     for( let i = 0; i < data.api_e_nowhps.length; i++ ){
         let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
         console.log( `#${i + 1} ${ship.api_name} HP ${data.api_e_nowhps[i] <= 0 ? '撃沈' : data.api_e_nowhps[i]}` );
+        result.enemy.push( [ship.api_name, data.api_e_nowhps[i], data.api_e_maxhps[i]] );
     }
+
+    KanColle.battle_report = result;
 }
 
 function NormalDaytimeBattle( data ){
@@ -733,8 +746,18 @@ let kcsapicall = {
         UpdateQuestList( data.api_data );
     },
     "api_req_quest/stop": function( data ){
-        // 任務の取り消し
+        // TODO 任務の取り消し
         // POSTした内容が読めないので何をキャンセルしたのか分からない
+    },
+
+    "api_req_hokyu/charge": function( data ){
+        for( let ship of data.api_data.api_ship ){
+            let s = KanColle._api_ship[ship.api_id];
+            s.api_bull = ship.api_bull;
+            s.api_fuel = ship.api_fuel;
+        }
+        // 艦隊表示を更新させるため
+        SetLocalStorage( 'deck', KanColle.deck );
     },
 
 
@@ -752,6 +775,14 @@ let kcsapicall = {
 
     "api_req_sortie/ld_airbattle": function( data ){
         AirBattle( data.api_data );
+    },
+
+    "api_req_sortie/battleresult": function( data ){
+        KanColle.battle_report.map_name = data.api_data.api_quest_name;
+        KanColle.battle_report.enemy_name = data.api_data.api_enemy_info.api_deck_name;
+
+        // TODO このタイミングで戦闘結果を表示する
+        SetLocalStorage( 'battle_report', KanColle.battle_report );
     },
 
     "api_req_kousyou/destroyship": function( data ){
@@ -850,7 +881,8 @@ let filter = {
 };
 browser.webNavigation.onDOMContentLoaded.addListener(
     ( details ) =>{
-        if( details.url.match( /app_id=854854/ ) ){
+        // http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/
+        if( details.url.match( /dmm\.com\/netgame\/social\/.*\/app_id=854854/ ) ){
             console.log( 'open kct window.' );
             OpenWin();
         }

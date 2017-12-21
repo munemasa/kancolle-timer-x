@@ -649,6 +649,60 @@ let KanColleTimerSidebar = {
         }
     },
 
+    showBattleReport: function( report ){
+        let t = document.querySelector( '#template-battle-report' );
+        $( '#tbl-battle-report' ).empty();
+
+        $( '#battle-map-name' ).text( report.map_name );
+        $( '#battle-enemy-name' ).text( `${report.enemy_name}` );
+
+        let len = d3.max( [report.friend.length, report.enemy.length] );
+        for( let i = 0; i < len; i++ ){
+            let clone2 = document.importNode( t.content, true );
+            let elem = clone2.firstElementChild;
+
+            let f_ship_name = elem.querySelector( '.friend-ship-name' );
+            let f_ship_hp = elem.querySelector( '.friend-ship-hp' );
+            let e_ship_name = elem.querySelector( '.enemy-ship-name' );
+            let e_ship_hp = elem.querySelector( '.enemy-ship-hp' );
+
+            if( report.friend[i] ){
+                let nowhp = report.friend[i][1];
+                let maxhp = report.friend[i][2];
+                $( f_ship_name ).text( report.friend[i][0] );
+
+                let ratio = nowhp / maxhp;
+                let percentage = ratio * 100;
+                let dmg;
+                if( nowhp == maxhp ){
+                    dmg = '';
+                }else if( nowhp <= 0 ){
+                    $( f_ship_hp ).addClass( 'large-damage' );
+                    dmg = '轟沈';
+                }else if( percentage <= 25 ){
+                    $( f_ship_hp ).addClass( 'large-damage' );
+                    dmg = "大破";
+                }else if( percentage <= 50 ){
+                    $( f_ship_hp ).addClass( 'medium-damage' );
+                    dmg = "中破";
+                }else if( percentage <= 75 ){
+                    $( f_ship_hp ).addClass( 'small-damage' );
+                    dmg = "小破";
+                }else{
+                    dmg = "";
+                }
+                $( f_ship_hp ).text( `${nowhp}/${maxhp} ${dmg}` );
+            }
+            if( report.enemy[i] ){
+                $( e_ship_name ).text( report.enemy[i][0] );
+                let nowhp = report.enemy[i][1];
+                let maxhp = report.enemy[i][2];
+                $( e_ship_hp ).text( nowhp <= 0 ? '撃沈' : `${nowhp}/${maxhp}` );
+            }
+            $( '#tbl-battle-report' ).append( elem );
+        }
+    },
+
     /**
      * 表示項目の表示順序を保存
      */
@@ -799,6 +853,7 @@ let KanColleTimerSidebar = {
             }
             if( changes.ndock ){
                 this.setRepairTimer( changes.ndock.newValue );
+                this.updateFleet( this.deck );
             }
             if( changes.kdock ){
                 this.setBuildTimer( changes.kdock.newValue );
@@ -817,6 +872,10 @@ let KanColleTimerSidebar = {
 
             if( changes.questlist ){
                 this.updateQuestList( changes.questlist.newValue );
+            }
+
+            if( changes.battle_report ){
+                this.showBattleReport( changes.battle_report.newValue );
             }
         } );
 
