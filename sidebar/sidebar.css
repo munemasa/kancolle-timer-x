@@ -52,6 +52,16 @@ table.fleet td {
     padding-left: 0.2em;
 }
 
+.quest-progress-1 {
+    /* 50% */
+    background-color: #88ff88;
+}
+
+.quest-progress-2 {
+    /* 80% */
+    background-color: #3cb371;
+}
+
 #damaged-ships {
     max-height: 8em;
     overflow: auto;

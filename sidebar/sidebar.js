@@ -629,16 +629,15 @@ let KanColleTimerSidebar = {
                 switch( q.api_progress_flag ){
                 case 1:// 50%
                     str = '50%';
-                    $( questtype ).attr( 'style', `background-color: #88ff88;` );
                     break;
                 case 2:// 80%
                     str = '80%';
-                    $( questtype ).attr( 'style', `background-color: #3cb371;` );
                     break;
                 default:
                     str = '0%';
                     break;
                 }
+                $( questtype ).addClass( `quest-progress-${q.api_progress_flag}` );
 
                 let deadline = q._deadline ? `${new Date( q._deadline ).toLocaleString()}` : '';
 
