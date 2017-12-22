@@ -53,6 +53,8 @@ async function LoadOptions(){
     LoadValue( 'snd-build-finish-soon', config, '' );
     LoadValue( 'webhook', config, '' );
 
+    LoadValue( 'webhook-drop-create-ship', config, '' );
+
     LoadValue( 'font-size', config, 9 );
 }
 
@@ -85,6 +87,7 @@ function SaveOptions( ev ){
     SaveValue( 'snd-build-finished', config );
     SaveValue( 'snd-build-finish-soon', config );
     SaveValue( 'webhook', config );
+    SaveValue( 'webhook-drop-create-ship', config );
 
     SaveValue( 'font-size', config );
 

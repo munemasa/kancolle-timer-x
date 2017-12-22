@@ -34,8 +34,6 @@ let EquipmentParameterName = {
     "api_souk": "装甲"
 };
 
-
-// TODO 装備品一覧でも使うので整理したい
 let EquipmentColor = {
     /*
      主砲 #d15b5b

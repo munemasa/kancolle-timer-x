@@ -82,7 +82,7 @@ let ScreenShotOrganization = {
     },
 
     getNowDateString: function(){
-        // TODO 複数箇所に散らばっているのをまとめる
+        // TODO 複数箇所に散らばっているこの関数をまとめる
         let d = new Date();
         let month = d.getMonth() + 1;
         month = month < 10 ? "0" + month : month;

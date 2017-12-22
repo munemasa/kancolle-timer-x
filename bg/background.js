@@ -23,6 +23,7 @@ console.log( 'load kancolle timer x background script.' );
 
 let KanColle = {
     resourcelog: [],
+    droplog: [],
     questlist: {},
 
     /**
@@ -366,7 +367,7 @@ function UpdateShipFull( api_ship ){
 }
 
 function UpdateShipPartial( ships ){
-    // TODO Full版と合わせて整理する
+    // TODO Full版と合わせて整理したい
     for( let s of ships ){
         s._name = KanColle._api_mst_ship[s.api_ship_id].api_name;
         s._stype = KanColle._api_mst_ship[s.api_ship_id].api_stype;
@@ -457,6 +458,30 @@ function UpdateQuestList( data ){
     SetLocalStorage( 'questlist', KanColle.questlist );
 }
 
+
+async function RecordDropShip( data ){
+    if( !data.api_get_ship ) return;
+
+    let result = await browser.storage.local.get( 'kct_config' );
+    if( !result.kct_config['webhook-drop-create-ship'] ) return;
+
+    // ドロップ艦娘記録 IFTTTのWebhookの仕様に合わせてデータ作成
+    let url = result.kct_config['webhook-drop-create-ship'];
+    let drop = {
+        'value1': `${data.api_quest_name} ${data.api_enemy_info.api_deck_name}`,
+        'value2': `${data.api_get_ship.api_ship_type} ${data.api_get_ship.api_ship_name}`,
+        'value3': `${data.api_win_rank}`
+    };
+
+    let xhr = CreateXHR( 'POST', url );
+    xhr.setRequestHeader( 'Content-type', 'application/json' );
+    xhr.send( JSON.stringify( drop ) );
+    xhr.onreadystatechange = function(){
+        if( xhr.readyState == 4 ){
+            console.log( `Webhook HTTP Status ${xhr.status}` );
+        }
+    };
+}
 
 function GunBattle( hougeki, myfleet, data ){
     if( !hougeki.api_at_eflag ) return; // 夜戦の潜水艦対潜水艦で砲雷撃戦がないとき
@@ -721,6 +746,21 @@ let kcsapicall = {
     "api_req_kousyou/getship": function( data ){
         UpdateBuildTimer( data.api_data.api_kdock );
 
+        // 建造艦娘の記録
+        let ship = KanColle._api_mst_ship[data.api_data.api_ship_id];
+        let create_data = {
+            'api_quest_name': '建造',
+            'api_enemy_info': {
+                'api_deck_name': ''
+            },
+            'api_get_ship': {
+                'api_ship_type': KanColle._api_mst_stype[ship.api_stype].api_name,
+                'api_ship_name': ship.api_name
+            },
+            'api_win_rank': ''
+        };
+        RecordDropShip( create_data );
+
         // TODO 散らばった装備品の似通った処理を整理したい
         for( let item of data.api_data.api_slotitem ){
             item._mst_data = KanColle._api_mst_slotitem[item.api_slotitem_id];
@@ -791,6 +831,8 @@ let kcsapicall = {
     "api_req_sortie/battleresult": function( data ){
         KanColle.battle_report.map_name = data.api_data.api_quest_name;
         KanColle.battle_report.enemy_name = data.api_data.api_enemy_info.api_deck_name;
+
+        RecordDropShip( data.api_data );
 
         // TODO このタイミングで戦闘結果を表示する
         SetLocalStorage( 'battle_report', KanColle.battle_report );
