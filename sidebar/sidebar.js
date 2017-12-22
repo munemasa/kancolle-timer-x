@@ -691,7 +691,7 @@ let KanColleTimerSidebar = {
                 }else{
                     dmg = "";
                 }
-                $( f_ship_hp ).text( `${nowhp}/${maxhp} ${dmg}` );
+                $( f_ship_hp ).text( `${d3.max( [nowhp, 0] )}/${maxhp} ${dmg}` );
             }
             if( report.enemy[i] ){
                 $( e_ship_name ).text( report.enemy[i][0] );
