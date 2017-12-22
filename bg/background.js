@@ -396,6 +396,17 @@ function UpdateBasic( basic ){
         basic._cur_ships = 0;
         basic._cur_slotitem = 0;
     }
+
+    let rank = ["", "元帥", "大将", "中将", "少将",
+        "大佐", "中佐", "新米中佐",
+        "少佐", "中堅少佐", "新米少佐", "", "", "", ""];
+
+    let rankstr = rank[basic.api_rank];
+
+    browser.sidebarAction.setTitle( {
+        title: `${basic.api_nickname}${rankstr}(${basic._cur_ships}/${basic.api_max_chara})`
+    } );
+
     SetLocalStorage( 'basic', basic );
 }
 
