@@ -703,14 +703,18 @@ function AirBattle( data ){
         console.log( `${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
     }
 
-    console.log( '*** 航空戦 ***' );
-    // 艦艇へのダメージ処理はここだけ
+    console.log( '*** 航空戦1 ***' );
     if( data.api_kouku && data.api_kouku.api_stage3 ){
         let raigeki = data.api_kouku.api_stage3;
         TorpedoBattle( raigeki, myfleet, data );
     }
 
-    //--- 結果
+    console.log( '*** 航空戦2 ***' );
+    if( data.api_kouku2 && data.api_kouku2.api_stage3 ){
+        let raigeki = data.api_kouku2.api_stage3;
+        TorpedoBattle( raigeki, myfleet, data );
+    }
+
     console.log( '*** 結果 ***' );
     DispBattleResult( myfleet, data );
 }
@@ -822,6 +826,10 @@ let kcsapicall = {
     "api_req_battle_midnight/sp_midnight": function( data ){
         // 5-3 の夜戦マップ
         NormalMidnightBattle( data.api_data );
+    },
+    "api_req_sortie/airbattle": function( data ){
+        // 1-6 の航空戦
+        AirBattle( data.api_data );
     },
 
     "api_req_sortie/ld_airbattle": function( data ){
