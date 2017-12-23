@@ -96,7 +96,15 @@ let EquipmentList = {
                 e.appendChild( description );
             }
 
-            name.textContent = equip_name;
+            name.textContent = equip_name + (item.api_level > 0 ? '★+' + item.api_level : '');
+            if( item.api_alv && item.api_alv > 0 ){
+                let str = '';
+                for( let i = 0; i < item.api_alv; i++ ){
+                    str += '|';
+                }
+                name.textContent += ' ' + str;
+            }
+
             name.setAttribute( 'style', style_str );
 
             ship_name.textContent = `${item._owner_ship_name} ${item._owner_ship_lv}`;

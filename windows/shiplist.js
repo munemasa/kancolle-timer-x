@@ -180,7 +180,7 @@ let ShipList = {
                 }
                 let item = KanColle._api_slot_item[ship.api_slot[i]];
                 try{
-                    equip[i].textContent = item._mst_data.api_name;
+                    equip[i].textContent = item._mst_data.api_name + (item.api_level > 0 ? '★+' + item.api_level : '')
                 }catch( e ){
                     equip[i].textContent = '[Undetermined]';
                     $( equip[i] ).addClass( 'undetermined_weapon' );
