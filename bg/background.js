@@ -967,6 +967,8 @@ browser.webNavigation.onDOMContentLoaded.addListener(
 async function CaptureScreenshot(){
     let zoom = await browser.tabs.getZoom();
     let ss = await browser.tabs.captureVisibleTab();
+    let result = await browser.storage.local.get( 'kct_config' );
+    let is_jpeg = (result && result.kct_config['ss-format-jpeg']) || 0;
 
     let image = new Image();
     image.onload = ( ev ) =>{
@@ -989,7 +991,6 @@ async function CaptureScreenshot(){
 
         ctx.restore();
 
-        let is_jpeg = KanColle.config && KanColle.config['ss-format-jpeg'];
         let dt = canvas.toDataURL( is_jpeg ? 'image/jpeg' : 'image/png' );
         dt = dt.replace( /^data:image\/[^;]*/, 'data:application/octet-stream' );
 
