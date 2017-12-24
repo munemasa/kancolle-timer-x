@@ -797,6 +797,16 @@ let kcsapicall = {
         UpdateSlotitem( data.api_data );
     },
 
+    "api_req_member/itemuse": function( data ){
+        // TODO アイテム使用でもらえる装備品は滅多にないので動作確認できないけど作成
+        if( data.api_data.api_getitem && data.api_data.api_slotitem ){
+            // data.api_data.api_getitem;
+            let item = data.api_data.api_slotitem;
+            item._mst_data = KanColle._api_mst_slotitem[item.api_slotitem_id];
+            KanColle._api_slot_item[item.api_id] = item;
+        }
+    },
+
     "api_get_member/questlist": function( data ){
         UpdateQuestList( data.api_data );
     },
