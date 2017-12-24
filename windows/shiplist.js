@@ -150,7 +150,8 @@ let ShipList = {
 
             no.textContent = i + 1;
             ship_type.textContent = ship._stype_name;
-            ship_name.textContent = ship._name;
+            let fleet_no = this.getFleetNo( ship.api_id );
+            ship_name.textContent = (fleet_no > 0 ? `(${fleet_no})` : '') + ship._name;
             ship_level.textContent = ship.api_lv;
 
             ship_cond.textContent = ship.api_cond;
@@ -194,6 +195,19 @@ let ShipList = {
         } );
     },
 
+    /**
+     * 艦娘の所属艦隊番号を返す
+     * @param ship_id
+     * @returns {integer}
+     */
+    getFleetNo: function( ship_id ){
+        for( let fleet of KanColle.deck ){
+            if( fleet.api_ship.includes( ship_id ) ){
+                return fleet.api_id;
+            }
+        }
+        return 0;
+    },
 
     showDetails: function( ship_id ){
         let ship = KanColle._api_ship[ship_id];
