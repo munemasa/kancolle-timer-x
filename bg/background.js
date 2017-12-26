@@ -856,6 +856,13 @@ let kcsapicall = {
         SetLocalStorage( 'battle_report', KanColle.battle_report );
     },
 
+    "api_req_combined_battle/battleresult": function( data ){
+        RecordDropShip( data.api_data );
+
+        // TODO 連合艦隊は未実装
+        SetLocalStorage( 'battle_report', {} );
+    },
+
     "api_req_kousyou/destroyship": function( data ){
         // TODO 解体 POSTデータ読めないのでどの艦を解体したのか分からない
     },

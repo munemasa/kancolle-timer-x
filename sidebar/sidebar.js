@@ -652,6 +652,11 @@ let KanColleTimerSidebar = {
         let t = document.querySelector( '#template-battle-report' );
         $( '#tbl-battle-report' ).empty();
 
+        if( !report.map_name ){
+            $( '#battle-map-name' ).text( `現在、連合艦隊には未対応です。` );
+            return;
+        }
+
         $( '#battle-map-name' ).text( report.map_name );
         $( '#battle-enemy-name' ).text( `${report.enemy_name}` );
 
@@ -877,8 +882,6 @@ let KanColleTimerSidebar = {
                 this.showBattleReport( changes.battle_report.newValue );
             }
         } );
-
-        // this.initDragAndDrop();
 
         Sortable.create( document.querySelector( '#main' ), {
             onEnd: ( ev ) =>{
