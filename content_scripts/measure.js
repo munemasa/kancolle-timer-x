@@ -49,5 +49,9 @@
         f();
     }, 2000 );
 
+    browser.runtime.onMessage.addListener( ( request ) =>{
+        document.title = request.title;
+        return Promise.resolve( {} );
+    } );
 })();
 

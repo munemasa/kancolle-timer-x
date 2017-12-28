@@ -387,7 +387,7 @@ function UpdateSlotitem( slotitems ){
     SetLocalStorage( 'slotitem', KanColle._api_slot_item );
 }
 
-function UpdateBasic( basic ){
+async function UpdateBasic( basic ){
     try{
         let cur_ships = Object.keys( KanColle._api_ship ).length;
         let cur_items = Object.keys( KanColle._api_slot_item ).length;
@@ -397,18 +397,27 @@ function UpdateBasic( basic ){
         basic._cur_ships = 0;
         basic._cur_slotitem = 0;
     }
+    SetLocalStorage( 'basic', basic );
 
     let rank = ["", "元帥", "大将", "中将", "少将",
         "大佐", "中佐", "新米中佐",
         "少佐", "中堅少佐", "新米少佐", "", "", "", ""];
 
     let rankstr = rank[basic.api_rank];
-
     browser.sidebarAction.setTitle( {
         title: `${basic.api_nickname}${rankstr}(${basic._cur_ships}/${basic.api_max_chara})`
     } );
 
-    SetLocalStorage( 'basic', basic );
+
+    let tabs = await browser.tabs.query( {
+        url: '*://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/'
+    } );
+    for( let tab of tabs ){
+        let msg = {
+            title: `艦隊これくしょん -艦これ- 艦娘(${basic._cur_ships}/${basic.api_max_chara}) 装備(${basic._cur_slotitem}/${basic.api_max_slotitem})`
+        };
+        browser.tabs.sendMessage( tab.id, msg );
+    }
 }
 
 function UpdateQuestList( data ){
