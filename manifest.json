@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "KanColle Timer X",
-  "version": "0.9.1",
+  "version": "1.0",
   "applications": {
     "gecko": {
       "id": "kancolletimerx@miku39.jp",
