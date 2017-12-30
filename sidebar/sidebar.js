@@ -762,16 +762,13 @@ let KanColleTimerSidebar = {
         }
 
         for( let v of attr ){
+            if( !config[v] ){
+                $( `#${v}` ).attr( 'src', '' );
+            }
             if( config[v].match( /^http/ ) ){
                 $( `#${v}` ).attr( 'src', config[v] );
             }
         }
-        // $( '#snd-mission-finished' ).attr( 'src', config['snd-mission-finished'] );
-        // $( '#snd-mission-finish-soon' ).attr( 'src', config['snd-mission-finish-soon'] );
-        // $( '#snd-repair-finished' ).attr( 'src', config['snd-repair-finished'] );
-        // $( '#snd-repair-finish-soon' ).attr( 'src', config['snd-repair-finish-soon'] );
-        // $( '#snd-build-finished' ).attr( 'src', config['snd-build-finished'] );
-        // $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
 
 
         let pt = config['font-size'] || 9;
