@@ -834,6 +834,14 @@ let kcsapicall = {
         SetLocalStorage( 'deck', KanColle.deck );
     },
 
+    "api_req_hensei/preset_select": function( data ){
+        for( let i = 0, f; f = KanColle.deck[i]; i++ ){
+            if( f.api_id == data.api_data.api_id ){
+                KanColle.deck[i] = data.api_data;
+            }
+        }
+        SetLocalStorage( 'deck', KanColle.deck );
+    },
 
     "api_req_sortie/battle": function( data ){
         NormalDaytimeBattle( data.api_data );
