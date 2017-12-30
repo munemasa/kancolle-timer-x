@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <script src="../libs/external/jquery-3.2.1.min.js"></script>
+  <script src="../libs/external/dexie/dexie.min.js"></script>
   <script src="options.js"></script>
 
   <title>艦これタイマーXの設定</title>
@@ -52,34 +53,39 @@
     </table>
 
     <h3>通知サウンド設定</h3>
-    再生したい音声ファイルが置かれているURLを入力します。
     <h4>遠征</h4>
 
     <label>帰還時
-      <input type="url" style="width:100%;" id="snd-mission-finished" class="kct-settings"/>
+      <input readonly="true" style="width:100%;" id="snd-mission-finished" class="kct-settings"/>
+      <input type="file" style="width:100%;" id="file-mission-finished" accept="audio/*" class="kct-settings"/>
     </label>
     <label>1分前
-      <input type="url" style="width:100%;" id="snd-mission-finish-soon" class="kct-settings"/>
+      <input readonly="true" style="width:100%;" id="snd-mission-finish-soon" class="kct-settings"/>
+      <input type="file" style="width:100%;" id="file-mission-finish-soon" accept="audio/*" class="kct-settings"/>
     </label>
 
     <h4>入渠</h4>
     <label>
       修理完了時
-      <input type="url" style="width:100%;" id="snd-repair-finished" class="kct-settings"/>
+      <input readonly="true" style="width:100%;" id="snd-repair-finished" class="kct-settings"/>
+      <input type="file" style="width:100%;" id="file-repair-finished" accept="audio/*" class="kct-settings"/>
     </label>
     <label>
       1分前
-      <input type="url" style="width:100%;" id="snd-repair-finish-soon" class="kct-settings"/>
+      <input readonly="true" style="width:100%;" id="snd-repair-finish-soon" class="kct-settings"/>
+      <input type="file" style="width:100%;" id="file-repair-finish-soon" accept="audio/*" class="kct-settings"/>
     </label>
 
     <h4>建造</h4>
     <label>
       完成時
-      <input type="url" style="width:100%;" id="snd-build-finished" class="kct-settings"/>
+      <input readonly="true" style="width:100%;" id="snd-build-finished" class="kct-settings"/>
+      <input type="file" style="width:100%;" id="file-build-finished" accept="audio/*" class="kct-settings"/>
     </label>
     <label>
       1分前
-      <input type="url" style="width:100%;" id="snd-build-finish-soon" class="kct-settings"/>
+      <input readonly="true" style="width:100%;" id="snd-build-finish-soon" class="kct-settings"/>
+      <input type="file" style="width:100%;" id="file-build-finish-soon" accept="audio/*" class="kct-settings"/>
     </label>
     <h3>WebHook</h3>
     <label>Webhookアドレス(使用しなければ空にしてください)

@@ -577,6 +577,7 @@ let KanColleTimerSidebar = {
      */
     updateQuestList: function( quests ){
         this.questlist = quests;
+        if( !this.questlist ) return;
 
         let list = Object.keys( quests ).map( ( k ) =>{
             return quests[k];
@@ -737,16 +738,40 @@ let KanColleTimerSidebar = {
         }
     },
 
-    loadSettings: function( config ){
+    loadSettings: async function( config ){
         if( !config ) return;
         this.config = config;
 
-        $( '#snd-mission-finished' ).attr( 'src', config['snd-mission-finished'] );
-        $( '#snd-mission-finish-soon' ).attr( 'src', config['snd-mission-finish-soon'] );
-        $( '#snd-repair-finished' ).attr( 'src', config['snd-repair-finished'] );
-        $( '#snd-repair-finish-soon' ).attr( 'src', config['snd-repair-finish-soon'] );
-        $( '#snd-build-finished' ).attr( 'src', config['snd-build-finished'] );
-        $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
+        let db = new Dexie( "kct_database" );
+        db.version( 1 ).stores( {
+            kvs: 'key,value'
+        } );
+
+        let files = ['file-mission-finished', 'file-mission-finish-soon',
+            'file-repair-finished', 'file-repair-finish-soon',
+            'file-build-finished', 'file-build-finish-soon'];
+        let attr = ['snd-mission-finished', 'snd-mission-finish-soon',
+            'snd-repair-finished', 'snd-repair-finish-soon',
+            'snd-build-finished', 'snd-build-finish-soon'];
+
+        for( let i = 0, f; f = files[i]; i++ ){
+            let audio = await db.kvs.get( f );
+            if( audio ){
+                $( `#${attr[i]}` ).attr( 'src', audio.value.data );
+            }
+        }
+
+        for( let v of attr ){
+            if( config[v].match( /^http/ ) ){
+                $( `#${v}` ).attr( 'src', config[v] );
+            }
+        }
+        // $( '#snd-mission-finished' ).attr( 'src', config['snd-mission-finished'] );
+        // $( '#snd-mission-finish-soon' ).attr( 'src', config['snd-mission-finish-soon'] );
+        // $( '#snd-repair-finished' ).attr( 'src', config['snd-repair-finished'] );
+        // $( '#snd-repair-finish-soon' ).attr( 'src', config['snd-repair-finish-soon'] );
+        // $( '#snd-build-finished' ).attr( 'src', config['snd-build-finished'] );
+        // $( '#snd-build-finish-soon' ).attr( 'src', config['snd-build-finish-soon'] );
 
 
         let pt = config['font-size'] || 9;

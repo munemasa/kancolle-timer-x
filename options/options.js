@@ -96,8 +96,40 @@ function SaveOptions( ev ){
     } );
 }
 
+function Initialize(){
+    let db = new Dexie( "kct_database" );
+    db.version( 1 ).stores( {
+        kvs: 'key,value'
+    } );
+
+    $( 'input[type="file"]' ).on( 'change', function( e ){
+        console.log( this );
+
+        let reader = new FileReader();
+        reader.onload = ( ev ) =>{
+            let id = this.id;
+            db.kvs.put( {
+                key: id,
+                value: {
+                    name: this.files[0].name,
+                    data: ev.target.result
+                }
+            } );
+
+            id = id.replace( /^file/, 'snd' );
+            $( `#${id}` ).val( this.files[0].name );
+
+            // 再生テスト
+            let audio = new Audio();
+            audio.src = ev.target.result;
+            audio.play();
+        };
+        reader.readAsDataURL( this.files[0] );
+    } );
+}
 
 window.addEventListener( 'load', function( ev ){
+    Initialize();
     LoadOptions();
 
     document.querySelector( "form" ).addEventListener( "submit", function( ev ){
