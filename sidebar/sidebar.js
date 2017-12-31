@@ -470,8 +470,29 @@ let KanColleTimerSidebar = {
      * @param material
      */
     updateMaterial: function( material ){
+        let f = ( v ) =>{
+            if( v > 1000 ) return `${parseInt( v / 1000 )}k`;
+            return v;
+        };
+
         for( let m of material ){
             switch( m.api_id ){
+            case 1:
+                // 燃料
+                $( '#num-fuel' ).text( f( m.api_value ) );
+                break;
+            case 2:
+                // 弾薬
+                $( '#num-bullet' ).text( f( m.api_value ) );
+                break;
+            case 3:
+                // 鋼材
+                $( '#num-steel' ).text( f( m.api_value ) );
+                break;
+            case 4:
+                // ボーキサイト
+                $( '#num-bauxite' ).text( f( m.api_value ) );
+                break;
             case 6:
                 // 高速修復材
                 $( '#repair-kit-num' ).text( m.api_value );
@@ -805,6 +826,17 @@ let KanColleTimerSidebar = {
             this.updateTimers();
         }, 1000 );
 
+        // てきとうに艦娘数・装備数等表示のヘッダー表示処理
+        let display = localStorage.getItem( 'kct_sticky' );
+        display = display && JSON.parse( display );
+        $( '.splitter' ).prev().toggle( display );
+        $( '.splitter' ).on( 'click', ( ev ) =>{
+            let prev_elem = $( ev.target ).prev();
+            let display = !prev_elem.is( ':visible' );
+            prev_elem.toggle( {easing: 'swing'} );
+            localStorage.setItem( 'kct_sticky', JSON.stringify( display ) );
+        } );
+
         $( '#select-fleet-234' ).change( () =>{
             let n = $( '#select-fleet-234' ).val();
             let tbl = $( '#fleet-234 table' );
@@ -902,6 +934,11 @@ let KanColleTimerSidebar = {
 
             if( changes.battle_report ){
                 this.showBattleReport( changes.battle_report.newValue );
+            }
+            if( changes.basic ){
+                let basic = changes.basic.newValue;
+                $( '#num-ships' ).text( `${basic._cur_ships}/${basic.api_max_chara}` );
+                $( '#num-slotitem' ).text( `${basic._cur_slotitem}/${basic.api_max_slotitem}` );
             }
         } );
 
