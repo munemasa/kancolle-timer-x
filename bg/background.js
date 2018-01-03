@@ -407,17 +407,6 @@ async function UpdateBasic( basic ){
     browser.sidebarAction.setTitle( {
         title: `${basic.api_nickname}${rankstr}(${basic._cur_ships}/${basic.api_max_chara})`
     } );
-
-
-    let tabs = await browser.tabs.query( {
-        url: '*://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/'
-    } );
-    for( let tab of tabs ){
-        let msg = {
-            title: `艦隊これくしょん -艦これ- 艦娘(${basic._cur_ships}/${basic.api_max_chara}) 装備(${basic._cur_slotitem}/${basic.api_max_slotitem})`
-        };
-        browser.tabs.sendMessage( tab.id, msg );
-    }
 }
 
 function UpdateQuestList( data ){
