@@ -939,6 +939,10 @@ let KanColleTimerSidebar = {
                 let basic = changes.basic.newValue;
                 $( '#num-ships' ).text( `${basic._cur_ships}/${basic.api_max_chara}` );
                 $( '#num-slotitem' ).text( `${basic._cur_slotitem}/${basic.api_max_slotitem}` );
+                let d1 = basic.api_max_chara - basic._cur_ships;
+                let d2 = basic.api_max_slotitem - basic._cur_slotitem;
+                $( '#num-ships' ).attr( 'icon', d1 <= 5 ? 'warning' : '' );
+                $( '#num-slotitem' ).attr( 'icon', d2 <= 5 * 4 ? 'warning' : '' );
             }
         } );
 

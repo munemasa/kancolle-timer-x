@@ -93,7 +93,7 @@ tr.medium-damage, td.medium-damage {
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, -1px 1px 2px white, 1px -1px 2px white;
 }
 
-tr.small-damage, td.small-damage {
+tr.small-damage, td.small-damage, span.deployment[icon='warning'] {
     background-color: #ffea5d;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, -1px 1px 2px white, 1px -1px 2px white;
 }
