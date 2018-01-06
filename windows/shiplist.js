@@ -240,10 +240,18 @@ let ShipList = {
             if( ship.api_slot[i] > 0 ){
                 let item = KanColle._api_slot_item[ship.api_slot[i]];
                 try{
-                    slot[i].text( item._mst_data.api_name + (item.api_level > 0 ? '★+' + item.api_level : '') || '　' );
+                    let str = ' ';
+                    if( item.api_alv && item.api_alv > 0 ){
+                        for( let i = 0; i < item.api_alv; i++ ){
+                            str += '|';
+                        }
+                    }
+                    str = (item._mst_data.api_name + (item.api_level > 0 ? '★+' + item.api_level : '') || '　') + str;
+                    slot[i].text( str );
+
                     let color = GetEquipmentColor( item._mst_data );
                     let color2 = GetEquipmentSubColor( item._mst_data ) || color;
-                    let str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
+                    str = `box-shadow: -6px 0 0 0 ${color2}, -12px 0 0 0 ${color}; margin-left: 16px; padding-left: 4px;`;
                     slot[i].attr( 'style', str );
 
                     let value = [];
@@ -277,7 +285,8 @@ let ShipList = {
                 document.querySelector( `#slot${i + 1}_spec` ).textContent = '';
             }
             if( ship.api_onslot[i] > 0 ){
-                slot[i].text( slot[i].text() + ` (搭載 ${ship.api_onslot[i]})` );
+                let str = $( `#slot${i + 1}_spec` ).text();
+                $( `#slot${i + 1}_spec` ).text( `(搭載 ${ship.api_onslot[i]}) ` + str );
             }
         }
     },
