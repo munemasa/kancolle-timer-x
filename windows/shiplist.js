@@ -276,6 +276,9 @@ let ShipList = {
                 slot[i].attr( 'style', '' );
                 document.querySelector( `#slot${i + 1}_spec` ).textContent = '';
             }
+            if( ship.api_onslot[i] > 0 ){
+                slot[i].text( slot[i].text() + ` (搭載 ${ship.api_onslot[i]})` );
+            }
         }
     },
 
