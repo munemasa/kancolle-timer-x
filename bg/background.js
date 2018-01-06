@@ -628,6 +628,11 @@ function NormalDaytimeBattle( data ){
         TorpedoBattle( data.api_opening_atack, myfleet, data );
     }
 
+    console.log( '*** 噴式強襲航空攻撃 ***' );
+    if( data.api_injection_kouku && data.api_injection_kouku.api_stage3 ){
+        TorpedoBattle( data.api_injection_kouku.api_stage3, myfleet, data );
+    }
+
     console.log( '*** 航空戦 ***' );
     // 艦艇へのダメージ処理はここだけ
     if( data.api_kouku && data.api_kouku.api_stage3 ){
@@ -852,6 +857,14 @@ let kcsapicall = {
         AirBattle( data.api_data );
     },
 
+    "api_req_practice/battle": function( data ){
+        NormalDaytimeBattle( data.api_data );
+    },
+
+    "api_req_practice/midnight_battle": function( data ){
+        NormalMidnightBattle( data.api_data );
+    },
+
     "api_req_sortie/battleresult": function( data ){
         KanColle.battle_report.map_name = data.api_data.api_quest_name;
         KanColle.battle_report.enemy_name = data.api_data.api_enemy_info.api_deck_name;
@@ -859,6 +872,13 @@ let kcsapicall = {
         RecordDropShip( data.api_data );
 
         // TODO このタイミングで戦闘結果を表示する
+        SetLocalStorage( 'battle_report', KanColle.battle_report );
+    },
+
+    "api_req_practice/battle_result": function( data ){
+        KanColle.battle_report.map_name = "演習";
+        KanColle.battle_report.enemy_name = data.api_data.api_enemy_info.api_deck_name;
+
         SetLocalStorage( 'battle_report', KanColle.battle_report );
     },
 
