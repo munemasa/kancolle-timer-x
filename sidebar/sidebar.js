@@ -471,7 +471,7 @@ let KanColleTimerSidebar = {
      */
     updateMaterial: function( material ){
         let f = ( v ) =>{
-            if( v > 1000 ) return `${parseInt( v / 1000 )}k`;
+            if( v > 10000 ) return `${parseInt( v / 1000 )}k`;
             return v;
         };
 
