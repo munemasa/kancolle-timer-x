@@ -516,7 +516,36 @@ let ShipList = {
     },
 
 
-    init: async function(){
+    treeContextMenu: function( key, options ){
+        console.log( key );
+        console.log( options.$trigger );
+
+        let elem = options.$trigger[0];
+        // let n = elem.sectionRowIndex;
+
+        switch( key ){
+        case'new-list':
+            break;
+
+        case 'rename-list':
+            break;
+
+        case 'delete-list':
+            break;
+        }
+    },
+
+    createUserDefinedList: function(){
+        return;
+        let treeview = $( '#show-by-user-definition' );
+
+        let li = document.createElement( 'li' );
+        $( li ).attr( 'id', `kind-ud-${s._stype}` );
+        $( li ).text( s._stype_name );
+        treeview.append( li );
+    },
+
+    initTabs: function(){
         $( "#tabs" ).tabs( {
             activate: function( event, ui ){
                 console.log( ui );
@@ -525,24 +554,9 @@ let ShipList = {
                 }
             }
         } );
+    },
 
-        // プライベートブラウジングモードだと使えない手法だが
-        // 物は試しと、手抜きのため。
-        let bg = await browser.runtime.getBackgroundPage();
-        KanColle = bg.GetKanColle();
-
-        let ships = [];
-        for( let i in KanColle._api_ship ){
-            ships.push( KanColle._api_ship[i] );
-        }
-
-        this.ships = ships;
-        this._show_ships = ships;
-        this.sort( this.ships, 0 );
-        this.createTable( this.ships );
-        this.createHistogram( this.ships );
-
-        // 装備フィルターメニュー
+    initEquipmentFilterMenu: function(){
         let tmp = {};
         for( let k in KanColle._api_slot_item ){
             if( k == -1 ) continue;
@@ -566,9 +580,9 @@ let ShipList = {
             menuitem.setAttribute( 'value', tmp[d].api_id );
             $( '#weapon-filter' ).append( menuitem );
         } );
+    },
 
-
-        // 艦種別リストを作成
+    initTreeView: function( ships ){
         let treeview = $( '#show-by-ship-type' );
         let flg = {};
         for( let s of ships ){
@@ -580,6 +594,7 @@ let ShipList = {
                 flg[s._stype_name] = true;
             }
         }
+        this.createUserDefinedList();
 
         $( '#left' ).on( 'select_node.jstree', ( ev, data ) =>{
             this.select( data.selected[0] );
@@ -588,6 +603,50 @@ let ShipList = {
                 'multiple': false
             }
         } );
+        $.contextMenu( {
+            selector: 'li.user-defined',
+            build: ( $triggerElement, e ) =>{
+                let menuobj = {
+                    zIndex: 10,
+                    callback: ( key, options ) =>{
+                        this.treeContextMenu( key, options );
+                    },
+                    items: {
+                        "new-list": {name: "新規リスト作成"},
+                        "rename-list": {name: "名前変更"},
+                        "delete-list": {name: "リスト削除"},
+                    }
+                };
+                return menuobj;
+            },
+        } );
+    },
+
+    init: async function(){
+        this.initTabs();
+
+        // プライベートブラウジングモードだと使えない手法だが
+        // 物は試しと、手抜きのため。
+        let bg = await browser.runtime.getBackgroundPage();
+        KanColle = bg.GetKanColle();
+
+        let ships = [];
+        for( let i in KanColle._api_ship ){
+            ships.push( KanColle._api_ship[i] );
+        }
+
+        this.ships = ships;
+        this._show_ships = ships;
+        this.sort( this.ships, 0 );
+        this.createTable( this.ships );
+        this.createHistogram( this.ships );
+
+        // 装備フィルターメニュー
+        this.initEquipmentFilterMenu();
+
+        // 艦種別リストを作成
+        this.initTreeView( ships );
+
 
         $( '#level-threshold' ).on( 'change', ( ev ) =>{
             this.createPieChart( this.ships );

@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <title>艦娘一覧</title>
   <link rel="stylesheet" href="../libs/external/jquery-ui/jquery-ui.css"/>
+  <link rel="stylesheet" href="../libs/external/jquery.contextMenu.css"/>
   <link rel="stylesheet" href="../libs/external/jstree/themes/default/style.min.css">
   <link rel="stylesheet" href="shiplist.css">
   <script src="../libs/external/d3/d3.min.js"></script>
   <script src="../libs/external/d3pie/d3pie.js"></script>
   <script src="../libs/external/jquery-3.2.1.min.js"></script>
   <script src="../libs/external/jquery-ui/jquery-ui.min.js"></script>
+  <script src="../libs/external/jquery.contextMenu.js"></script>
   <script src="../libs/external/jstree/jstree.min.js"></script>
   <script src="../libs/utils.js"></script>
   <script src="equipmentcolor.js"></script>
@@ -67,8 +69,12 @@
             <li id="kind-all"><a href="#" class="jstree-clicked">全て</a></li>
           </ul>
         </li>
+        <li class="jstree-open user-defined">
+          ユーザー定義
+          <ul id="show-by-user-definition">
+          </ul>
+        </li>
       </ul>
-
     </div>
     <div id="right">
 
