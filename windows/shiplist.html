@@ -69,7 +69,7 @@
             <li id="kind-all"><a href="#" class="jstree-clicked">全て</a></li>
           </ul>
         </li>
-        <li class="jstree-open user-defined">
+        <li class="jstree-open user-defined" id="kind-user-defined">
           ユーザー定義
           <ul id="show-by-user-definition">
           </ul>
@@ -82,22 +82,22 @@
         <table id="tbl-shiplist" border="1">
           <thead>
           <tr>
-            <th>No.</th>
-            <th id="sort-type" class="list-sort">艦種</th>
-            <th>艦名</th>
-            <th id="sort-lv" class="list-sort">Lv</th>
-            <th id="sort-cond" class="list-sort">状態</th>
-            <th id="sort-karyoku" class="list-sort">火力</th>
-            <th id="sort-raisou" class="list-sort">雷装</th>
-            <th id="sort-taiku" class="list-sort">対空</th>
-            <th id="sort-taisen" class="list-sort">対潜</th>
-            <th id="sort-sakuteki" class="list-sort">索敵</th>
-            <th>EXP.</th>
-            <th>搭載</th>
-            <th>装備1</th>
-            <th>装備2</th>
-            <th>装備3</th>
-            <th>装備4</th>
+            <th class="ship-no">No.</th>
+            <th id="sort-type" class="list-sort ship-type">艦種</th>
+            <th class="ship-name">艦名</th>
+            <th id="sort-lv" class="list-sort ship-level">Lv</th>
+            <th id="sort-cond" class="list-sort ship-cond">状態</th>
+            <th id="sort-karyoku" class="list-sort ship-karyoku">火力</th>
+            <th id="sort-raisou" class="list-sort ship-raisou">雷装</th>
+            <th id="sort-taiku" class="list-sort ship-taiku">対空</th>
+            <th id="sort-taisen" class="list-sort ship-taisen">対潜</th>
+            <th id="sort-sakuteki" class="list-sort ship-search">索敵</th>
+            <th class="ship-exp">EXP.</th>
+            <th class="ship-payload">搭載</th>
+            <th class="ship-equip1">装備1</th>
+            <th class="ship-equip2">装備2</th>
+            <th class="ship-equip3">装備3</th>
+            <th class="ship-equip4">装備4</th>
           </tr>
           </thead>
           <tbody id="shiplist">

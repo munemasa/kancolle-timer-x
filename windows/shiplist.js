@@ -25,6 +25,7 @@ let KanColle = {};
 
 let ShipList = {
     ships: null, // 艦娘全員
+    userdefined: [],
 
     /**
      * 艦娘リスト（配列）をソート
@@ -312,7 +313,12 @@ let ShipList = {
         }
     },
 
+    /**
+     * 選択した艦娘一覧を表示する.
+     * @param type
+     */
     select: function( type ){
+        console.log( type );
         $( '#weapon-filter' ).val( 0 );
         switch( type ){
         case 'fleet-1':
@@ -517,32 +523,53 @@ let ShipList = {
 
 
     treeContextMenu: function( key, options ){
-        console.log( key );
-        console.log( options.$trigger );
-
         let elem = options.$trigger[0];
         // let n = elem.sectionRowIndex;
+        let n = elem.id.match( /kind-ud-(\d+)/ );
+        n = n && n[1] || -1;
+        console.log( n );
 
+        let name;
         switch( key ){
         case'new-list':
+            name = prompt( "新規リストの名前を入力", "" );
+
+            $( '#left' ).jstree( 'create_node',
+                'kind-user-defined',
+                {
+                    id: `kind-ud-${this.userdefined.length}`,
+                    class: 'user-defined',
+                    text: name
+                } );
+
+            this.userdefined.push( {
+                'name': name,
+                'list': []
+            } );
+
+            localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
             break;
 
         case 'rename-list':
+            if( n < 0 ) return;
+            name = prompt( "新しい名前を入力", this.userdefined[n].name );
+            this.userdefined[n].name = name;
+            localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
+
+            $( '#left' ).jstree( 'rename_node', elem, name );
             break;
 
         case 'delete-list':
+            if( n < 0 ) return;
+            let yes = confirm( `削除しますか？ "${this.userdefined[n].name}"` );
+            if( yes ){
+                $( '#left' ).jstree( 'delete_node', elem );
+
+                delete this.userdefined[n];
+                localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
+            }
             break;
         }
-    },
-
-    createUserDefinedList: function(){
-        return;
-        let treeview = $( '#show-by-user-definition' );
-
-        let li = document.createElement( 'li' );
-        $( li ).attr( 'id', `kind-ud-${s._stype}` );
-        $( li ).text( s._stype_name );
-        treeview.append( li );
     },
 
     initTabs: function(){
@@ -582,6 +609,25 @@ let ShipList = {
         } );
     },
 
+    initUserDefinedListTree: function(){
+        try{
+            let tmp = localStorage.getItem( 'ship-ud-list' );
+            if( tmp ){
+                this.userdefined = JSON.parse( tmp );
+            }
+        }catch( e ){
+            console.log( e );
+        }
+        let treeview = $( '#show-by-user-definition' );
+        for( let i = 0, d; d = this.userdefined[i]; i++ ){
+            if( !d ) continue;
+            let li = document.createElement( 'li' );
+            $( li ).attr( 'id', `kind-ud-${i}` );
+            $( li ).text( d.name );
+            treeview.append( li );
+        }
+    },
+
     initTreeView: function( ships ){
         let treeview = $( '#show-by-ship-type' );
         let flg = {};
@@ -594,17 +640,19 @@ let ShipList = {
                 flg[s._stype_name] = true;
             }
         }
-        this.createUserDefinedList();
+        this.initUserDefinedListTree();
 
         $( '#left' ).on( 'select_node.jstree', ( ev, data ) =>{
             this.select( data.selected[0] );
         } ).jstree( {
             'core': {
-                'multiple': false
+                'multiple': false,
+                "check_callback": true
             }
         } );
+
         $.contextMenu( {
-            selector: 'li.user-defined',
+            selector: '#kind-user-defined, #kind-user-defined .jstree-node',
             build: ( $triggerElement, e ) =>{
                 let menuobj = {
                     zIndex: 10,
@@ -660,9 +708,21 @@ let ShipList = {
             let id = $( this ).attr( 'id' );
             ShipList.sortList( id );
         } );
+    },
+
+    unload: function(){
+        let tmp = this.userdefined.filter( ( v ) =>{
+            return v;
+        } );
+        if( !tmp ) tmp = [];
+        localStorage.setItem( 'ship-ud-list', JSON.stringify( tmp ) );
     }
 };
 
 window.addEventListener( 'load', ( ev ) =>{
     ShipList.init();
+} );
+
+window.addEventListener( 'unload', ( ev ) =>{
+    ShipList.unload();
 } );
