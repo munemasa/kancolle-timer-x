@@ -194,6 +194,11 @@ let ShipList = {
         $( '#shiplist tr' ).on( 'click', ( ev ) =>{
             this.showDetails( ev.currentTarget.getAttribute( 'ship_id' ) );
         } );
+        $( 'table#tbl-shiplist tr' ).on( 'dragstart', function( ev ){
+            ev.originalEvent.dataTransfer.setData( 'text/html', this.innerHTML );
+            ev.originalEvent.dataTransfer.setData( 'text/plain', $( this ).attr( 'ship_id' ) );
+        } );
+
     },
 
     /**
@@ -360,10 +365,19 @@ let ShipList = {
                 this.createTable( filtered );
                 this._show_ships = filtered;
             }
+            if( type.match( /kind-ud-(\d+)/ ) ){
+                // ユーザー定義リスト
+                let n = parseInt( RegExp.$1 );
+                console.log( this.userdefined[n] );
+                let filtered = this.ships.filter( ( s ) =>{
+                    return this.userdefined[n].list.includes( s.api_id );
+                } );
+                this.createTable( filtered );
+                this._show_ships = filtered;
+            }
             break;
         }
     },
-
 
     createHistogram: function( ships ){
         let ship_histogram = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -522,6 +536,10 @@ let ShipList = {
     },
 
 
+    saveUserDefinedList: function(){
+        localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
+    },
+
     treeContextMenu: function( key, options ){
         let elem = options.$trigger[0];
         // let n = elem.sectionRowIndex;
@@ -533,7 +551,6 @@ let ShipList = {
         switch( key ){
         case'new-list':
             name = prompt( "新規リストの名前を入力", "" );
-
             $( '#left' ).jstree( 'create_node',
                 'kind-user-defined',
                 {
@@ -546,17 +563,18 @@ let ShipList = {
                 'name': name,
                 'list': []
             } );
-
-            localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
+            this.saveUserDefinedList();
+            this.initDropEvent();
             break;
 
         case 'rename-list':
             if( n < 0 ) return;
             name = prompt( "新しい名前を入力", this.userdefined[n].name );
             this.userdefined[n].name = name;
-            localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
+            this.saveUserDefinedList();
 
             $( '#left' ).jstree( 'rename_node', elem, name );
+            this.initDropEvent();
             break;
 
         case 'delete-list':
@@ -566,7 +584,8 @@ let ShipList = {
                 $( '#left' ).jstree( 'delete_node', elem );
 
                 delete this.userdefined[n];
-                localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
+                this.saveUserDefinedList();
+                this.initDropEvent();
             }
             break;
         }
@@ -670,6 +689,40 @@ let ShipList = {
         } );
     },
 
+    /**
+     * ユーザー定義リストへのドロップイベントの設定.
+     * ツリービューの表示を変更すると設定しなおしになる。
+     */
+    initDropEvent: function(){
+        $( 'li#kind-user-defined li.jstree-node' ).on( 'dragenter', function( ev ){
+            ev.preventDefault();
+            $( this ).addClass( 'dragover' );
+        } );
+        $( 'li#kind-user-defined li.jstree-node' ).on( 'dragover', function( ev ){
+            ev.preventDefault();
+        } );
+        $( 'li#kind-user-defined li.jstree-node' ).on( 'dragleave', function( ev ){
+            ev.preventDefault();
+            $( this ).removeClass( 'dragover' );
+        } );
+        $( 'li#kind-user-defined li.jstree-node' ).on( 'drop', function( ev ){
+            $( this ).removeClass( 'dragover' );
+            ev.preventDefault();
+            let ship_id = ev.originalEvent.dataTransfer.getData( 'text/plain' );
+
+            let elem = FindParentElement( ev.target, 'li' );
+            let tmp = elem && elem.id.match( /kind-ud-(\d+)/ );
+            if( tmp ){
+                let n = tmp[1];
+                ship_id = parseInt( ship_id );
+                if( !ShipList.userdefined[n].list.includes( ship_id ) ){
+                    ShipList.userdefined[n].list.push( ship_id );
+                    ShipList.saveUserDefinedList();
+                }
+            }
+        } );
+    },
+
     init: async function(){
         this.initTabs();
 
@@ -694,7 +747,7 @@ let ShipList = {
 
         // 艦種別リストを作成
         this.initTreeView( ships );
-
+        this.initDropEvent();
 
         $( '#level-threshold' ).on( 'change', ( ev ) =>{
             this.createPieChart( this.ships );

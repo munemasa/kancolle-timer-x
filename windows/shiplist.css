@@ -83,8 +83,16 @@ th.list-sort {
     cursor: pointer;
 }
 
+table#tbl-shiplist tr {
+    cursor: pointer;
+}
+
 table#tbl-shiplist td {
     text-align: right;
+}
+
+li#kind-user-defined li.jstree-node.dragover {
+    border: 1px solid black;
 }
 
 td[cond='very-low'] {
