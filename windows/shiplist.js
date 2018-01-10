@@ -322,7 +322,7 @@ let ShipList = {
      * 選択した艦娘一覧を表示する.
      * @param type
      */
-    select: function( type ){
+    selectTreeItem: function( type ){
         console.log( type );
         $( '#weapon-filter' ).val( 0 );
         switch( type ){
@@ -540,9 +540,25 @@ let ShipList = {
         localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
     },
 
+    removeFromListContextMenu: function( key, options ){
+        let elem = options.$trigger[0];
+        let ship_id = parseInt( $( elem ).attr( 'ship_id' ) );
+
+        let sel = $( '#left' ).jstree( 'get_selected' );
+        if( sel[0].match( /kind-ud-(\d+)/ ) ){
+            // ユーザー定義リスト
+            let n = parseInt( RegExp.$1 );
+
+            let tmp = this.userdefined[n].list.filter( ( id ) =>{
+                return id != ship_id;
+            } );
+            this.userdefined[n].list = tmp;
+            this.selectTreeItem( sel[0] );
+        }
+    },
+
     treeContextMenu: function( key, options ){
         let elem = options.$trigger[0];
-        // let n = elem.sectionRowIndex;
         let n = elem.id.match( /kind-ud-(\d+)/ );
         n = n && n[1] || -1;
         console.log( n );
@@ -662,7 +678,7 @@ let ShipList = {
         this.initUserDefinedListTree();
 
         $( '#left' ).on( 'select_node.jstree', ( ev, data ) =>{
-            this.select( data.selected[0] );
+            this.selectTreeItem( data.selected[0] );
         } ).jstree( {
             'core': {
                 'multiple': false,
@@ -761,6 +777,23 @@ let ShipList = {
             let id = $( this ).attr( 'id' );
             ShipList.sortList( id );
         } );
+
+        $.contextMenu( {
+            selector: 'table#tbl-shiplist tr',
+            build: ( $triggerElement, e ) =>{
+                let menuobj = {
+                    zIndex: 10,
+                    callback: ( key, options ) =>{
+                        this.removeFromListContextMenu( key, options );
+                    },
+                    items: {
+                        "remove": {name: "削除"}
+                    }
+                };
+                return menuobj;
+            },
+        } );
+
     },
 
     unload: function(){
