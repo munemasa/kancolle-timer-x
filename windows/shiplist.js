@@ -116,11 +116,29 @@ let ShipList = {
         case 'sort-sakuteki':
             this.sort( this._show_ships, 7 );
             break;
-
+        case 'sort-repairtime':
+            this.sort( this._show_ships, 99 );
+            break;
         }
         this.createTable( this._show_ships );
     },
 
+    /**
+     * 入渠中であればtrueを返す.
+     * @param ship_id
+     * @returns {boolean}
+     */
+    isRepairing: function( ship_id ){
+        for( let n of KanColle.ndock ){
+            if( n.api_ship_id == ship_id ) return true;
+        }
+        return false;
+    },
+
+    /**
+     * 艦娘一覧表示のテーブルを作成する.
+     * @param ships
+     */
     createTable: function( ships ){
         let table = document.querySelector( '#shiplist' )
         $( '#shiplist tr' ).remove();
@@ -135,6 +153,7 @@ let ShipList = {
             let ship_name = elem.querySelector( '.ship-name' );
             let ship_level = elem.querySelector( '.ship-level' );
             let ship_cond = elem.querySelector( '.ship-cond' );
+            let ship_repairtime = elem.querySelector( '.ship-repairtime' );
             let ship_search = elem.querySelector( '.ship-search' );
             let ship_exp = elem.querySelector( '.ship-exp' );
             let ship_payload = elem.querySelector( '.ship-payload' );
@@ -153,8 +172,23 @@ let ShipList = {
             ship_type.textContent = ship._stype_name;
             let fleet_no = this.getFleetNo( ship.api_id );
             ship_name.textContent = (fleet_no > 0 ? `(${fleet_no})` : '') + ship._name;
-            ship_level.textContent = ship.api_lv;
 
+            let ratio = ship.api_nowhp / ship.api_maxhp;
+            if( ratio <= 0 ){
+            }else if( ratio <= 0.25 ){
+                $( ship_repairtime ).addClass( 'large-damage' );
+            }else if( ratio <= 0.5 ){
+                $( ship_repairtime ).addClass( 'medium-damage' );
+            }else if( ratio <= 0.75 ){
+                $( ship_repairtime ).addClass( 'small-damage' );
+            }
+            if( this.isRepairing( ship.api_id ) ){
+                $( ship_name ).attr( 'icon', 'repair' );
+            }
+
+            $( ship_repairtime ).text( ship.api_ndock_time ? GetTimeString( ship.api_ndock_time / 1000 ) : '---' );
+
+            ship_level.textContent = ship.api_lv;
             ship_cond.textContent = ship.api_cond;
             /* デコレーション */
             if( ship.api_cond <= 19 ){
