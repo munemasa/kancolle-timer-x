@@ -5,7 +5,7 @@
 }
 
 /*.jstree-themeicon {*/
-    /*display: none ! important;*/
+/*display: none ! important;*/
 /*}*/
 
 /*----------*/
@@ -32,6 +32,7 @@ div#container {
 div#left {
     padding-right: 0.3em;
     overflow: auto;
+    /*width: 200px;*/
 }
 
 div#left > ul {
@@ -42,6 +43,8 @@ div#right {
     display: flex;
     flex-direction: column;
     width: 100%;
+    overflow: auto;
+    /*width: 200px;*/
 }
 
 div#right-top {
@@ -50,6 +53,11 @@ div#right-top {
 }
 
 div#right-bottom {
+}
+
+div#separator {
+    border-left: 4px solid black;
+    cursor: col-resize;
 }
 
 table#tbl-shiplist {
@@ -119,7 +127,6 @@ td[icon="repair"]:after, span[icon="repair"]:after {
     padding-left: 0.2em;
     content: url("../img/cross.png");
 }
-
 
 td[cond='very-low'] {
     background-color: #fa6b6a;

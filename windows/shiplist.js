@@ -773,8 +773,29 @@ let ShipList = {
         } );
     },
 
+    initSeparator: function(){
+        let mousedown = ( ev ) =>{
+            $( window ).on( 'mousemove', ( ev ) =>{
+                let w = ev.originalEvent.clientX;
+                // TODO ウィンドウがリサイズされたときに調整をする
+                $( 'div#left' )[0].style.width = w + 'px';
+                $( 'div#right' )[0].style.width = ($( window ).width() - w) + 'px';
+            } );
+            $( window ).on( 'mouseup', ( ev ) =>{
+                $( window ).off( 'mouseup' );
+                $( window ).off( 'mousemove' );
+            } );
+        };
+
+        $( 'div#separator' ).on( 'mousedown', ( ev ) =>{
+            mousedown( ev );
+        } );
+
+    },
+
     init: async function(){
         this.initTabs();
+        this.initSeparator();
 
         // プライベートブラウジングモードだと使えない手法だが
         // 物は試しと、手抜きのため。
