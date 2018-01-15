@@ -25,6 +25,7 @@ let KanColle = {
     resourcelog: [],
     droplog: [],
     questlist: {},
+    action_report: {},
 
     /**
      * 指定の艦隊番号(1-4)の艦隊を返す.
@@ -590,6 +591,11 @@ function NormalDaytimeBattle( data ){
         console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
     }
 
+    let form = ['', '単縦陣', '複縦陣', '輪形陣', '梯形陣', '単横陣', '警戒陣'];
+    let form2 = ['', '同航戦', '反航戦', 'T字有利', 'T字不利'];
+    console.log( `自軍 ${form[data.api_formation[0]]} 敵軍 ${form[data.api_formation[1]]}` );
+    console.log( `${form2[data.api_formation[2]]}` );
+
     console.log( '*** 支援艦隊 ***' );
     if( data.api_support_info ){
         if( data.api_support_info.api_support_airatack ){
@@ -634,10 +640,20 @@ function NormalDaytimeBattle( data ){
     }
 
     console.log( '*** 航空戦 ***' );
-    // 艦艇へのダメージ処理はここだけ
-    if( data.api_kouku && data.api_kouku.api_stage3 ){
-        let raigeki = data.api_kouku.api_stage3;
-        TorpedoBattle( raigeki, myfleet, data );
+    if( data.api_kouku ){
+        if( data.api_kouku.api_stage1 ){
+            let stage = data.api_kouku.api_stage1;
+            console.log( `自機${stage.api_f_lostcount}機撃墜 敵機${stage.api_e_lostcount}機撃墜` );
+        }
+        if( data.api_kouku.api_stage2 ){
+            let stage = data.api_kouku.api_stage2;
+            console.log( `対空砲火により自機${stage.api_f_lostcount}機 敵機${stage.api_e_lostcount}機撃墜` );
+        }
+        if( data.api_kouku.api_stage3 ){
+            // 艦艇へのダメージ処理はここだけ
+            let raigeki = data.api_kouku.api_stage3;
+            TorpedoBattle( raigeki, myfleet, data );
+        }
     }
 
     //--- 砲撃戦1
