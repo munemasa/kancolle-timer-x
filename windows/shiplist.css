@@ -56,7 +56,10 @@ div#right-bottom {
 }
 
 div#separator {
-    border-left: 4px solid black;
+    width: 3px;
+    background-color: #cccccc;
+    border-left: gray solid 1px;
+    border-right: gray solid 1px;
     cursor: col-resize;
 }
 

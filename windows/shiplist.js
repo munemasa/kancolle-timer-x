@@ -777,7 +777,7 @@ let ShipList = {
         let mousedown = ( ev ) =>{
             $( window ).on( 'mousemove', ( ev ) =>{
                 let w = ev.originalEvent.clientX;
-                // TODO ウィンドウがリサイズされたときに調整をする
+                this._w = w;
                 $( 'div#left' )[0].style.width = w + 'px';
                 $( 'div#right' )[0].style.width = ($( window ).width() - w) + 'px';
             } );
@@ -791,6 +791,17 @@ let ShipList = {
             mousedown( ev );
         } );
 
+        $( window ).on( 'resize', ( ev ) =>{
+            let w = this._w;
+            $( 'div#left' )[0].style.width = w + 'px';
+            $( 'div#right' )[0].style.width = ($( window ).outerWidth() - w) + 'px';
+        } );
+
+        let w = localStorage.getItem( 'ship-list-left-w' );
+        w = parseInt( w ) || 160;
+        this._w = w;
+        $( 'div#left' )[0].style.width = w + 'px';
+        $( 'div#right' )[0].style.width = ($( window ).width() - w) + 'px';
     },
 
     init: async function(){
@@ -857,6 +868,8 @@ let ShipList = {
         } );
         if( !tmp ) tmp = [];
         localStorage.setItem( 'ship-ud-list', JSON.stringify( tmp ) );
+
+        localStorage.setItem( 'ship-list-left-w', this._w );
     }
 };
 
