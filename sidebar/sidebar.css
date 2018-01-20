@@ -35,6 +35,13 @@ fieldset {
     white-space: nowrap;
 }
 
+.repair-ship-name, .build-ship-name,
+.ship-name, .friend-ship-name, .enemy-ship-name {
+    max-width: 6em;
+    overflow: hidden;
+}
+
+
 .last-1min {
     color: red;
     font-weight: bold;
