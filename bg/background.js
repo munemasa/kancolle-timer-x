@@ -489,6 +489,7 @@ function GunBattle( hougeki, myfleet, data ){
 
         for( let j = 0; j < hougeki.api_df_list[i].length; j++ ){
             let def = hougeki.api_df_list[i][j];
+            if( def < 0 ) continue;
             let damage = hougeki.api_damage[i][j];
             damage = parseInt( damage );
             if( hougeki.api_at_eflag[i] == 0 ){
