@@ -232,7 +232,7 @@ let ShipList = {
             ev.originalEvent.dataTransfer.setData( 'text/html', this.innerHTML );
             ev.originalEvent.dataTransfer.setData( 'text/plain', $( this ).attr( 'ship_id' ) );
         } );
-
+        this.setVisibleColumns();
     },
 
     /**
@@ -641,6 +641,16 @@ let ShipList = {
         }
     },
 
+    setVisibleColumns: function(){
+        for( let k in this.visible_columns ){
+            if( this.visible_columns[k] ){
+                $( `.${k}` ).show();
+            }else{
+                $( `.${k}` ).hide();
+            }
+        }
+    },
+
     initTabs: function(){
         $( "#tabs" ).tabs( {
             activate: function( event, ui ){
@@ -856,6 +866,49 @@ let ShipList = {
                         "remove": {name: "削除"}
                     }
                 };
+                return menuobj;
+            },
+        } );
+
+        // 表示カラムを選択するコンテキストメニュー
+        this.visible_columns = JSON.parse( localStorage.getItem( 'ship-visible' ) );
+        this.setVisibleColumns();
+        $.contextMenu( {
+            selector: 'table#tbl-shiplist tr th',
+            events: {
+                hide: function( opt ){
+                    let $this = this;
+                    let data = {}
+                    $.contextMenu.getInputValues( opt, data );
+                    console.log( data );
+                    ShipList.visible_columns = data;
+                    localStorage.setItem( 'ship-visible', JSON.stringify( ShipList.visible_columns ) );
+                    ShipList.setVisibleColumns();
+                }
+            },
+            build: ( $triggerElement, e ) =>{
+                let menuobj = {
+                    zIndex: 10,
+                    callback: ( key, options ) =>{
+                    },
+                    items: {}
+                };
+                let elems = document.querySelectorAll( '#tbl-shiplist #tbl-header tr th' );
+                for( let e of elems ){
+                    try{
+                        let cls = e.className.match( /ship-\w+/ )[0];
+                        menuobj.items[cls] = {};
+                        menuobj.items[cls].name = $( e ).text();
+                        menuobj.items[cls].type = 'checkbox';
+                        // TODO 表示項目のチェックの指定
+                        if( this.visible_columns ){
+                            menuobj.items[cls].selected = this.visible_columns[cls];
+                        }else{
+                            menuobj.items[cls].selected = true;
+                        }
+                    }catch( exc ){
+                    }
+                }
                 return menuobj;
             },
         } );
