@@ -574,6 +574,37 @@ let ShipList = {
         localStorage.setItem( 'ship-ud-list', JSON.stringify( this.userdefined ) );
     },
 
+    saveShipList: function(){
+        let txt = '';
+        for( let i = 0, ship; ship = this._show_ships[i]; i++ ){
+            let row = [];
+            row.push( ship._stype_name );
+            row.push( ship._name );
+            row.push( ship.api_lv );
+            row.push( ship.api_karyoku[0] );
+            row.push( ship.api_raisou[0] );
+            row.push( ship.api_taiku[0] );
+            row.push( ship.api_taisen[0] );
+            row.push( ship.api_sakuteki[0] );
+            row.push( d3.sum( ship.api_onslot ) );
+            for( let i = 0; i < 4; i++ ){
+                if( ship.api_slot[i] == -1 ){
+                    continue;
+                }
+                let item = KanColle._api_slot_item[ship.api_slot[i]];
+                try{
+                    row.push( item._mst_data.api_name + (item.api_level > 0 ? '★+' + item.api_level : '') );
+                }catch( e ){
+                    row.push( '[Undetermined]' );
+                }
+            }
+            txt += row.join( '\t' );
+            txt += '\n';
+        }
+
+        SaveText( 'shiplist.txt', txt );
+    },
+
     removeFromListContextMenu: function( key, options ){
         let elem = options.$trigger[0];
         let ship_id = parseInt( $( elem ).attr( 'ship_id' ) );
@@ -860,10 +891,19 @@ let ShipList = {
                 let menuobj = {
                     zIndex: 10,
                     callback: ( key, options ) =>{
-                        this.removeFromListContextMenu( key, options );
+                        switch( key ){
+                        case 'remove':
+                            this.removeFromListContextMenu( key, options );
+                            break;
+                        case 'save_csv':
+                            this.saveShipList();
+                            break;
+                        }
                     },
                     items: {
-                        "remove": {name: "削除"}
+                        "remove": {name: "削除"},
+                        "sep1": "---------",
+                        "save_csv": {name: "タブ区切りテキストに保存"}
                     }
                 };
                 return menuobj;
@@ -900,7 +940,6 @@ let ShipList = {
                         menuobj.items[cls] = {};
                         menuobj.items[cls].name = $( e ).text();
                         menuobj.items[cls].type = 'checkbox';
-                        // TODO 表示項目のチェックの指定
                         if( this.visible_columns ){
                             menuobj.items[cls].selected = this.visible_columns[cls];
                         }else{
