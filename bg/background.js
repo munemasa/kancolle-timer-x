@@ -505,6 +505,12 @@ function GunBattle( hougeki, myfleet, data ){
     }
 }
 
+/**
+ *
+ * @param raigeki 雷撃の与ダメージ
+ * @param myfleet 自軍の艦隊
+ * @param data 艦これのバトルデータ自体
+ */
 function TorpedoBattle( raigeki, myfleet, data ){
     // 自軍→敵軍
     if( raigeki.api_edam ){
@@ -596,6 +602,17 @@ function NormalDaytimeBattle( data ){
     let form2 = ['', '同航戦', '反航戦', 'T字有利', 'T字不利'];
     console.log( `自軍 ${form[data.api_formation[0]]} 敵軍 ${form[data.api_formation[1]]}` );
     console.log( `${form2[data.api_formation[2]]}` );
+
+    console.log( '*** 基地航空隊 ***' );
+    if( data.api_air_base_attack ){
+        let i = 1;
+        for( let air_base_atk of data.api_air_base_attack ){
+            console.log( `${i}次攻撃` );
+            let raigeki = air_base_atk.api_stage3;
+            TorpedoBattle( raigeki, myfleet, data );
+            i++;
+        }
+    }
 
     console.log( '*** 支援艦隊 ***' );
     if( data.api_support_info ){
