@@ -482,6 +482,12 @@ async function RecordDropShip( data ){
     };
 }
 
+/**
+ * 砲撃戦
+ * @param hougeki
+ * @param myfleet
+ * @param data
+ */
 function GunBattle( hougeki, myfleet, data ){
     if( !hougeki.api_at_eflag ) return; // 夜戦の潜水艦対潜水艦で砲雷撃戦がないとき
     for( let i = 0; i < hougeki.api_at_eflag.length; i++ ){
@@ -506,7 +512,7 @@ function GunBattle( hougeki, myfleet, data ){
 }
 
 /**
- *
+ * 雷撃戦などのダメージ処理
  * @param raigeki 雷撃の与ダメージ
  * @param myfleet 自軍の艦隊
  * @param data 艦これのバトルデータ自体
@@ -583,6 +589,10 @@ function DispBattleResult( myfleet, data ){
     KanColle.battle_report = result;
 }
 
+/**
+ * 通常艦隊の昼戦
+ * @param data
+ */
 function NormalDaytimeBattle( data ){
     console.log( `第${data.api_deck_id}艦隊 昼戦` );
     let myfleet = KanColle.getDeck( data.api_deck_id );
@@ -699,6 +709,10 @@ function NormalDaytimeBattle( data ){
     DispBattleResult( myfleet, data );
 }
 
+/**
+ * 通常艦隊での夜戦
+ * @param data
+ */
 function NormalMidnightBattle( data ){
     console.log( `第${data.api_deck_id}艦隊 夜戦` );
     let myfleet = KanColle.getDeck( data.api_deck_id );
@@ -725,6 +739,10 @@ function NormalMidnightBattle( data ){
     DispBattleResult( myfleet, data );
 }
 
+/**
+ * 通常艦隊の航空戦
+ * @param data
+ */
 function AirBattle( data ){
     console.log( `第${data.api_deck_id}艦隊 航空戦` );
     let myfleet = KanColle.getDeck( data.api_deck_id );
