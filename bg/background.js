@@ -669,6 +669,39 @@ function DispFormation( data ){
     console.log( `${form2[data.api_formation[2]]}` );
 }
 
+
+function AttackBySupportFleet( api_support_info, data ){
+    try{
+        if( api_support_info ){
+            if( api_support_info.api_support_airatack ){
+                let fleet_no = api_support_info.api_support_airatack.api_deck_id;
+                console.log( `第${fleet_no}艦隊の支援攻撃` );
+                let raigeki = api_support_info.api_support_airatack.api_stage3;
+                let support_fleet = KanColle.getDeck( fleet_no );
+                TorpedoBattle( raigeki, support_fleet, data );
+            }
+            if( api_support_info.api_support_hourai ){
+                let hourai = api_support_info.api_support_hourai;
+                let fleet_no = hourai.api_deck_id;
+                console.log( `第${fleet_no}艦隊の支援攻撃` );
+                for( let i = 0; i < hourai.api_damage.length; i++ ){
+                    if( hourai.api_damage[i] > 0 ){
+                        let damage = parseInt( hourai.api_damage[i] );
+                        data.api_e_nowhps[i] -= damage;
+
+                        let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+                        console.log( `${ship.api_name} に ${damage} ダメージ` );
+                    }
+                }
+            }
+        }
+    }catch( e ){
+        // TODO 未確認の支援艦隊があるので、不意に処理が中断しないように。
+        console.log( e );
+    }
+}
+
+
 /**
  * 通常艦隊の昼戦
  * @param data
@@ -692,29 +725,30 @@ function NormalDaytimeBattle( data ){
     }
 
     console.log( '*** 支援艦隊 ***' );
-    if( data.api_support_info ){
-        if( data.api_support_info.api_support_airatack ){
-            let fleet_no = data.api_support_info.api_support_airatack.api_deck_id;
-            console.log( `第${fleet_no}艦隊の支援攻撃` );
-            let raigeki = data.api_support_info.api_support_airatack.api_stage3;
-            let support_fleet = KanColle.getDeck( fleet_no );
-            TorpedoBattle( raigeki, support_fleet, data );
-        }
-        if( data.api_support_info.api_support_hourai ){
-            let hourai = data.api_support_info.api_support_hourai;
-            let fleet_no = hourai.api_deck_id;
-            console.log( `第${fleet_no}艦隊の支援攻撃` );
-            for( let i = 0; i < hourai.api_damage.length; i++ ){
-                if( hourai.api_damage[i] > 0 ){
-                    let damage = parseInt( hourai.api_damage[i] );
-                    data.api_e_nowhps[i] -= damage;
-
-                    let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
-                    console.log( `${ship.api_name} に ${damage} ダメージ` );
-                }
-            }
-        }
-    }
+    AttackBySupportFleet( data.api_support_info, data );
+    // if( data.api_support_info ){
+    //     if( data.api_support_info.api_support_airatack ){
+    //         let fleet_no = data.api_support_info.api_support_airatack.api_deck_id;
+    //         console.log( `第${fleet_no}艦隊の支援攻撃` );
+    //         let raigeki = data.api_support_info.api_support_airatack.api_stage3;
+    //         let support_fleet = KanColle.getDeck( fleet_no );
+    //         TorpedoBattle( raigeki, support_fleet, data );
+    //     }
+    //     if( data.api_support_info.api_support_hourai ){
+    //         let hourai = data.api_support_info.api_support_hourai;
+    //         let fleet_no = hourai.api_deck_id;
+    //         console.log( `第${fleet_no}艦隊の支援攻撃` );
+    //         for( let i = 0; i < hourai.api_damage.length; i++ ){
+    //             if( hourai.api_damage[i] > 0 ){
+    //                 let damage = parseInt( hourai.api_damage[i] );
+    //                 data.api_e_nowhps[i] -= damage;
+    //
+    //                 let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
+    //                 console.log( `${ship.api_name} に ${damage} ダメージ` );
+    //             }
+    //         }
+    //     }
+    // }
 
     console.log( '*** 先制爆雷 ***' );
     if( data.api_opening_taisen ){
@@ -847,9 +881,23 @@ function CombinedAirBattle( data ){
     fleet1.api_ship_combined = fleet2.api_ship;
     let myfleet = fleet1;
 
-    // AirBattleに同じ
-
     DispFleet( data, myfleet );
+
+    console.log( '*** 基地航空隊 ***' );
+    // TODO 重複部分を整理
+    if( data.api_air_base_attack ){
+        let i = 1;
+        for( let air_base_atk of data.api_air_base_attack ){
+            console.log( `${i}次攻撃` );
+            let raigeki = air_base_atk.api_stage3;
+            TorpedoBattle( raigeki, myfleet, data );
+
+            // TODO この処理は存在する？
+            raigeki = air_base_atk.api_stage3_combined;
+            TorpedoBattleCombined( raigeki, myfleet, data );
+            i++;
+        }
+    }
 
     console.log( '*** 航空戦1 ***' );
     if( data.api_kouku ){
@@ -903,6 +951,7 @@ function CombinedNightToDayBattle( data ){
     // 支援艦隊
     console.log( '*** 支援艦隊(夜戦) ***' );
     // TODO 支援艦隊のダメージ処理
+    AttackBySupportFleet( data.api_n_support_info, data );
 
     console.log( '*** 砲撃戦(夜戦) ***' );
     GunBattle( data.api_n_hougeki1, myfleet, data );
@@ -916,7 +965,8 @@ function CombinedNightToDayBattle( data ){
     data.api_ship_ke = data.api_ship_ke.slice( e_n );
 
     console.log( '*** 支援艦隊(昼戦) ***' );
-    // TODO 支援艦隊
+    // TODO 支援艦隊のダメージ処理
+    AttackBySupportFleet( data.api_support_info, data );
 
     console.log( '*** 先制爆雷 ***' );
     if( data.api_opening_taisen ){
@@ -977,6 +1027,7 @@ function CombinedEachBattleWater( data ){
     DispFleet( data, myfleet );
 
     console.log( '*** 基地航空隊 ***' );
+    // TODO 重複部分を整理
     if( data.api_air_base_attack ){
         let i = 1;
         for( let air_base_atk of data.api_air_base_attack ){
@@ -989,11 +1040,6 @@ function CombinedEachBattleWater( data ){
             TorpedoBattleCombined( raigeki, myfleet, data );
             i++;
         }
-    }
-
-    console.log( '*** 支援艦隊 ***' );
-    if( data.api_support_info ){
-        // TODO 支援艦隊のダメージ処理
     }
 
     console.log( '*** 航空戦 ***' );
@@ -1016,6 +1062,9 @@ function CombinedEachBattleWater( data ){
     data.api_f_maxhps = data.api_f_maxhps.concat( data.api_f_maxhps_combined || [] );
     data.api_f_nowhps = data.api_f_nowhps.concat( data.api_f_nowhps_combined || [] );
 
+    console.log( '*** 支援艦隊 ***' );
+    AttackBySupportFleet( data.api_support_info, data );
+
     console.log( '*** 先制雷撃 ***' );
     if( data.api_opening_atack ){
         TorpedoBattle( data.api_opening_atack, myfleet, data );
@@ -1036,15 +1085,14 @@ function CombinedEachBattleWater( data ){
 function TestBattle(){
     let combined_ld_airbattle = JSON.parse( '{"api_deck_id":1,"api_formation":[13,3,2],"api_f_nowhps":[68,89,96,90,58,58,51,38,32,57,57,43],"api_f_maxhps":[68,89,96,90,58,58,51,38,32,57,57,43],"api_f_nowhps_combined":[51,38,32,57,57,43],"api_f_maxhps_combined":[51,38,32,57,57,43],"api_fParam":[[76,88,85,74],[96,0,92,93],[99,36,70,95],[98,0,84,94],[34,0,72,65],[34,0,72,65]],"api_fParam_combined":[[56,94,78,68],[48,79,64,49],[59,89,59,59],[77,79,69,75],[77,84,106,78],[63,139,49,63]],"api_ship_ke":[1620,1591,1575,1501,1501,1501],"api_ship_lv":[1,1,1,1,1,1],"api_e_nowhps":[350,48,35,20,20,20],"api_e_maxhps":[350,48,35,20,20,20],"api_eSlot":[[556,557,558,532,-1],[550,550,545,525,-1],[502,545,542,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[180,0,130,150],[58,84,88,55],[38,60,30,22],[5,15,6,5],[5,15,6,5],[5,15,6,5]],"api_midnight_flag":0,"api_search":[1,1],"api_air_base_attack":[{"api_base_id":1,"api_stage_flag":[1,1,1],"api_plane_from":[null,[1,2]],"api_squadron_plane":[{"api_mst_id":53,"api_count":18},{"api_mst_id":168,"api_count":18},{"api_mst_id":52,"api_count":18},{"api_mst_id":138,"api_count":4}],"api_stage1":{"api_f_count":58,"api_f_lostcount":13,"api_e_count":171,"api_e_lostcount":36,"api_disp_seiku":3,"api_touch_plane":[-1,525]},"api_stage2":{"api_f_count":27,"api_f_lostcount":5,"api_e_count":0,"api_e_lostcount":0},"api_stage3":{"api_erai_flag":[1,0,1,0,0,0],"api_ebak_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_edam":[27,0,0,0,0,0]}}],"api_stage_flag":[1,1,1],"api_kouku":{"api_plane_from":[[1,5,6],[1]],"api_stage1":{"api_f_count":121,"api_f_lostcount":1,"api_e_count":132,"api_e_lostcount":40,"api_disp_seiku":1,"api_touch_plane":[-1,-1]},"api_stage2":{"api_f_count":22,"api_f_lostcount":0,"api_e_count":60,"api_e_lostcount":5},"api_stage3":{"api_frai_flag":[0,0,0,0,0,0],"api_erai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,0,0,0,0],"api_ebak_flag":[0,0,0,0,0,0],"api_fcl_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0],"api_edam":[0,0,0,0,0,0]},"api_stage3_combined":{"api_frai_flag":[0,1,0,0,0,0],"api_fbak_flag":[0,0,0,0,1,0],"api_fcl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0]}}}' );
     // console.log( combined_ld_airbattle );
-    CombinedAirBattle( combined_ld_airbattle );
+    // CombinedAirBattle( combined_ld_airbattle );
 
     let ec_night_to_day = JSON.parse( '{"api_deck_id":3,"api_formation":[1,14,3],"api_f_nowhps":[77,77,59,44,35,15,37],"api_f_maxhps":[77,77,63,44,35,35,37],"api_fParam":[[79,0,89,92],[79,0,89,92],[75,84,60,82],[64,110,72,65],[49,71,64,53],[47,71,68,53],[54,89,59,57]],"api_ship_ke":[1529,1524,1524,1524,1524,1524],"api_ship_lv":[1,1,1,1,1,1],"api_ship_ke_combined":[1527,1527,1575,1575,1501,1501],"api_ship_lv_combined":[1,1,1,1,1,1],"api_e_nowhps":[98,90,90,90,90,90],"api_e_maxhps":[98,90,90,90,90,90],"api_e_nowhps_combined":[76,76,35,35,20,20],"api_e_maxhps_combined":[76,76,35,35,20,20],"api_eSlot":[[509,509,525,528,-1],[509,509,512,528,-1],[509,509,512,528,-1],[509,509,512,528,-1],[509,509,512,528,-1],[509,509,512,528,-1]],"api_eSlot_combined":[[505,506,515,525,-1],[505,506,515,525,-1],[502,545,542,-1,-1],[502,545,542,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[90,0,80,99],[85,0,70,85],[85,0,70,85],[85,0,70,85],[85,0,70,85],[85,0,70,85]],"api_eParam_combined":[[68,48,40,70],[68,48,40,70],[38,60,30,22],[38,60,30,22],[5,15,6,5],[5,15,6,5]],"api_touch_plane":[-1,-1],"api_flare_pos":[-1,-1],"api_n_support_flag":0,"api_n_support_info":null,"api_n_hougeki1":{"api_at_eflag":[0,1,0,1,0,1,0,1,0,1,0,0],"api_at_list":[0,6,1,7,2,9,3,10,6,8,4,5],"api_n_mother_list":[0,0,0,0,0,0,0,0,0,0,0,0],"api_df_list":[[3,3],[6],[1,1],[4],[5,5],[0],[11],[5],[4],[4],[2],[2]],"api_si_list":[["105","104"],[505],["105","104"],[505],["123","123"],[502],["67"],[501],[-1],[502],[-1],[-1]],"api_cl_list":[[1,1],[1],[2,1],[0],[1,1],[0],[2],[0],[1],[0],[1],[2]],"api_sp_list":[1,0,1,0,1,0,0,0,0,0,0,0],"api_damage":[[47,76],[24.1],[115,53],[0],[122,148],[0],[314],[0],[8.1],[0],[14.1],[36.1]]},"api_n_hougeki2":{"api_at_eflag":[0,1,0,1,0,1,0,0,0],"api_at_list":[0,0,1,2,2,4,3,5,4],"api_n_mother_list":[0,0,0,0,0,0,0,0,0],"api_df_list":[[8,8],[6,6],[10,10],[6,-1,-1],[2,2],[3,-1,-1],[7],[9],[4]],"api_si_list":[["105","104"],[509,509],["105","104"],[509,509,512],["123","123"],[509,509,512],["67"],[-1],[-1]],"api_cl_list":[[1,1],[1,2],[2,2],[1,-1,-1],[1,1],[2,-1,-1],[2],[1],[1]],"api_sp_list":[1,1,1,4,1,4,0,0,0],"api_damage":[[129,121],[1,6],[220,221],[4,-1,-1],[128,117],[26,-1,-1],[162],[57],[28.1]]},"api_day_flag":1,"api_search":[1,1],"api_support_flag":0,"api_support_info":null,"api_stage_flag":[1,0,0],"api_kouku":{"api_plane_from":[null,null],"api_stage1":{"api_f_count":0,"api_f_lostcount":0,"api_e_count":0,"api_e_lostcount":0,"api_disp_seiku":1,"api_touch_plane":[-1,-1]},"api_stage2":null,"api_stage3":null,"api_stage3_combined":null},"api_opening_taisen_flag":0,"api_opening_taisen":null,"api_opening_flag":0,"api_opening_atack":null,"api_hourai_flag":[1,0,0],"api_hougeki1":{"api_at_eflag":[0,1,0,0,0],"api_at_list":[1,4,0,3,2],"api_at_type":[0,0,0,0,0],"api_df_list":[[0],[3],[0],[4],[4]],"api_si_list":[[105],[509],[105],[-1],[123]],"api_cl_list":[[1],[1],[1],[2],[1]],"api_damage":[[89],[14],[96],[4],[50]]}}' );
     // CombinedNightToDayBattle( ec_night_to_day );
 
-    let each_battle_water = JSON.parse( '{"api_deck_id":1,"api_formation":[14,14,2],"api_f_nowhps":[68,89,96,90,58,58],"api_f_maxhps":[68,89,96,90,58,58],"api_f_nowhps_combined":[51,38,32,57,57,43],"api_f_maxhps_combined":[51,38,32,57,57,43],"api_fParam":[[76,88,85,74],[96,0,92,93],[99,36,70,95],[98,0,84,94],[34,0,72,65],[34,0,72,65]],"api_fParam_combined":[[56,94,78,68],[48,79,64,49],[59,89,59,59],[77,79,69,75],[77,84,106,78],[63,139,49,63]],"api_ship_ke":[1778,1523,1523,1529,1575,1575],"api_ship_lv":[1,1,1,1,1,1],"api_ship_ke_combined":[1554,1591,1501,1501,1501,1501],"api_ship_lv_combined":[1,1,1,1,1,1],"api_e_nowhps":[88,70,70,98,35,35],"api_e_maxhps":[88,70,70,98,35,35],"api_e_nowhps_combined":[53,48,20,20,20,20],"api_e_maxhps_combined":[53,48,20,20,20,20],"api_eSlot":[[581,582,583,583,-1],[520,523,516,-1,-1],[520,523,516,-1,-1],[509,509,525,528,-1],[502,545,542,-1,-1],[502,545,542,-1,-1]],"api_eSlot_combined":[[504,542,543,-1,-1],[550,550,545,525,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[35,0,48,73],[0,0,15,35],[0,0,15,35],[90,0,80,99],[38,60,30,22],[38,60,30,22]],"api_eParam_combined":[[42,72,27,36],[58,84,88,55],[5,15,6,5],[5,15,6,5],[5,15,6,5],[5,15,6,5]],"api_midnight_flag":0,"api_search":[1,1],"api_stage_flag":[1,1,1],"api_kouku":{"api_plane_from":[[1,5,6],[1,2,3]],"api_stage1":{"api_f_count":98,"api_f_lostcount":8,"api_e_count":232,"api_e_lostcount":130,"api_disp_seiku":2,"api_touch_plane":[-1,583]},"api_stage2":{"api_f_count":16,"api_f_lostcount":1,"api_e_count":71,"api_e_lostcount":53,"api_air_fire":{"api_idx":10,"api_kind":11,"api_use_items":[135,131]}},"api_stage3":{"api_frai_flag":[0,0,0,0,0,0],"api_erai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,1,0,0,0],"api_ebak_flag":[0,0,0,0,0,0],"api_fcl_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0],"api_edam":[0,0,0,0,0,0]},"api_stage3_combined":{"api_frai_flag":[0,0,0,0,1,0],"api_erai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,0,0,0,0],"api_ebak_flag":[0,1,1,0,0,0],"api_fcl_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0],"api_edam":[0,0,37,0,0,0]}},"api_support_flag":0,"api_support_info":null,"api_opening_taisen_flag":0,"api_opening_taisen":null,"api_opening_flag":1,"api_opening_atack":{"api_frai":[-1,-1,-1,-1,-1,-1,10,-1,-1,-1,-1,6],"api_fcl":[0,0,0,0,0,0,1,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0,0,0,0,0,0,0],"api_fydam":[0,0,0,0,0,0,91,0,0,0,0,0],"api_erai":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_ecl":[0,0,0,0,0,0,0,0,0,0,0,0],"api_edam":[0,0,0,0,0,0,0,0,0,0,91,0],"api_eydam":[0,0,0,0,0,0,0,0,0,0,0,0]},"api_hourai_flag":[1,1,1,1],"api_hougeki1":{"api_at_eflag":[0,1,0,1,0,0,0,1],"api_at_list":[1,3,2,0,3,0,4,1],"api_at_type":[2,0,0,0,6,2,0,0],"api_df_list":[[4,4],[1],[5],[5],[2],[3,3],[3],[4]],"api_si_list":[["105","103"],[509],[114],[-1],["59","105","103"],["90","90"],[-1],[-1]],"api_cl_list":[[1,1],[0],[2],[0],[1],[1,1],[1],[0]],"api_damage":[[162,0],[0],[167],[0],[204],[20,8],[4],[0]]},"api_hougeki2":{"api_at_eflag":[0,1,0,1,0,1,0,0],"api_at_list":[0,0,1,1,2,3,3,4],"api_at_type":[0,0,6,0,0,0,6,0],"api_df_list":[[0],[10],[0],[6],[1],[9],[0],[3]],"api_si_list":[[90],[-1],["59","105","103"],[-1],[114],[509],["59","105","103"],[-1]],"api_cl_list":[[1],[0],[1],[1],[1],[0],[1],[1]],"api_damage":[[32],[0],[7],[21],[82],[0],[167],[5]]},"api_hougeki3":{"api_at_eflag":[0,1,0,1,0,0,0],"api_at_list":[9,7,11,6,10,6,8],"api_at_type":[0,0,0,0,3,0,0],"api_df_list":[[11],[9],[6],[8],[7],[9],[6]],"api_si_list":[[6],[550],[90],[504],["115","90","135"],[90],[122]],"api_cl_list":[[1],[1],[1],[0],[1],[1],[1]],"api_damage":[[88],[7],[40],[0],[55],[61],[39]]},"api_raigeki":{"api_frai":[-1,-1,-1,-1,-1,-1,3,3,3,3,3,3],"api_fcl":[0,0,0,0,0,0,1,2,1,1,2,1],"api_fdam":[0,0,0,0,0,0,0,0,0,0,0,0],"api_fydam":[0,0,0,0,0,0,7,53,0,0,15,37],"api_erai":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_ecl":[0,0,0,0,0,0,0,0,0,0,0,0],"api_edam":[0,0,0,112,0,0,0,0,0,0,0,0],"api_eydam":[0,0,0,0,0,0,0,0,0,0,0,0]}}' );
-    // console.log( each_battle_water );
-    // CombinedEachBattleWater( each_battle_water );
-
+    let each_battle_water = JSON.parse( '{"api_deck_id":1,"api_formation":[14,14,2],"api_f_nowhps":[68,87,96,90,58,58],"api_f_maxhps":[68,89,96,90,58,58],"api_f_nowhps_combined":[51,38,32,57,57,43],"api_f_maxhps_combined":[51,38,32,57,57,43],"api_fParam":[[76,88,85,74],[96,0,92,93],[99,36,70,95],[98,0,84,94],[34,0,72,65],[34,0,72,65]],"api_fParam_combined":[[56,94,78,68],[48,79,64,49],[59,89,59,59],[77,79,69,75],[77,84,106,78],[63,139,49,63]],"api_ship_ke":[1778,1523,1523,1529,1575,1575],"api_ship_lv":[1,1,1,1,1,1],"api_ship_ke_combined":[1554,1591,1501,1501,1501,1501],"api_ship_lv_combined":[1,1,1,1,1,1],"api_e_nowhps":[88,70,70,98,35,35],"api_e_maxhps":[88,70,70,98,35,35],"api_e_nowhps_combined":[53,48,20,20,20,20],"api_e_maxhps_combined":[53,48,20,20,20,20],"api_eSlot":[[581,582,583,583,-1],[520,523,516,-1,-1],[520,523,516,-1,-1],[509,509,525,528,-1],[502,545,542,-1,-1],[502,545,542,-1,-1]],"api_eSlot_combined":[[504,542,543,-1,-1],[550,550,545,525,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[35,0,48,73],[0,0,15,35],[0,0,15,35],[90,0,80,99],[38,60,30,22],[38,60,30,22]],"api_eParam_combined":[[42,72,27,36],[58,84,88,55],[5,15,6,5],[5,15,6,5],[5,15,6,5],[5,15,6,5]],"api_midnight_flag":0,"api_search":[1,1],"api_stage_flag":[1,1,1],"api_kouku":{"api_plane_from":[[1,5,6],[1,2,3]],"api_stage1":{"api_f_count":117,"api_f_lostcount":10,"api_e_count":232,"api_e_lostcount":97,"api_disp_seiku":2,"api_touch_plane":[59,-1]},"api_stage2":{"api_f_count":19,"api_f_lostcount":5,"api_e_count":82,"api_e_lostcount":73,"api_air_fire":{"api_idx":10,"api_kind":11,"api_use_items":[135,131]}},"api_stage3":{"api_frai_flag":[0,0,0,0,0,0],"api_erai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,1,1,0,0],"api_ebak_flag":[0,0,1,0,0,0],"api_fcl_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,7,0,0],"api_edam":[0,0,26.1,0,0,0]},"api_stage3_combined":{"api_frai_flag":[0,0,0,0,0,0],"api_erai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,0,0,0,0],"api_ebak_flag":[0,0,0,0,0,1],"api_fcl_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0],"api_edam":[0,0,0,0,0,44]}},"api_support_flag":3,"api_support_info":{"api_support_airatack":null,"api_support_hourai":{"api_deck_id":4,"api_ship_id":[440,21795,22731,21660,0,0],"api_undressing_flag":[0,0,0,0,0,0],"api_cl_list":[0,0,0,0,0,0,0,0,0,0,1,0],"api_damage":[0,0,0,0,0,0,0,0,0,0,2,0]}},"api_opening_taisen_flag":0,"api_opening_taisen":null,"api_opening_flag":1,"api_opening_atack":{"api_frai":[-1,-1,-1,-1,-1,-1,10,-1,-1,-1,-1,3],"api_fcl":[0,0,0,0,0,0,1,0,0,0,0,1],"api_fdam":[0,0,0,0,0,0,0,0,0,0,0,0],"api_fydam":[0,0,0,0,0,0,91,0,0,0,0,34],"api_erai":[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],"api_ecl":[0,0,0,0,0,0,0,0,0,0,0,0],"api_edam":[0,0,0,34,0,0,0,0,0,0,91,0],"api_eydam":[0,0,0,0,0,0,0,0,0,0,0,0]},"api_hourai_flag":[1,1,1,0],"api_hougeki1":{"api_at_eflag":[0,1,0,1,0,0,1,0],"api_at_list":[2,3,1,0,3,0,5,4],"api_at_type":[0,0,2,0,2,2,0,0],"api_df_list":[[1],[5],[4,4],[2],[0,0],[3,3],[0],[3]],"api_si_list":[[114],[509],["105","103"],[-1],["105","103"],["90","90"],[502],[-1]],"api_cl_list":[[1],[1],[1,1],[0],[1,2],[1,1],[1],[1]],"api_damage":[[78],[46],[164.1,161.1],[0],[116,229],[20,42],[8],[1]]},"api_hougeki2":{"api_at_eflag":[0,1,0,0,0,0],"api_at_list":[0,3,1,2,3,4],"api_at_type":[2,0,6,2,6,0],"api_df_list":[[5,5],[11],[9],[3,3],[2],[6]],"api_si_list":[["90","90"],[509],["59","105","103"],["114","114"],["59","105","103"],[-1]],"api_cl_list":[[1,1],[0],[1],[2,1],[1],[1]],"api_damage":[[93,95],[0],[222],[95,37],[190],[77]]},"api_hougeki3":{"api_at_eflag":[0,1,0,0,0],"api_at_list":[10,7,11,6,9],"api_at_type":[3,0,0,0,0],"api_df_list":[[7],[8],[8],[7],[7]],"api_si_list":[["115","90","135"],[550],[90],[90],[6]],"api_cl_list":[[1],[0],[1],[1],[2]],"api_damage":[[30],[0],[66],[16],[96]]}}' );
+    console.log( each_battle_water );
+    CombinedEachBattleWater( each_battle_water );
 
     let battle_water = JSON.parse( '{"api_deck_id":1,"api_formation":[14,1,1],"api_f_nowhps":[68,89,96,90,58,58],"api_f_maxhps":[68,89,96,90,58,58],"api_f_nowhps_combined":[51,38,32,57,57,43],"api_f_maxhps_combined":[51,38,32,57,57,43],"api_fParam":[[76,88,85,74],[96,0,92,93],[99,36,70,95],[98,0,84,94],[34,0,72,65],[34,0,72,65]],"api_fParam_combined":[[56,94,78,68],[48,79,64,49],[59,89,59,59],[77,79,69,75],[77,84,106,78],[63,139,49,63]],"api_ship_ke":[1554,1591,1575,1575,1501,1501],"api_ship_lv":[1,1,1,1,1,1],"api_e_nowhps":[53,48,35,35,20,20],"api_e_maxhps":[53,48,35,35,20,20],"api_eSlot":[[504,542,543,-1,-1],[550,550,545,525,-1],[502,545,542,-1,-1],[502,545,542,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[42,72,27,36],[58,84,88,55],[38,60,30,22],[38,60,30,22],[5,15,6,5],[5,15,6,5]],"api_midnight_flag":0,"api_search":[1,1],"api_stage_flag":[1,1,1],"api_kouku":{"api_plane_from":[[1,5,6],null],"api_stage1":{"api_f_count":102,"api_f_lostcount":1,"api_e_count":0,"api_e_lostcount":0,"api_disp_seiku":1,"api_touch_plane":[59,-1]},"api_stage2":{"api_f_count":19,"api_f_lostcount":2,"api_e_count":0,"api_e_lostcount":0},"api_stage3":{"api_frai_flag":[0,0,0,0,0,0],"api_erai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,0,0,0,0],"api_ebak_flag":[0,0,1,0,1,0],"api_fcl_flag":[0,0,0,0,0,0],"api_ecl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0],"api_edam":[0,0,0,0,70,0]},"api_stage3_combined":{"api_frai_flag":[0,0,0,0,0,0],"api_fbak_flag":[0,0,0,0,0,0],"api_fcl_flag":[0,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0]}},"api_support_flag":0,"api_support_info":null,"api_opening_taisen_flag":0,"api_opening_taisen":null,"api_opening_flag":1,"api_opening_atack":{"api_frai":[-1,-1,-1,-1,-1,-1,5,-1,-1,-1,-1,3],"api_fcl":[0,0,0,0,0,0,2,0,0,0,0,0],"api_fdam":[0,0,0,0,0,0,0,0,0,0,0,0],"api_fydam":[0,0,0,0,0,0,154,0,0,0,0,0],"api_erai":[-1,-1,-1,-1,-1,-1,-1],"api_ecl":[0,0,0,0,0,0,0],"api_edam":[0,0,0,0,0,154,0],"api_eydam":[0,0,0,0,0,0,0]},"api_hourai_flag":[1,0,0,0],"api_hougeki1":{"api_at_eflag":[0,1,0,1,0,1,0,0],"api_at_list":[2,0,1,1,3,2,0,4],"api_at_type":[2,0,2,0,2,0,2,0],"api_df_list":[[3,3],[2],[0,0],[2],[0,0],[2],[2,2],[1]],"api_si_list":[["114","114"],[504],["105","103"],[550],["105","103"],[502],["90","90"],[-1]],"api_cl_list":[[1,2],[0],[1,1],[0],[1,2],[0],[1,1],[2]],"api_damage":[[174,275],[0],[5,3],[0],[199,308],[0],[132,131],[207]]}}' );
     // CombinedBattleWater( battle_water );
