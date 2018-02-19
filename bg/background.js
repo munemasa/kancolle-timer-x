@@ -1285,6 +1285,7 @@ let kcsapicall = {
 
     "api_req_combined_battle/midnight_battle": function( data ){
         // TODO 航空機動艦隊・輸送護衛部隊の夜戦
+        CombinedMidnightBattle( data.api_data );
     },
 
     "api_req_combined_battle/battle_water": function( data ){
