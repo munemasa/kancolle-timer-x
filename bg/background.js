@@ -833,20 +833,12 @@ function AirBattle( data ){
 
     console.log( '*** 航空戦1 ***' );
     if( data.api_kouku ){
-        if( data.api_kouku.api_stage3 ){
-            let raigeki = data.api_kouku.api_stage3;
-            TorpedoBattle2( raigeki, fleet1, data.api_f_nowhps );
-        }
-        if( data.api_kouku.api_stage3_combined ){
-            let raigeki = data.api_kouku.api_stage3_combined;
-            TorpedoBattle2( raigeki, fleet2, data.api_f_nowhpws );
-        }
+        TorpedoBattle( data.api_kouku.api_stage3, myfleet, data );
     }
 
     console.log( '*** 航空戦2 ***' );
-    if( data.api_kouku2 && data.api_kouku2.api_stage3 ){
-        let raigeki = data.api_kouku2.api_stage3;
-        TorpedoBattle( raigeki, myfleet, data );
+    if( data.api_kouku2 ){
+        TorpedoBattle( data.api_kouku2.api_stage3, myfleet, data );
     }
 
     console.log( '*** 結果 ***' );
@@ -871,38 +863,24 @@ function CombinedAirBattle( data ){
         let i = 1;
         for( let air_base_atk of data.api_air_base_attack ){
             console.log( `${i}次攻撃` );
-            let raigeki = air_base_atk.api_stage3;
-            TorpedoBattle( raigeki, myfleet, data );
+            TorpedoBattle( air_base_atk.api_stage3, myfleet, data );
 
             // TODO この処理は存在する？
-            raigeki = air_base_atk.api_stage3_combined;
-            TorpedoBattleCombined( raigeki, myfleet, data );
+            TorpedoBattleCombined( air_base_atk.api_stage3_combined, myfleet, data );
             i++;
         }
     }
 
     console.log( '*** 航空戦1 ***' );
     if( data.api_kouku ){
-        if( data.api_kouku.api_stage3 ){
-            let raigeki = data.api_kouku.api_stage3;
-            TorpedoBattle( raigeki, fleet1, data );
-        }
-        if( data.api_kouku.api_stage3_combined ){
-            let raigeki = data.api_kouku.api_stage3_combined;
-            TorpedoBattleCombined( raigeki, fleet2, data );
-        }
+        TorpedoBattle( data.api_kouku.api_stage3, fleet1, data );
+        TorpedoBattleCombined( data.api_kouku.api_stage3_combined, fleet2, data );
     }
 
     console.log( '*** 航空戦2 ***' );
     if( data.api_kouku2 ){
-        if( data.api_kouku2.api_stage3 ){
-            let raigeki = data.api_kouku2.api_stage3;
-            TorpedoBattle( raigeki, fleet1, data );
-        }
-        if( data.api_kouku2.api_stage3_combined ){
-            let raigeki = data.api_kouku2.api_stage3_combined;
-            TorpedoBattleCombined( raigeki, fleet2, data );
-        }
+        TorpedoBattle( data.api_kouku2.api_stage3, fleet1, data );
+        TorpedoBattleCombined( data.api_kouku2.api_stage3_combined, fleet2, data );
     }
 
     console.log( '*** 結果 ***' );
@@ -951,19 +929,15 @@ function CombinedNightToDayBattle( data ){
     AttackBySupportFleet( data.api_support_info, data );
 
     console.log( '*** 先制爆雷 ***' );
-    if( data.api_opening_taisen ){
-        // 砲撃戦と同じ処理
-        GunBattle( data.api_opening_taisen, myfleet, data );
-    }
+    // 砲撃戦と同じ処理
+    GunBattle( data.api_opening_taisen, myfleet, data );
 
     console.log( '*** 先制雷撃戦 ***' );
-    if( data.api_opening_atack ){
-        TorpedoBattle( data.api_opening_atack, myfleet, data );
-    }
+    TorpedoBattle( data.api_opening_atack, myfleet, data );
 
     console.log( '*** 航空戦 ***' );
     if( data.api_kouku ){
-        // TODO 連合艦隊の航空戦の処理は」不完全
+        // TODO ここの連合艦隊の航空戦の処理は不完全かも
         if( data.api_kouku.api_stage3 ){
             // 艦艇へのダメージ処理はここだけ
             let raigeki = data.api_kouku.api_stage3;
