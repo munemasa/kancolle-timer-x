@@ -718,52 +718,24 @@ function NormalDaytimeBattle( data ){
         let i = 1;
         for( let air_base_atk of data.api_air_base_attack ){
             console.log( `${i}次攻撃` );
-            let raigeki = air_base_atk.api_stage3;
-            TorpedoBattle( raigeki, myfleet, data );
+            TorpedoBattle( air_base_atk.api_stage3, myfleet, data );
             i++;
         }
     }
 
     console.log( '*** 支援艦隊 ***' );
     AttackBySupportFleet( data.api_support_info, data );
-    // if( data.api_support_info ){
-    //     if( data.api_support_info.api_support_airatack ){
-    //         let fleet_no = data.api_support_info.api_support_airatack.api_deck_id;
-    //         console.log( `第${fleet_no}艦隊の支援攻撃` );
-    //         let raigeki = data.api_support_info.api_support_airatack.api_stage3;
-    //         let support_fleet = KanColle.getDeck( fleet_no );
-    //         TorpedoBattle( raigeki, support_fleet, data );
-    //     }
-    //     if( data.api_support_info.api_support_hourai ){
-    //         let hourai = data.api_support_info.api_support_hourai;
-    //         let fleet_no = hourai.api_deck_id;
-    //         console.log( `第${fleet_no}艦隊の支援攻撃` );
-    //         for( let i = 0; i < hourai.api_damage.length; i++ ){
-    //             if( hourai.api_damage[i] > 0 ){
-    //                 let damage = parseInt( hourai.api_damage[i] );
-    //                 data.api_e_nowhps[i] -= damage;
-    //
-    //                 let ship = KanColle._api_mst_ship[data.api_ship_ke[i]];
-    //                 console.log( `${ship.api_name} に ${damage} ダメージ` );
-    //             }
-    //         }
-    //     }
-    // }
 
     console.log( '*** 先制爆雷 ***' );
-    if( data.api_opening_taisen ){
-        // 砲撃戦と同じ処理
-        GunBattle( data.api_opening_taisen, myfleet, data );
-    }
+    // 砲撃戦と同じ処理
+    GunBattle( data.api_opening_taisen, myfleet, data );
 
     //--- 開幕戦
     console.log( '*** 先制雷撃戦 ***' );
-    if( data.api_opening_atack ){
-        TorpedoBattle( data.api_opening_atack, myfleet, data );
-    }
+    TorpedoBattle( data.api_opening_atack, myfleet, data );
 
     console.log( '*** 噴式強襲航空攻撃 ***' );
-    if( data.api_injection_kouku && data.api_injection_kouku.api_stage3 ){
+    if( data.api_injection_kouku ){
         TorpedoBattle( data.api_injection_kouku.api_stage3, myfleet, data );
     }
 
@@ -777,32 +749,21 @@ function NormalDaytimeBattle( data ){
             let stage = data.api_kouku.api_stage2;
             console.log( `対空砲火により自機${stage.api_f_lostcount}機 敵機${stage.api_e_lostcount}機撃墜` );
         }
-        if( data.api_kouku.api_stage3 ){
-            // 艦艇へのダメージ処理はここだけ
-            let raigeki = data.api_kouku.api_stage3;
-            TorpedoBattle( raigeki, myfleet, data );
-        }
+        // 艦艇へのダメージ処理はここだけ
+        TorpedoBattle( data.api_kouku.api_stage3, myfleet, data );
     }
 
     //--- 砲撃戦1
     console.log( '*** 砲撃戦1 ***' );
-    if( data.api_hougeki1 ){
-        GunBattle( data.api_hougeki1, myfleet, data );
-    }
+    GunBattle( data.api_hougeki1, myfleet, data );
     console.log( '*** 砲撃戦2 ***' );
-    if( data.api_hougeki2 ){
-        GunBattle( data.api_hougeki2, myfleet, data );
-    }
+    GunBattle( data.api_hougeki2, myfleet, data );
     console.log( '*** 砲撃戦3 ***' );
-    if( data.api_hougeki3 ){
-        GunBattle( data.api_hougeki3, myfleet, data );
-    }
+    GunBattle( data.api_hougeki3, myfleet, data );
 
     //--- 雷撃戦
     console.log( '*** 雷撃戦 ***' );
-    if( data.api_raigeki ){
-        TorpedoBattle( data.api_raigeki, myfleet, data );
-    }
+    TorpedoBattle( data.api_raigeki, myfleet, data );
 
     //--- 結果
     console.log( '*** 結果 ***' );
@@ -1058,26 +1019,24 @@ function CombinedEachBattleWater( data ){
         let i = 1;
         for( let air_base_atk of data.api_air_base_attack ){
             console.log( `${i}次攻撃` );
-            let raigeki = air_base_atk.api_stage3;
-            TorpedoBattle( raigeki, myfleet, data );
+            TorpedoBattle( air_base_atk.api_stage3, fleet1, data );
 
             // TODO この処理は存在する？
-            raigeki = air_base_atk.api_stage3_combined;
-            TorpedoBattleCombined( raigeki, myfleet, data );
+            TorpedoBattleCombined( air_base_atk.api_stage3_combined, fleet2, data );
             i++;
         }
     }
 
+    console.log( '*** 噴式強襲航空攻撃 ***' );
+    if( data.api_injection_kouku ){
+        TorpedoBattle( data.api_injection_kouku.api_stage3, fleet1, data );
+        TorpedoBattleCombined( data.api_injection_kouku.api_stage3_combined, fleet2, data );
+    }
+
     console.log( '*** 航空戦 ***' );
     if( data.api_kouku ){
-        if( data.api_kouku.api_stage3 ){
-            let raigeki = data.api_kouku.api_stage3;
-            TorpedoBattle( raigeki, fleet1, data );
-        }
-        if( data.api_kouku.api_stage3_combined ){
-            let raigeki = data.api_kouku.api_stage3_combined;
-            TorpedoBattleCombined( raigeki, fleet2, data );
-        }
+        TorpedoBattle( data.api_kouku.api_stage3, fleet1, data );
+        TorpedoBattleCombined( data.api_kouku.api_stage3_combined, fleet2, data );
     }
 
     // 砲撃戦、雷撃戦用に連結
@@ -1091,10 +1050,12 @@ function CombinedEachBattleWater( data ){
     console.log( '*** 支援艦隊 ***' );
     AttackBySupportFleet( data.api_support_info, data );
 
+    console.log( '*** 先制爆雷 ***' );
+    // 砲撃戦と同じ処理
+    GunBattle( data.api_opening_taisen, myfleet, data );
+
     console.log( '*** 先制雷撃 ***' );
-    if( data.api_opening_atack ){
-        TorpedoBattle( data.api_opening_atack, myfleet, data );
-    }
+    TorpedoBattle( data.api_opening_atack, myfleet, data );
 
     console.log( '*** 砲撃戦1 ***' );
     GunBattle( data.api_hougeki1, myfleet, data );
@@ -1129,6 +1090,7 @@ function TestBattle(){
     // CombinedBattleWater( combined_battle_battle );
 
     let combined_midnight = JSON.parse( '{"api_deck_id":1,"api_formation":[14,3,2],"api_f_nowhps":[42,42,8,29,58,48],"api_f_maxhps":[42,42,31,33,58,58],"api_f_nowhps_combined":[32,38,32,57,53,32],"api_f_maxhps_combined":[51,38,32,57,57,32],"api_fParam":[[31,55,29,48],[57,54,116,53],[49,79,49,49],[47,78,61,49],[34,0,72,65],[34,0,72,65]],"api_fParam_combined":[[56,94,78,68],[48,79,64,49],[59,89,59,59],[77,79,69,75],[77,84,106,78],[30,49,30,27]],"api_ship_ke":[1614,1523,1591,1575,1501,1501],"api_ship_lv":[1,1,1,1,1,1],"api_e_nowhps":[0,0,2,0,0,0],"api_e_maxhps":[96,70,48,35,20,20],"api_eSlot":[[556,548,558,549,-1],[520,523,516,-1,-1],[550,550,545,525,-1],[502,545,542,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[25,0,50,80],[0,0,15,35],[58,84,88,55],[38,60,30,22],[5,15,6,5],[5,15,6,5]],"api_touch_plane":[-1,-1],"api_flare_pos":[-1,-1],"api_hougeki":{"api_at_eflag":[0],"api_at_list":[6],"api_n_mother_list":[0],"api_df_list":[[2,2]],"api_si_list":[["90","90"]],"api_cl_list":[[1,1]],"api_sp_list":[1],"api_damage":[[0,150]]}}' );
+    combined_midnight = JSON.parse( '{"api_deck_id":1,"api_formation":[14,14,1],"api_f_nowhps":[21,25,18,33,58,48],"api_f_maxhps":[90,89,31,33,58,58],"api_f_nowhps_combined":[51,38,29,57,57,7],"api_f_maxhps_combined":[51,38,32,57,57,32],"api_fParam":[[98,0,84,94],[96,0,92,93],[49,79,49,49],[47,78,61,49],[34,0,72,65],[34,0,72,65]],"api_fParam_combined":[[56,94,78,68],[48,79,64,49],[59,89,59,59],[77,79,69,75],[77,84,106,78],[30,49,30,27]],"api_ship_ke":[1778,1523,1523,1529,1575,1575],"api_ship_lv":[1,1,1,1,1,1],"api_ship_ke_combined":[1554,1591,1501,1501,1501,1501],"api_ship_lv_combined":[1,1,1,1,1,1],"api_e_nowhps":[0,0,0,41,0,0],"api_e_maxhps":[88,70,70,98,35,35],"api_e_nowhps_combined":[0,0,0,0,0,0],"api_e_maxhps_combined":[53,48,20,20,20,20],"api_eSlot":[[581,582,583,583,-1],[520,523,516,-1,-1],[520,523,516,-1,-1],[509,509,525,528,-1],[502,545,542,-1,-1],[502,545,542,-1,-1]],"api_eSlot_combined":[[504,542,543,-1,-1],[550,550,545,525,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1],[501,-1,-1,-1,-1]],"api_eParam":[[35,0,48,73],[0,0,15,35],[0,0,15,35],[90,0,80,99],[38,60,30,22],[38,60,30,22]],"api_eParam_combined":[[42,72,27,36],[58,84,88,55],[5,15,6,5],[5,15,6,5],[5,15,6,5],[5,15,6,5]],"api_active_deck":[2,1],"api_touch_plane":[-1,-1],"api_flare_pos":[-1,-1],"api_hougeki":{"api_at_eflag":[0],"api_at_list":[6],"api_n_mother_list":[0],"api_df_list":[[3,3]],"api_si_list":[["90","90"]],"api_cl_list":[[1,1]],"api_sp_list":[1],"api_damage":[[141,0]]}}' );
     CombinedMidnightBattle( combined_midnight );
     console.log( combined_midnight );
 }
@@ -1296,6 +1258,11 @@ let kcsapicall = {
     "api_req_combined_battle/each_battle_water": function( data ){
         // TODO 連合艦隊vs連合艦隊
         CombinedEachBattleWater( data.api_data );
+    },
+
+    "api_req_combined_battle/ec_midnight_battle": function( data ){
+        // TODO 連合艦隊vs連合艦隊 夜戦
+        CombinedMidnightBattle( data.api_data );
     },
 
     "api_req_combined_battle/ld_airbattle": function( data ){
