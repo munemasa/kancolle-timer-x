@@ -1001,6 +1001,7 @@ function CombinedEachBattleWater( data ){
     data.api_f_nowhps = data.api_f_nowhps.concat( data.api_f_nowhps_combined || [] );
 
     console.log( '*** 支援艦隊 ***' );
+    // TODO 支援の確認
     AttackBySupportFleet( data.api_support_info, data );
 
     console.log( '*** 先制爆雷 ***' );
@@ -1042,9 +1043,7 @@ function CombinedMidnightBattle( data ){
 
     //--- 砲撃戦
     console.log( '*** 砲撃戦 ***' );
-    if( data.api_hougeki ){
-        GunBattle( data.api_hougeki, myfleet, data );
-    }
+    GunBattle( data.api_hougeki, myfleet, data );
 
     //--- 結果
     console.log( '*** 結果 ***' );
@@ -1231,37 +1230,37 @@ let kcsapicall = {
     },
 
     "api_req_combined_battle/battle": function( data ){
-        // TODO 航空機動部隊・輸送護衛部隊での戦闘
+        // 航空機動部隊・輸送護衛部隊での戦闘
         CombinedEachBattleWater( data.api_data );
     },
 
     "api_req_combined_battle/midnight_battle": function( data ){
-        // TODO 航空機動艦隊・輸送護衛部隊の夜戦
+        // 航空機動艦隊・輸送護衛部隊の夜戦
         CombinedMidnightBattle( data.api_data );
     },
 
     "api_req_combined_battle/battle_water": function( data ){
-        // TODO 連合艦隊水上艦隊の戦闘
+        // 連合艦隊水上艦隊の戦闘
         CombinedBattleWater( data.api_data );
     },
 
     "api_req_combined_battle/each_battle_water": function( data ){
-        // TODO 連合艦隊vs連合艦隊
+        // 連合艦隊vs連合艦隊
         CombinedEachBattleWater( data.api_data );
     },
 
     "api_req_combined_battle/each_battle": function( data ){
-        // TODO 連合艦隊vs連合艦隊
+        // 連合艦隊vs連合艦隊
         CombinedEachBattleWater( data.api_data );
     },
 
     "api_req_combined_battle/ec_midnight_battle": function( data ){
-        // TODO 連合艦隊vs連合艦隊 夜戦
+        // 連合艦隊vs連合艦隊 夜戦
         CombinedMidnightBattle( data.api_data );
     },
 
     "api_req_combined_battle/ld_airbattle": function( data ){
-        // TODO 連合艦隊の航空戦
+        // 連合艦隊の航空戦
         CombinedAirBattle( data.api_data );
     },
 
@@ -1408,7 +1407,7 @@ async function CaptureScreenshot(){
     let zoom = await browser.tabs.getZoom();
     let ss = await browser.tabs.captureVisibleTab();
     let result = await browser.storage.local.get( 'kct_config' );
-    let is_jpeg = (result && result.kct_config['ss-format-jpeg']) || 0;
+    let is_jpeg = (result && result.kct_config && result.kct_config['ss-format-jpeg']) || 0;
 
     let image = new Image();
     image.onload = ( ev ) =>{
