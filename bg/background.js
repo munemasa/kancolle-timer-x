@@ -696,7 +696,7 @@ function AttackBySupportFleet( api_support_info, data ){
             }
         }
     }catch( e ){
-        // TODO 未確認の支援艦隊があるので、不意に処理が中断しないように。
+        // 未確認の支援艦隊があるので、不意に処理が中断しないように。
         console.log( e );
     }
 }
