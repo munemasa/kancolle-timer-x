@@ -27,6 +27,13 @@ let ShipList = {
     ships: null, // 艦娘全員
     userdefined: [],
 
+    sally_color: [
+        '#c5c5c5',  // 警戒部隊
+        '#ff0000',  // 西村艦隊
+        '#c3d77b',  // 栗田艦隊
+        '#3981dd',  // 小沢艦隊
+    ],
+
     /**
      * 艦娘リスト（配列）をソート
      * @param ships 艦娘配列
@@ -172,6 +179,7 @@ let ShipList = {
             ship_type.textContent = ship._stype_name;
             let fleet_no = this.getFleetNo( ship.api_id );
             ship_name.textContent = (fleet_no > 0 ? `(${fleet_no})` : '') + ship._name;
+            ship_name.setAttribute( 'sally', ship.api_sally_area );
 
             let ratio = ship.api_nowhp / ship.api_maxhp;
             if( ratio <= 0 ){

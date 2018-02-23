@@ -146,6 +146,28 @@ td[cond="high"] {
     /*text-shadow: 2px 2px 3px #ffff40, -2px -2px 3px #ffff40, -2px 2px 3px #ffff40, 2px -2px 3px #ffff40;*/
 }
 
+td.ship-name[sally="0"]{
+
+}
+
+td.ship-name[sally="1"]{
+    border-left: 6px solid #c5c5c5;
+}
+td.ship-name[sally="2"]{
+    border-left: 6px solid #9bb054;
+}
+td.ship-name[sally="3"]{
+    border-left: 6px solid #e3e456;
+}
+td.ship-name[sally="4"]{
+    border-left: 6px solid #3981dd;
+}
+
+td.ship-name[sally="5"]{
+    border-left: 6px solid cyan;
+}
+
+
 #ship-spec {
 }
 
