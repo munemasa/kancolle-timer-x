@@ -670,6 +670,12 @@ function DispFormation( data ){
 }
 
 
+/**
+ * 支援艦隊のダメージ処理
+ * TODO 本体と護衛艦隊を連結した状態で処理していいいはず
+ * @param api_support_info
+ * @param data
+ */
 function AttackBySupportFleet( api_support_info, data ){
     try{
         if( api_support_info ){
@@ -891,7 +897,7 @@ function CombinedNightToDayBattle( data ){
 
     // 支援艦隊
     console.log( '*** 支援艦隊(夜戦) ***' );
-    // TODO 支援艦隊のダメージ処理
+    // 支援艦隊のダメージ処理
     AttackBySupportFleet( data.api_n_support_info, data );
 
     console.log( '*** 砲撃戦(夜戦) ***' );
@@ -906,7 +912,7 @@ function CombinedNightToDayBattle( data ){
     data.api_ship_ke = data.api_ship_ke.slice( e_n );
 
     console.log( '*** 支援艦隊(昼戦) ***' );
-    // TODO 支援艦隊のダメージ処理
+    // 支援艦隊のダメージ処理
     AttackBySupportFleet( data.api_support_info, data );
 
     console.log( '*** 先制爆雷 ***' );
