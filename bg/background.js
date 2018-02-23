@@ -789,6 +789,8 @@ function NormalMidnightBattle( data ){
         console.log( `#${i + 1} ${KanColle._api_ship[myfleet.api_ship[i]]._name} ${data.api_f_nowhps[i]}/${data.api_f_maxhps[i]}` );
     }
 
+    AttackBySupportFleet( data.api_n_support_info, myfleet );
+
     //--- 砲撃戦
     console.log( '*** 砲撃戦 ***' );
     if( data.api_hougeki ){
