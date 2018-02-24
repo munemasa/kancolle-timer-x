@@ -489,7 +489,7 @@ async function RecordDropShip( data ){
  * @param hougeki
  * @param myfleet
  * @param data
- * @param friendly
+ * @param friendly 友軍艦隊(NPC)のときにtrue
  */
 function GunBattle( hougeki, myfleet, data, friendly ){
     if( !hougeki ) return;
@@ -504,7 +504,12 @@ function GunBattle( hougeki, myfleet, data, friendly ){
             if( hougeki.api_at_eflag[i] == 0 ){
                 // 自軍→敵軍
                 let ship = KanColle._api_mst_ship[data.api_ship_ke[def]];
-                data.api_e_nowhps[def] -= damage;
+                if( !friendly ){
+                    // 友軍艦隊(NPC)のときには
+                    // api_e_nowhps には友軍艦隊の与ダメージ分は計算済みでやってくるので
+                    // 減算してはならない
+                    data.api_e_nowhps[def] -= damage;
+                }
                 let name = !friendly ? KanColle._api_ship[myfleet.api_ship[atk]]._name : KanColle._api_mst_ship[myfleet.api_ship[atk]].api_name;
                 console.log( `#${j} ${name} が ${ship.api_name} に ${damage} ダメージ` );
             }else{
@@ -976,6 +981,11 @@ function CombinedEachBattleWater( data ){
 
     DispFleet( data, myfleet );
 
+    // TODO 護衛退避
+    // 護衛退避した艦のインデックス 1,2,3,...
+    // data.api_escape_idx = [];
+    // data.api_escape_idx_combined = [];
+
     console.log( '*** 基地航空隊 ***' );
     // TODO 重複部分を整理
     if( data.api_air_base_attack ){
@@ -1176,6 +1186,11 @@ let kcsapicall = {
         UpdateShipPartial( ships );
         UpdateDeck( data.api_data );
     },
+
+    "api_get_member/ship2": function( data ){
+        // TODO 間宮とか使ったときにこれで更新されるが母港に行けばいいのでいちいち処理する必要ないかも
+        // UpdateShipFull( data.api_data );
+    },
     "api_get_member/ship3": function( data ){
         // 改装したときに届く更新データ
         let ships = data.api_data.api_ship_data;
@@ -1311,6 +1326,10 @@ let kcsapicall = {
 
         // このタイミングで戦闘結果を表示する
         SetLocalStorage( 'battle_report', KanColle.battle_report );
+    },
+
+    "api_req_combined_battle/goback_port": function( data ){
+        // TODO 護衛退避
     },
 
     "api_req_practice/battle_result": function( data ){
