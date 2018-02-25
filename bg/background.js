@@ -973,7 +973,7 @@ function CombinedBattleWater( data ){
 function CombinedEachBattleWater( data ){
     console.log( `連合艦隊 昼戦` );
 
-    let fleet1 = KanColle.getDeck( 1 );
+    let fleet1 = KanColle.getDeck( data.api_deck_id );
     let fleet2 = KanColle.getDeck( 2 );
     fleet1.api_ship_combined = fleet2.api_ship;
     let myfleet = fleet1;
@@ -1045,7 +1045,7 @@ function CombinedEachBattleWater( data ){
 
 function CombinedMidnightBattle( data ){
     console.log( `連合艦隊 夜戦` );
-    let fleet1 = KanColle.getDeck( 1 );
+    let fleet1 = KanColle.getDeck( data.api_deck_id );
     let fleet2 = KanColle.getDeck( 2 );
     fleet1.api_ship_combined = fleet2.api_ship;
     let myfleet = fleet1;
@@ -1075,6 +1075,8 @@ function CombinedMidnightBattle( data ){
             api_f_nowhps: data.api_friendly_info.api_nowhps
         };
         try{
+            // 友軍艦隊のダメージはあらかじめapi_e_nowhpsから引かれているので
+            // ダメージ計算時に減らす必要は無い
             GunBattle( data.api_friendly_battle.api_hougeki, friendly_fleet, fdata, true )
         }catch( e ){
             console.log( e );
@@ -1316,6 +1318,11 @@ let kcsapicall = {
     "api_req_combined_battle/ec_night_to_day": function( data ){
         // TODO 2018 winter E-2 前哨戦南 夜戦開始の昼戦へ続く
         CombinedNightToDayBattle( data.api_data );
+    },
+
+    "api_req_combined_battle/ec_battle": function( data ){
+        // 通常艦隊vs連合艦隊
+        CombinedEachBattleWater( data.api_data );
     },
 
     "api_req_sortie/battleresult": function( data ){
