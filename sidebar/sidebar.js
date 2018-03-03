@@ -387,7 +387,7 @@ let KanColleTimerSidebar = {
                 }
 
                 let ratio = spec.api_nowhp / spec.api_maxhp;
-                if( fleet.api_id == 1 ){
+                if( true /* fleet.api_id == 1 */ ){
                     // 第1艦隊のみ
                     let percentage = ratio * 100;
                     let image;
