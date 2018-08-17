@@ -1131,7 +1131,7 @@ function TestBattle(){
 }
 
 let kcsapicall = {
-    "api_start2": function( data ){
+    "api_start2/getData": function( data ){
         UpdateMasterData( data.api_data );
     },
     "api_port/port": function( data ){
@@ -1406,7 +1406,7 @@ function KanColleHttpCapture( details ){
 
 browser.webRequest.onBeforeRequest.addListener(
     KanColleHttpCapture,
-    {urls: ["*://*/kcsapi/*"], types: ["object_subrequest"]},
+    {urls: ["*://*/kcsapi/*"], types: ["object_subrequest", "xmlhttprequest"]},
     ["blocking", "requestBody"]
 );
 
