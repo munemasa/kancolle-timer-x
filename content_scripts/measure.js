@@ -25,7 +25,7 @@
         }
 
         if( document.location.href.match( /aid=854854/ ) ){
-            let flash = document.getElementsByTagName( "embed" )[0];
+            let flash = document.getElementById( "flashWrap" );
             let offset_x = flash.offsetLeft;
             let offset_y = flash.offsetTop;
 
