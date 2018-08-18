@@ -33,6 +33,7 @@ let ScreenShotOrganization = {
         let canvas = this.canvas;
         let ss = await browser.tabs.captureVisibleTab( ScreenShotOrganization.windowId );
         let cnt = ScreenShotOrganization._cnt;
+        let zoom = await browser.tabs.getZoom( ScreenShotOrganization.windowId );
 
         let ctx = canvas.getContext( '2d' );
         let img = new Image();
@@ -45,13 +46,18 @@ let ScreenShotOrganization = {
 
             let offset_x = KanColle._ss_game_position.offset_x + KanColle._ss_flash_position.offset_x - KanColle._ss_game_position.scroll_x;
             let offset_y = KanColle._ss_game_position.offset_y + KanColle._ss_flash_position.offset_y - KanColle._ss_game_position.scroll_y;
-            let base_x = 330 + offset_x;
-            let base_y = 103 + offset_y;
+            // 800x480のサイズで 330,103 の位置
+            // let base_x = 330 + offset_x;
+            // let base_y = 103 + offset_y;
+            let base_x = KanColle._ss_flash_position.w * zoom * 0.4122 + offset_x * zoom;
+            let base_y = KanColle._ss_flash_position.h * zoom * 0.214583 + offset_y * zoom;
+            let base_w = 0.56625 * KanColle._ss_flash_position.w * zoom;
+            let base_h = 0.7604166 * KanColle._ss_flash_position.h * zoom;
 
             let x = (cnt % ScreenShotOrganization.col) * w;
             let y = parseInt( cnt / ScreenShotOrganization.col ) * h;
 
-            ctx.drawImage( img, base_x, base_y, w, h, x, y, w, h );
+            ctx.drawImage( img, base_x, base_y, base_w, base_h, x, y, w, h );
 
             ScreenShotOrganization._cnt++;
             ScreenShotOrganization._cnt %= 6;
