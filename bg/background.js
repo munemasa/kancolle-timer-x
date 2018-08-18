@@ -1404,6 +1404,54 @@ let kcsapicall = {
         SetLocalStorage( 'slotitem', KanColle._api_slot_item );
         let basic = await browser.storage.local.get( 'basic' );
         UpdateBasic( basic.basic );
+    },
+
+    "api_req_hensei/change": function( data, post ){
+        // 編成
+        let fleet_no = parseInt( post.api_id[0] );
+        let ship_id = parseInt( post.api_ship_id[0] );
+        let ship_idx = parseInt( post.api_ship_idx[0] ); // 0 origin
+
+        if( ship_id == -2 ){
+            // 一括解除
+            for( let i = 0, f; f = KanColle.deck[i]; i++ ){
+                if( f.api_id == fleet_no ){
+                    for( let j = 1; j < KanColle.deck[i].api_ship.length; j++ ){
+                        KanColle.deck[i].api_ship[j] = -1;
+                    }
+                }
+            }
+        }else if( ship_id == -1 ){
+            // はずす
+            for( let i = 0, f; f = KanColle.deck[i]; i++ ){
+                if( f.api_id == fleet_no ){
+                    let j;
+                    for( j = ship_idx; j < KanColle.deck[i].api_ship.length - 1; j++ ){
+                        KanColle.deck[i].api_ship[j] = KanColle.deck[i].api_ship[j + 1];
+                    }
+                    KanColle.deck[i].api_ship[j] = -1;
+                }
+            }
+        }else{
+            for( let i = 0, f; f = KanColle.deck[i]; i++ ){
+                if( f.api_id == fleet_no ){
+                    let old = KanColle.deck[i].api_ship[ship_idx];
+                    if( old >= 0 ){
+                        // 入れ替え
+                        for( let idx = 0; idx < KanColle.deck[i].api_ship.length; idx++ ){
+                            if( KanColle.deck[i].api_ship[idx] == ship_id ){
+                                KanColle.deck[i].api_ship[idx] = old;
+                            }
+                        }
+                        KanColle.deck[i].api_ship[ship_idx] = ship_id;
+                    }else{
+                        KanColle.deck[i].api_ship[ship_idx] = ship_id;
+                    }
+                }
+            }
+        }
+        SetLocalStorage( 'deck', KanColle.deck );
+
     }
 };
 
