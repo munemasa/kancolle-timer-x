@@ -1407,7 +1407,7 @@ let kcsapicall = {
     },
 
     "api_req_hensei/change": function( data, post ){
-        // 編成
+        // 編成（てきとう）
         let fleet_no = parseInt( post.api_id[0] );
         let ship_id = parseInt( post.api_ship_id[0] );
         let ship_idx = parseInt( post.api_ship_idx[0] ); // 0 origin
