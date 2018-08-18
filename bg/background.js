@@ -275,6 +275,7 @@ function UpdateMasterData( api_data ){
     SetLocalStorage( 'mst_data', api_data );
 }
 
+
 /**
  * 艦隊編成の更新をする
  * @param data
@@ -365,6 +366,37 @@ function UpdateShipFull( api_ship ){
         shipdata[ship.api_id] = ship;
     }
     KanColle._api_ship = shipdata;
+}
+
+/**
+ * 艦娘を削除する.
+ * @param ship_id 解体する艦娘
+ * @param dest_flg 装備も廃棄するかフラグ "0" or "1"
+ */
+async function RemoveShip( ship_id, dest_flg ){
+    let ship = KanColle._api_ship[ship_id];
+    if( dest_flg == "1" ){
+        // 装備を削除
+        for( item_id of ship.api_slot ){
+            console.log( `Remove item id:${item_id}` );
+            RemoveEquipment( item_id );
+        }
+        console.log( `Remove item id:${ship.api_slot_ex}` );
+        RemoveEquipment( ship.api_slot_ex );
+    }
+    delete KanColle._api_ship[ship_id];
+    console.log( `Remove ship: ${ship_id}` );
+
+    let basic = await browser.storage.local.get( 'basic' );
+    UpdateBasic( basic.basic );
+}
+
+/**
+ * 装備品を削除する
+ * @param item_id
+ */
+function RemoveEquipment( item_id ){
+    delete KanColle._api_slot_item[item_id];
 }
 
 function UpdateShipPartial( ships ){
@@ -1355,24 +1387,42 @@ let kcsapicall = {
         SetLocalStorage( 'battle_report', KanColle.battle_report );
     },
 
-    "api_req_kousyou/destroyship": function( data ){
-        // TODO 解体 POSTデータ読めないのでどの艦を解体したのか分からない
+    "api_req_kousyou/destroyship": function( data, post ){
+        // 解体
+        let ship_id = post.api_ship_id[0];
+        let slot_dest_flag = post.api_slot_dest_flag[0]; // "0" or "1" 装備も廃棄するかフラグ
+        RemoveShip( ship_id, slot_dest_flag );
+        SetLocalStorage( 'slotitem', KanColle._api_slot_item );
     },
-    "api_req_kousyou/destroyitem2": function( data ){
-        // TODO 破棄 同上
+    "api_req_kousyou/destroyitem2": async function( data, post ){
+        // 廃棄
+        let item_ids = post.api_slotitem_ids[0].split( ',' );
+        for( item_id of item_ids ){
+            console.log( `Remove item: ${item_id}` );
+            RemoveEquipment( item_id );
+        }
+        SetLocalStorage( 'slotitem', KanColle._api_slot_item );
+        let basic = await browser.storage.local.get( 'basic' );
+        UpdateBasic( basic.basic );
     }
-
 };
+
 
 function ProcessData( details, data ){
     console.log( `URL: ${details.url.substring( 1 )}` );
     console.log( data );
+    console.log( details.requestBody && details.requestBody.formData );
+
+    /*
+    details.requestBody.formData{Object}
+    にkey-valueでPOST内容が入っている
+     */
 
     let url = details.url;
     let k = url.match( /kcsapi\/(.*)/ );
 
     if( typeof kcsapicall[k[1]] === "function" ){
-        kcsapicall[k[1]]( data );
+        kcsapicall[k[1]]( data, details.requestBody && details.requestBody.formData );
     }
 }
 
