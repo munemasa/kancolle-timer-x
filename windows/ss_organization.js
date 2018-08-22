@@ -30,10 +30,11 @@ let ScreenShotOrganization = {
     col: 3,
 
     getScreenshot: async function(){
+        console.log( 'take ss' );
         let canvas = this.canvas;
         let ss = await browser.tabs.captureVisibleTab( ScreenShotOrganization.windowId );
         let cnt = ScreenShotOrganization._cnt;
-        let zoom = await browser.tabs.getZoom( ScreenShotOrganization.windowId );
+        let zoom = await browser.tabs.getZoom( ScreenShotOrganization.tabId );
 
         let ctx = canvas.getContext( '2d' );
         let img = new Image();
@@ -49,13 +50,14 @@ let ScreenShotOrganization = {
             // 800x480のサイズで 330,103 の位置
             // let base_x = 330 + offset_x;
             // let base_y = 103 + offset_y;
-            let base_x = KanColle._ss_flash_position.w * zoom * 0.4122 + offset_x * zoom;
-            let base_y = KanColle._ss_flash_position.h * zoom * 0.214583 + offset_y * zoom;
+            let base_x = (KanColle._ss_flash_position.w * 0.4122 + offset_x) * zoom;
+            let base_y = (KanColle._ss_flash_position.h * 0.214583 + offset_y) * zoom;
             let base_w = 0.56625 * KanColle._ss_flash_position.w * zoom;
             let base_h = 0.7604166 * KanColle._ss_flash_position.h * zoom;
 
             let x = (cnt % ScreenShotOrganization.col) * w;
             let y = parseInt( cnt / ScreenShotOrganization.col ) * h;
+            console.log( `${base_x},${base_y} ${base_w}x${base_h}` );
 
             ctx.drawImage( img, base_x, base_y, base_w, base_h, x, y, w, h );
 
@@ -107,6 +109,23 @@ let ScreenShotOrganization = {
         return "" + d.getFullYear() + month + date + hour + min + sec + ms;
     },
 
+    getKanColleFrameId: async function(){
+        let tabs = await browser.tabs.query( {} );
+        for( let tab of tabs ){
+            if( tab.url.match( /www.dmm.com\/.*\/app_id=854854/ ) ){
+                let frames = await browser.webNavigation.getAllFrames( {
+                    tabId: tab.id
+                } );
+
+                for( let frame of frames ){
+                    if( frame.url.match( /kcs2\/index.php/ ) ){
+                        return frame;
+                    }
+                }
+            }
+        }
+        return null;
+    },
 
     createBlob: function( dataURI, name, callback ){
         let byteString = atob( dataURI.split( ',' )[1] );
@@ -164,7 +183,9 @@ let ScreenShotOrganization = {
                     // http://www.dmm.com/netgame/social/-/gadgets/=/app_id=854854/
                     if( tab.url.match( /app_id=854854/ ) ){
                         ScreenShotOrganization.windowId = tab.windowId;
+                        ScreenShotOrganization.tabId = tab.id;
                     }
+                    console.log( tab );
                 }
             }
         }, ( e ) =>{
